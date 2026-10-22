@@ -29,7 +29,7 @@ export const STATS: CompetitiveStat[] = [
 ];
 
 export const FORMATS: DraftFormat[] = [
-  { id: 'live', name: 'Partida en vivo / Ranked', description: 'Para usar durante la partida: 3 bans visibles por equipo (primero azul, luego rojo), sin sorteo ni orden. Toca cualquier hueco.', bansPerTeam: 3, globalBansPerTeam: 0, blindBans: false, coinFlip: false, freeOrder: true, pickOrder: ['blue', 'red', 'red', 'blue', 'blue', 'red'] },
+  { id: 'live', name: 'Partida en vivo / Ranked', description: 'Ranked: 3 bans por equipo (1 por jugador, simultáneos; ambos equipos pueden banear al mismo), luego picks por turnos 1-2-2-1. Elige quién pickea primero.', bansPerTeam: 3, globalBansPerTeam: 0, blindBans: false, coinFlip: false, freeOrder: true, pickOrder: ['blue', 'red', 'red', 'blue', 'blue', 'red'] },
   { id: 'bsc-stage', name: 'Torneo BSC (stage)', description: 'Pro: sorteo, 2 bans globales de match + 3 bans ciegos de set (1 por jugador). Rulebook v1.6.', bansPerTeam: 3, globalBansPerTeam: 2, blindBans: true, coinFlip: true, pickOrder: ['blue', 'red', 'red', 'blue', 'blue', 'red'] }
 ];
 

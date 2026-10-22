@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { MAPS, POOL_INFO } from './data/maps';
 import { FORMATS } from './data/meta';
 import { scoreAll, suggestBans, DEFAULT_WEIGHTS, matchupScore, countersVs, threatsTo, verdict, metaLabel, metaOf, getAllBrawlers, brawlerById, DATA_SOURCE } from './engine/scoring';
-import { initialDraft, expectedAction, applyPick, applyBan, applyGlobalBan, flipCoin, undo, redo, getFormat, bansComplete, pickOrderIssues, SLOT_LABELS, ourPickJob } from './engine/draftMachine';
+import { initialDraft, expectedAction, applyPick, applyBan, applyGlobalBan, banBlocked, flipCoin, undo, redo, getFormat, bansComplete, pickOrderIssues, SLOT_LABELS, ourPickJob } from './engine/draftMachine';
 import { store } from './engine/storage';
 import type { Brawler, DraftState, GameMode, Ownership, Role, Team, Weights } from './types';
 
@@ -120,7 +120,7 @@ export default function App() {
     const id = pre;
     if (!id) { setMsg('Toca un brawler para aplicarlo.'); return false; }
     const r = applyPick(draft, team, id, slot);
-    if ('error' in r) { setMsg(r.error); return false; }
+    if ('error' in r) { setMsg(r.error); setAction(actionFor(draft)); return false; }
     setDraft(r); setAction(actionFor(r));
     const st = ownership[id] ?? 'ok';
     setMsg(team === 'blue' && st !== 'ok' ? `Ojo: ${brawlerById(id)?.name} lo tienes ${st === 'no' ? 'SIN TENER' : 'A BAJO NIVEL'}: rinde menos. Mira las alternativas.` : '');
@@ -208,412 +208,500 @@ export default function App() {
 
   const maskRival = format.blindBans && blindHide;
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  // Pick bloqueado si aún hay baneos o si es el turno del otro equipo (snake 1-2-2-1)
+  const pickChipLocked = (a: Action) => (a === 'pickBlue' || a === 'pickRed') && !draft.freeMode && (picksLocked || (exp.kind === 'pick' && exp.team !== (a === 'pickBlue' ? 'blue' : 'red')));
+  // Bans simultáneos: un brawler baneado solo por el rival sigue disponible para el ban del otro equipo
+  const unavailable = (id: string) => (action === 'banBlue' || action === 'banRed') && banPhase
+    ? banBlocked(draft, action === 'banBlue' ? 'blue' : 'red', id)
+    : banned.includes(id) || picked.includes(id);
+  const actionLabel = action === 'pickBlue' ? 'Pick Azul' : action === 'pickRed' ? 'Pick Rojo' : action === 'banBlue' ? 'Ban Azul' : action === 'banRed' ? 'Ban Rojo' : action === 'globalBlue' ? '🌍 Global Azul' : '🌍 Global Rojo';
+  const firstPicker = draft.coinWinner === 'red' ? 'Equipo Rojo' : draft.coinWinner === 'blue' || !format.coinFlip ? 'Equipo Azul' : 'por sortear 🪙';
+
   const renderTeam = (team: 'blue' | 'red') => {
     const picks = team === 'blue' ? draft.picksBlue : draft.picksRed;
     const teamBans = team === 'blue' ? draft.bansBlue : draft.bansRed;
     const teamGlobal = team === 'blue' ? draft.globalBansBlue : draft.globalBansRed;
     const isTurn = exp.kind !== 'done' && exp.kind !== 'coin' && exp.team === team;
     const hidden = maskRival && team === 'red';
+    // Orden visual de arriba abajo: FP → MID → LAST (el rojo guarda su FP en el índice 2)
+    const order = team === 'blue' ? [0, 1, 2] : [2, 1, 0];
+    const nextPick = exp.kind === 'pick' && exp.team === team ? (team === 'blue' ? picks.indexOf(null) : picks.lastIndexOf(null)) : -1;
+    const nextBan = exp.kind === 'ban' && exp.team === team ? teamBans.length : -1;
+    const nextGlobal = exp.kind === 'globalban' && exp.team === team ? teamGlobal.length : -1;
     return (
-      <div className={`rounded-xl p-2 border-2 ${team === 'blue' ? 'border-blue-600/70 bg-blue-950/30' : 'border-red-600/70 bg-red-950/30'} ${isTurn ? (team === 'blue' ? 'ring-2 ring-blue-400' : 'ring-2 ring-red-400') : ''}`}>
-        <div className="text-xs font-black mb-2" style={{ color: team === 'blue' ? '#60a5fa' : '#f87171' }}>
-          {team === 'blue' ? '🔵 EQUIPO AZUL (nosotros)' : '🔴 EQUIPO ROJO (ellos)'}
-        </div>
+      <div className={`dd-team ${team} ${isTurn ? 'is-turn' : ''}`}>
+        <div className={`dd-team-header ${team}`}>{team === 'blue' ? 'Equipo Azul' : 'Equipo Rojo'}</div>
+        <div className="dd-team-sub">{team === 'blue' ? 'nosotros' : 'ellos'}</div>
         {format.globalBansPerTeam > 0 && (
-          <div className="mb-2">
-            <div className="text-[11px] font-bold text-gray-400 mb-1">🌍 GLOBALES ({teamGlobal.length}/{format.globalBansPerTeam})</div>
-            <div className="flex gap-1.5">
+          <>
+            <h4 className="dd-section-title">Globales ({teamGlobal.length}/{format.globalBansPerTeam})</h4>
+            <div className="dd-ban-row">
               {Array.from({ length: format.globalBansPerTeam }).map((_, i) => {
                 const b = brawlerById(teamGlobal[i] ?? null);
                 return (
                   <button key={i} onClick={() => { if (!b) setAction(team === 'blue' ? 'globalBlue' : 'globalRed'); }}
-                    className={`w-12 h-14 rounded-lg border flex flex-col items-center justify-center overflow-hidden ${b ? 'border-purple-500 bg-purple-950/50' : 'border-dashed border-gray-600 hover:border-purple-400'}`}
+                    className={`dd-slot dd-slot-ban global ${b ? 'filled' : ''} ${i === nextGlobal ? 'next-action' : ''}`}
                     title={b ? `Ban global: ${hidden ? '???' : b.name}` : 'Hueco de ban global — tócalo para banear aquí'}>
-                    {b ? (hidden ? <span className="text-lg">❓</span> : <><div className="grayscale opacity-80"><BrawlerImg b={b} size="text-xl w-9 h-9" /></div><span className="text-[9px] font-bold leading-tight">{b.name}</span></>)
-                      : <span className="text-gray-600 text-lg">🌍</span>}
+                    {b ? (hidden ? <span className="dd-slot-q">❓</span> : <div className="dd-banned"><BrawlerImg b={b} size="w-full h-full" /></div>)
+                      : <span className="dd-slot-icon">🌍</span>}
                   </button>
                 );
               })}
             </div>
-          </div>
+          </>
         )}
-        <div className={`grid grid-cols-3 gap-2 rounded-lg p-1 ${!banPhase && exp.kind !== 'done' ? 'ring-2 ring-blue-400/60 bg-blue-950/10' : ''}`}>
-          {picks.map((pid, i) => {
-            const b = brawlerById(pid);
+        <h4 className={`dd-section-title ${banPhase ? 'hot' : ''}`}>Baneos ({teamBans.length}/{format.bansPerTeam}){format.blindBans ? ' · ciegos' : ''}</h4>
+        <div className="dd-ban-row">
+          {Array.from({ length: format.bansPerTeam }).map((_, i) => {
+            const b = brawlerById(teamBans[i] ?? null);
             return (
-              <button key={i} onClick={() => {
-                if (b) { if (draft.freeMode || !draft.strict) { setDraft((d) => { const n = structuredClone(d); (team === 'blue' ? n.picksBlue : n.picksRed)[i] = null; return n; }); } }
-                else setAction(team === 'blue' ? 'pickBlue' : 'pickRed');
-              }}
-                className="aspect-[3/4] rounded-lg border border-gray-700 bg-gray-900 flex flex-col items-center justify-center p-1 hover:border-white/50 overflow-hidden" title={b ? `${b.name} (${SLOT_LABELS[team][i]}, clic para quitar en modo libre)` : picksLocked ? `🔒 Bloqueado: termina primero los baneos` : `Hueco ${SLOT_LABELS[team][i]} — tócalo para dirigir aquí la próxima acción`}>
-                <span className={`text-[9px] font-black ${b ? 'text-gray-300' : 'text-gray-500'}`}>{SLOT_LABELS[team][i]}</span>
-                {team === 'blue' && mySlot === i && <span className="text-[9px] font-black text-yellow-300">🧍 TÚ</span>}
-                {b ? <><BrawlerImg b={b} size="text-3xl w-12 h-12" /><span className="text-xs font-bold leading-tight">{b.name}</span><span className="text-[10px] text-gray-400">{b.rarity}</span></>
-                  : picksLocked ? <span className="text-gray-600 text-2xl" title="Bloqueado hasta terminar baneos">🔒</span> : <span className="text-gray-500 text-2xl font-bold">+</span>}
+              <button key={i} onClick={() => { if (!b) setAction(team === 'blue' ? 'banBlue' : 'banRed'); }}
+                className={`dd-slot dd-slot-ban ${b ? 'filled' : ''} ${i === nextBan ? 'next-action' : ''}`}
+                title={b ? `Baneado: ${hidden ? '???' : b.name}` : `Hueco de baneo J${i + 1} — tócalo para banear aquí`}>
+                {b ? (hidden ? <span className="dd-slot-q">❓</span> : <div className="dd-banned"><BrawlerImg b={b} size="w-full h-full" /></div>)
+                  : <span className="dd-slot-icon">🚫</span>}
               </button>
             );
           })}
         </div>
-        <div className="text-[10px] text-gray-500 mt-1">{team === 'blue' ? '→ orden de pick: izq FP → der LAST' : '← orden de pick: der FP → izq LAST'}</div>
-        <div className={`mt-2 rounded-lg p-1 ${banPhase ? 'ring-2 ring-red-400/70 bg-red-950/20' : ''}`}>
-          <div className={`text-[11px] font-bold mb-1 ${banPhase ? 'text-red-300' : 'text-gray-400'}`}>🚫 BANEOS {team === 'blue' ? 'AZULES' : 'ROJOS'} ({teamBans.length}/{format.bansPerTeam}){format.blindBans ? ' · ciegos' : ''}{banPhase ? ' — ¡toca un hueco! 👇' : ' ✓'}</div>
-          <div className="flex gap-1.5 flex-wrap">
-            {Array.from({ length: format.bansPerTeam }).map((_, i) => {
-              const b = brawlerById(teamBans[i] ?? null);
-              return (
-                <button key={i} onClick={() => { if (!b) setAction(team === 'blue' ? 'banBlue' : 'banRed'); }}
-                  className={`w-14 h-[4.5rem] rounded-lg border-2 flex flex-col items-center justify-center overflow-hidden ${b ? 'border-red-500 bg-red-950/50' : banPhase ? 'border-dashed border-red-400 animate-pulse hover:border-red-300' : 'border-dashed border-gray-600 hover:border-red-400'}`}
-                  title={b ? `Baneado: ${hidden ? '???' : b.name}` : 'Hueco de baneo — tócalo para banear aquí'}>
-                  {b ? (hidden ? <span className="text-lg">❓</span> : <><div className="grayscale opacity-90"><BrawlerImg b={b} size="text-xl w-10 h-10" /></div><span className="text-[10px] font-bold leading-tight px-0.5">{b.name}</span><span className="text-[9px] text-gray-500">J{i + 1}</span></>)
-                    : <><span className="text-red-400/80 text-xl font-black">🚫</span><span className="text-[9px] text-gray-500">J{i + 1}</span></>}
+        <h4 className="dd-section-title">Picks ({picks.filter(Boolean).length}/3)</h4>
+        <div className="dd-picks">
+          {order.map((i) => {
+            const pid = picks[i];
+            const b = brawlerById(pid);
+            return (
+              <div key={i} className="dd-pick-wrapper">
+                <div className="dd-pick-info">
+                  <span className="dd-pick-label">{SLOT_LABELS[team][i]}</span>
+                  {team === 'blue' && mySlot === i && <span className="dd-pick-me">🧍 TÚ</span>}
+                  <span className="dd-pick-name">{b ? b.name : picksLocked ? '🔒' : '—'}</span>
+                </div>
+                <button onClick={() => {
+                  if (b) {
+                    const last = draft.history[draft.history.length - 1];
+                    if (last?.kind === 'pick' && last.team === team && last.brawlerId === pid) { const r = undo(draft); setDraft(r); setAction(actionFor(r)); setMsg(''); }
+                    else setMsg('Solo se puede quitar el último pick (usa ↩ Deshacer para volver atrás en orden).');
+                  }
+                  else setAction(team === 'blue' ? 'pickBlue' : 'pickRed');
+                }}
+                  className={`dd-slot dd-slot-pick ${b ? 'filled' : ''} ${i === nextPick ? 'next-action' : ''} ${!b && picksLocked ? 'locked' : ''}`}
+                  title={b ? `${b.name} (${SLOT_LABELS[team][i]}, clic para quitarlo si es el último pick)` : picksLocked ? `🔒 Bloqueado: termina primero los baneos` : `Hueco ${SLOT_LABELS[team][i]} — tócalo para dirigir aquí la próxima acción`}>
+                  {b ? <BrawlerImg b={b} size="w-full h-full" /> : <span className="dd-slot-icon">{picksLocked ? '🔒' : '+'}</span>}
                 </button>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </div>
+        <div className="dd-team-foot">{team === 'blue' ? '↓ orden: FP → MID → LAST' : '↓ orden: FP → MID → LAST'}</div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-arena">
-      <header className="border-b border-gray-800 bg-panel/80 sticky top-0 z-10">
-        <div className="max-w-[1500px] mx-auto px-4 py-3 flex flex-wrap items-center gap-3">
-          <div className="text-2xl">🏆</div>
-          <div>
-            <h1 className="font-black text-lg leading-none">BRAWL DRAFT PRO</h1>
-            <p className="text-[11px] text-amber-300/90">Partida en vivo · Pool BSC Summer 2026 (18 mapas) · Catálogo e imágenes: {DATA_SOURCE} · Ratings: estimación propia.</p>
+    <div className="dd-app">
+      <div className="dd-container">
+        <header className="dd-nav">
+          <button className={`dd-burger ${menuOpen ? 'active' : ''}`} aria-label="Abrir menú" onClick={() => setMenuOpen(!menuOpen)}><span /><span /><span /></button>
+          <div className="dd-nav-title">
+            <h1>Brawl Draft Pro: Draft Assistant</h1>
+            <span className="dd-credit">asistente de draft competitivo</span>
           </div>
-          <div className="ml-auto flex flex-wrap gap-2 text-xs">
-            {format.blindBans && <label className="flex items-center gap-1 bg-gray-800 rounded px-2 py-1"><input type="checkbox" checked={blindHide} onChange={(e) => setBlindHide(e.target.checked)} /> Ocultar bans rivales</label>}
-            <button className="bg-gray-800 rounded px-2 py-1" onClick={() => setShowCollection(true)}>🎒 Colección{ownCount('no') + ownCount('low') > 0 ? ` (${ownCount('no') + ownCount('low')})` : ''}</button>
-            <button className="bg-gray-800 rounded px-2 py-1" onClick={() => setDraft(undo(draft))}>↩ Deshacer</button>
-            <button className="bg-gray-800 rounded px-2 py-1" onClick={() => setDraft(redo(draft))}>↪ Rehacer</button>
-            <button className="bg-gray-800 rounded px-2 py-1" onClick={reset}>⟲ Reiniciar</button>
-            <button className="bg-blue-600 rounded px-2 py-1 font-bold" onClick={exportSummary}>⧉ Exportar</button>
+          <div className="dd-nav-right">
+            {format.blindBans && <label className="dd-pill" title="Ocultar bans rivales"><input type="checkbox" checked={blindHide} onChange={(e) => setBlindHide(e.target.checked)} /> Ocultar bans</label>}
+            <button className="dd-round yellow" title="Mi colección" onClick={() => setShowCollection(true)}>🎒{ownCount('no') + ownCount('low') > 0 && <span className="dd-badge">{ownCount('no') + ownCount('low')}</span>}</button>
+            <button className="dd-round purple" title="Exportar resumen" onClick={exportSummary}>⧉</button>
+            <div className="dd-pill"><span>🇪🇸</span> ES</div>
           </div>
-        </div>
-        <div className={`max-w-[1500px] mx-auto px-4 pb-2 text-sm font-bold ${exp.kind === 'done' ? 'text-green-300' : exp.kind === 'coin' ? 'text-yellow-300' : exp.team === 'blue' ? 'text-blue-300' : 'text-red-300'}`}>{turnText}</div>
-        {msg && <div className="max-w-[1500px] mx-auto px-4 pb-2 text-xs text-red-300">{msg}</div>}
-      </header>
+        </header>
 
-      <main className="max-w-[1500px] mx-auto px-4 py-4 grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)_360px]">
-        <section className="space-y-3">
-          <div className="bg-panel rounded-xl p-3 border border-gray-800">
-            <h2 className="text-xs font-bold text-gray-400 uppercase mb-2">Mapa competitivo</h2>
-            <p className="text-[11px] text-green-400 mb-2">🔴 {POOL_INFO}</p>
-            <label className="text-xs text-gray-400">Modo de juego</label>
-            <div className="flex flex-wrap gap-1 my-1">
-              {MODES.map((m) => <button key={m} onClick={() => changeMode(m)} className={`text-xs px-2 py-1 rounded ${mode === m ? 'bg-blue-600 font-bold' : 'bg-gray-800'}`}>{m}</button>)}
-            </div>
-            <label className="text-xs text-gray-400">Mapa ({mapsForMode.length})</label>
-            <input value={mapQuery} onChange={(e) => setMapQuery(e.target.value)} placeholder="🔍 Filtrar mapa…" className="w-full mt-1 mb-1 text-sm bg-gray-800 rounded px-2 py-1" />
-            <div className="grid gap-1">
-              {mapsForMode.map((m) => (
-                <button key={m.id} onClick={() => changeMap(m.id)} className={`text-left text-sm px-2 py-1.5 rounded flex items-center gap-2 ${mapId === m.id ? 'bg-blue-600/30 border border-blue-500' : 'bg-gray-800/60'}`}>
-                  {m.photo ? <MapImg src={m.photo} name={m.name} cls="w-12 h-8 object-cover rounded" /> : <span className="text-xl">{m.image}</span>}
-                  <span className="font-bold">{m.name}</span>
-                </button>
-              ))}
-            </div>
-            <div className="mt-2 text-xs bg-gray-900 rounded p-2">
-              {map.photo && <MapImg src={map.photo} name={map.name} cls="w-full h-28 object-cover rounded mb-2" />}
-              <div className="font-bold">{map.image} {map.name} <span className="text-gray-400">· {map.mode} · alcance {map.rangeBias}</span></div>
-              <p className="text-gray-300 mt-1">{map.description}</p>
-              <div className="mt-2 space-y-1">
-                <div>Muros <Bar v={map.walls * 20} c="#60a5fa" /></div>
-                <div>Arbustos <Bar v={map.bushes * 20} c="#4ade80" /></div>
-                <div>Apertura <Bar v={map.openness * 20} c="#fbbf24" /></div>
-                <div>Zonas control <Bar v={map.controlZones * 20} c="#f472b6" /></div>
+        {menuOpen && <div className="dd-menu-backdrop" onClick={() => setMenuOpen(false)} />}
+        <aside className={`dd-menu ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
+          <div className="dd-menu-header">
+            <div><h2>Brawl Draft Pro</h2><p>Acciones y ajustes</p></div>
+            <button className="dd-menu-close" onClick={() => setMenuOpen(false)} aria-label="Cerrar menú">✕</button>
+          </div>
+          <nav className="dd-menu-nav">
+            <button onClick={() => { setShowCollection(true); setMenuOpen(false); }}>🎒 Mi colección{ownCount('no') + ownCount('low') > 0 ? ` (${ownCount('no') + ownCount('low')})` : ''}</button>
+            <button onClick={() => { exportSummary(); setMenuOpen(false); }}>⧉ Exportar resumen</button>
+            <button onClick={() => setDraft(undo(draft))}>↩ Deshacer</button>
+            <button onClick={() => setDraft(redo(draft))}>↪ Rehacer</button>
+            <button onClick={() => { reset(); setMenuOpen(false); }}>⟲ Reiniciar draft</button>
+          </nav>
+          <p className="dd-menu-foot">{POOL_INFO} · Catálogo e imágenes: {DATA_SOURCE} · Ratings: estimación propia.</p>
+        </aside>
+
+        <section className="dd-panel dd-setup">
+          <h2 className="dd-h2">Draft Setup</h2>
+          <div className="dd-setup-grid">
+            <div className="dd-form-group">
+              <label className="dd-label">Modo de juego:</label>
+              <div className="dd-chips">
+                {MODES.map((m) => <button key={m} onClick={() => changeMode(m)} className={`dd-chip ${mode === m ? 'active' : ''}`}>{m}</button>)}
+              </div>
+              <label className="dd-label">Selecciona mapa: <span className="dd-muted">({mapsForMode.length})</span></label>
+              <div className="dd-input-wrap">
+                <input value={mapQuery} onChange={(e) => setMapQuery(e.target.value)} placeholder="Busca un mapa..." className="dd-input" />
+                <span className="dd-input-icon">🔍</span>
+              </div>
+              <div className="dd-options">
+                <div className="dd-options-head">{mode}</div>
+                {mapsForMode.map((m) => (
+                  <button key={m.id} onClick={() => changeMap(m.id)} className={`dd-option ${mapId === m.id ? 'selected' : ''}`}>
+                    {m.photo ? <MapImg src={m.photo} name={m.name} cls="dd-option-img" /> : <span className="text-xl">{m.image}</span>}
+                    <span>{m.name}</span>
+                  </button>
+                ))}
+                {mapsForMode.length === 0 && <div className="dd-option dd-muted">Sin resultados</div>}
               </div>
             </div>
-            <label className="text-xs text-gray-400 mt-2 block">Formato</label>
-            <select value={formatId} onChange={(e) => changeFormat(e.target.value)} className="w-full text-sm bg-gray-800 rounded px-2 py-1 mt-1">
-              {FORMATS.map((f) => <option key={f.id} value={f.id}>{f.name} — {f.description}</option>)}
-            </select>
-          </div>
 
-          <div className="bg-panel rounded-xl p-3 border border-gray-800">
-            <div className="flex items-center gap-2 mb-1">
-              <h2 className="text-xs font-bold text-gray-400 uppercase">Baneos sugeridos</h2>
-              <select value={banCount} onChange={(e) => setBanCount(Number(e.target.value))} className="ml-auto text-xs bg-gray-800 rounded px-1 py-0.5">
-                {[3, 4, 5].map((n) => <option key={n} value={n}>Top {n}</option>)}
+            <div className="dd-form-group">
+              <label className="dd-label">Formato:</label>
+              <select value={formatId} onChange={(e) => changeFormat(e.target.value)} className="dd-input">
+                {FORMATS.map((f) => <option key={f.id} value={f.id}>{f.name} — {f.description}</option>)}
               </select>
+              {format.freeOrder && <>
+                <label className="dd-label">¿Quién pickea primero?</label>
+                <div className="dd-side-select">
+                  <button disabled={picked.length > 0} title={picked.length > 0 ? 'Bloqueado: los picks ya empezaron' : undefined} className={`dd-side blue ${draft.coinWinner !== 'red' ? 'active' : ''}`} onClick={() => setDraft((d) => ({ ...d, coinWinner: 'blue' }))}><span>🔵</span>Nosotros</button>
+                  <button disabled={picked.length > 0} title={picked.length > 0 ? 'Bloqueado: los picks ya empezaron' : undefined} className={`dd-side red ${draft.coinWinner === 'red' ? 'active' : ''}`} onClick={() => setDraft((d) => ({ ...d, coinWinner: 'red' }))}><span>🔴</span>Ellos</button>
+                </div>
+              </>}
+              <p className="dd-hint">🔴 {POOL_INFO}</p>
             </div>
-            <div className="space-y-1.5">
-              {bans.map((b, i) => {
-                const bb = brawlerById(b.brawlerId);
-                return (
-                  <button key={b.brawlerId} onClick={() => { const e = expectedAction(draft); if (e.kind === 'ban') doBan(e.team, b.brawlerId); else if (e.kind === 'globalban') doGlobalBan(e.team, b.brawlerId); else doBan(draft.bansBlue.length <= draft.bansRed.length ? 'blue' : 'red', b.brawlerId); }} title="Tocar = banearlo al instante" className="w-full text-left text-xs bg-gray-900 rounded p-2 border border-gray-800 hover:border-red-500 flex gap-2 items-center">
-                    {bb && <BrawlerImg b={bb} size="text-xl w-10 h-10" />}
-                    <span><span className="font-bold text-red-300">#{i + 1} {bb?.name}</span> <span className="text-gray-400">({b.score})</span>
-                      <div className="text-gray-300 mt-0.5">{b.reason}</div></span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
 
-          <div className="bg-panel rounded-xl p-3 border border-gray-800">
-            <h2 className="text-xs font-bold text-gray-400 uppercase mb-1">Ponderación (ajustable)</h2>
-            {(Object.keys(weights) as (keyof Weights)[]).map((k) => (
-              <label key={k} className="flex items-center gap-2 text-xs py-0.5">
-                <span className="w-24 text-gray-300">{k}</span>
-                <input type="range" min={0} max={0.6} step={0.05} value={weights[k]} onChange={(e) => setWeights({ ...weights, [k]: Number(e.target.value) })} className="flex-1" />
-                <span className="w-10 text-right">{Math.round(weights[k] * 100)}%</span>
-              </label>
-            ))}
-            <p className="text-[11px] text-gray-500 mt-1">Pesos de demostración, no oficiales. Normalizado 0–100.</p>
+            <div className="dd-form-group">
+              <label className="dd-label">Mapa seleccionado:</label>
+              <div className="dd-map-detail">
+                {map.photo && <MapImg src={map.photo} name={map.name} cls="dd-map-detail-img" />}
+                <div className="dd-map-detail-name">{map.image} {map.name}</div>
+                <div className="dd-muted">{map.mode} · alcance {map.rangeBias}</div>
+                <p>{map.description}</p>
+                <div className="dd-bars">
+                  <div>Muros <Bar v={map.walls * 20} c="#3498db" /></div>
+                  <div>Arbustos <Bar v={map.bushes * 20} c="#2ecc71" /></div>
+                  <div>Apertura <Bar v={map.openness * 20} c="#f1c40f" /></div>
+                  <div>Zonas control <Bar v={map.controlZones * 20} c="#e84393" /></div>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 
-        <section className="space-y-3">
-          <div className="bg-panel rounded-xl p-3 border border-gray-800">
-            <div className="bg-blue-950/40 border border-blue-700/50 rounded-lg p-2 mb-2 text-xs text-blue-100">
-              {banPhase ? <>🚫 <b>1º registra los {format.bansPerTeam} bans por equipo (1 por jugador)</b> tocando los huecos 🚫 de cada equipo. <b>Los picks están bloqueados 🔒</b> hasta terminar.</>
-                : <>🎮 <b>2º marca los picks:</b> toca los picks de ELLOS (rojo) y los vuestros (azul). A la derecha te digo <b>qué pickear</b> al instante.</>}
-              {format.freeOrder && <span className="ml-2 text-gray-300">¿Quién pickea primero? <button className={`rounded px-1.5 py-0.5 ml-1 ${draft.coinWinner !== 'red' ? 'bg-blue-600 font-bold' : 'bg-gray-700'}`} onClick={() => setDraft((d) => ({ ...d, coinWinner: 'blue' }))}>Nosotros</button><button className={`rounded px-1.5 py-0.5 ml-1 ${draft.coinWinner === 'red' ? 'bg-red-600 font-bold' : 'bg-gray-700'}`} onClick={() => setDraft((d) => ({ ...d, coinWinner: 'red' }))}>Ellos</button></span>}
-            </div>
-            <div className="flex flex-wrap items-center gap-2 text-sm">
-              <span className={`px-2 py-1 rounded font-bold ${exp.kind === 'done' ? 'bg-green-700' : exp.kind === 'coin' ? 'bg-yellow-700' : exp.kind === 'globalban' ? 'bg-purple-700' : exp.kind === 'ban' ? 'bg-yellow-700' : 'bg-blue-700'}`}>
-                {centerBadge}
-              </span>
-              <span className="text-gray-400 text-xs">Picks {picked.length}/6 (AZUL {allies.length} – ROJO {enemies.length}) · Bans {draft.bansBlue.length + draft.bansRed.length}/{format.bansPerTeam * 2}{format.globalBansPerTeam > 0 && ` · Globales ${globalBanned.length}/${format.globalBansPerTeam * 2}`}</span>
-              <span className="text-gray-400 text-xs ml-auto">{map.name} · {mode}</span>
-            </div>
-            {(() => { const iss = pickOrderIssues(draft); return iss.length > 0 ? (
-              <div className="mt-2 text-xs bg-red-950/50 border border-red-600 rounded-lg px-2 py-1.5 text-red-200">
-                ⚠️ Orden de picks alterado (sorteo: {draft.coinWinner === 'red' ? 'empiezan ELLOS' : 'empezamos NOSOTROS'}): {iss.join(' ')} Toca el hueco correcto o usa deshacer.
-              </div>) : null; })()}
+        <section className="dd-panel dd-phase-panel">
+          <h2>Mapa: {map.name}</h2>
+          <h2>First Pick: {firstPicker}</h2>
+          <div className={`dd-turn ${exp.kind === 'done' ? 'done' : exp.kind === 'coin' ? 'coin' : exp.team === 'blue' ? 'blue' : 'red'}`}><span className="dd-live-dot" />{turnText}</div>
+          {msg && <div className="dd-msg">{msg}</div>}
+        </section>
 
-            {format.coinFlip && (exp.kind === 'coin' || draft.coinWinner) && (
-              <div className="mt-3 bg-gray-900 rounded-lg p-3 text-center border border-yellow-700/50">
-                {!draft.coinWinner ? (
-                  <>
-                    <div className="text-4xl mb-1">{flipping ? (coinFace === 'blue' ? '🔵' : '🔴') : '🪙'}</div>
-                    <p className="text-sm font-bold mb-2">{flipping ? 'Girando…' : 'Si sale azul, comenzamos pickeando nosotros; si sale roja, comienzan ellos.'}</p>
-                    <div className="flex justify-center gap-2">
-                      <button onClick={runCoinFlip} disabled={flipping} className="bg-yellow-600 rounded px-4 py-1.5 font-bold text-sm disabled:opacity-50">{flipping ? 'Girando…' : '🪙 Lanzar moneda'}</button>
-                      <button onClick={() => setDraft((d) => flipCoin(d, 'blue'))} className="bg-blue-600 rounded px-2 py-1.5 text-xs">Empezamos nosotros</button>
-                      <button onClick={() => setDraft((d) => flipCoin(d, 'red'))} className="bg-red-600 rounded px-2 py-1.5 text-xs">Empiezan ellos</button>
-                    </div>
-                  </>
-                ) : (
-                  <p className="text-sm">🪙 Sorteo: <b className={draft.coinWinner === 'blue' ? 'text-blue-300' : 'text-red-300'}>{draft.coinWinner === 'blue' ? 'AZUL — comenzamos nosotros' : 'ROJO — comienzan ellos'}</b>
-                    <button className="ml-2 text-xs bg-gray-700 rounded px-2 py-0.5" onClick={() => setDraft((d) => { const n = structuredClone(d); n.coinWinner = null; n.history = n.history.filter((h) => h.kind !== 'coin'); n.phase = 'coin'; return n; })}>Repetir sorteo</button></p>
-                )}
-              </div>
-            )}
-
-            {(() => {
-              const job = ourPickJob(draft.picksBlue);
-              const myTurn = !done && mySlot !== null && allies.length === mySlot;
-              return (
-                <div className={`mt-2 text-xs rounded-lg px-2 py-1.5 border ${myTurn ? 'bg-yellow-500/15 border-yellow-400' : 'bg-gray-900 border-gray-700'}`}>
-                  {!done && job !== 'DONE' && (
-                    <div>📌 Nuestro pick Nº {allies.length + 1} — {job === 'FP' ? <><b>🛡️ FIRST PICK:</b> asegura poder de mapa difícil de counterear (nada de especialistas).</> : job === 'MID' ? <><b>🧩 MID:</b> completa roles y sinergia con tu {allies.map((a) => brawlerById(a)?.name).join(' + ') || 'FP'}.</> : <><b>🎯 LAST PICK:</b> counter duro a lo suyo, es tu asiento de counter.</>}</div>
-                  )}
-                  <div className="mt-1 flex items-center gap-1 flex-wrap">
-                    <span className="text-gray-300">¿Qué pick eres tú?</span>
-                    {(['FP', 'MID', 'LAST'] as const).map((j, idx) => (
-                      <button key={j} onClick={() => setMySlot(mySlot === idx ? null : idx)} className={`rounded px-1.5 py-0.5 font-bold ${mySlot === idx ? 'bg-yellow-500 text-black' : 'bg-gray-700'}`}>{j}</button>
-                    ))}
-                    {mySlot !== null && <span className="text-yellow-300 font-bold">🧍 Eres el {(['FP', 'MID', 'LAST'] as const)[mySlot]}{myTurn && recs[0] ? ` — ¡TE TOCA A TI! Elige ${brawlerById(recs[0].brawlerId)?.name} (${recs[0].score})` : myTurn ? ' — ¡TE TOCA A TI!' : ''}</span>}
-                  </div>
-                </div>
-              );
-            })()}
-            <div className="grid md:grid-cols-2 gap-3 mt-3">
+        <main className="dd-main">
+          <section className="dd-draft-col">
+            <div className="dd-board">
               {renderTeam('blue')}
+              <div className="dd-map-panel">
+                <div className="dd-phase-indicator">
+                  <h2>{centerBadge}</h2>
+                  <div className="dd-phase-sub">Picks {picked.length}/6 · Bans {draft.bansBlue.length + draft.bansRed.length}/{format.bansPerTeam * 2}{format.globalBansPerTeam > 0 && ` · Globales ${globalBanned.length}/${format.globalBansPerTeam * 2}`}</div>
+                </div>
+                <div className="dd-map-image">
+                  {map.photo ? <MapImg src={map.photo} name={map.name} cls="dd-map-img" /> : <span className="dd-map-emoji">{map.image}</span>}
+                </div>
+                <div className="dd-map-caption">{map.mode} · Alcance {map.rangeBias}</div>
+                {(() => { const iss = pickOrderIssues(draft); return iss.length > 0 ? (
+                  <div className="dd-warn">
+                    ⚠️ Orden de picks alterado (sorteo: {draft.coinWinner === 'red' ? 'empiezan ELLOS' : 'empezamos NOSOTROS'}): {iss.join(' ')} Toca el hueco correcto o usa deshacer.
+                  </div>) : null; })()}
+              </div>
               {renderTeam('red')}
-            </div>            <div className="mt-3 bg-gray-900 rounded-lg p-2">
-              <div className="text-[11px] text-gray-400 mb-1">👆 <b>Un toque:</b> toca un brawler y se aplica al instante en <b>{action === 'pickBlue' ? 'Pick Azul' : action === 'pickRed' ? 'Pick Rojo' : action === 'banBlue' ? 'Ban Azul' : action === 'banRed' ? 'Ban Rojo' : action === 'globalBlue' ? '🌍 Global Azul' : '🌍 Global Rojo'}</b> (avanza solo al siguiente paso).</div>
-              <div className="flex flex-wrap gap-1">
+            </div>
+
+            <div className="dd-panel dd-pool">
+              <h3 className="dd-h3">Brawlers</h3>
+              <p className="dd-subtitle">👆 Un toque: se aplica al instante en <b>{actionLabel}</b> y avanza solo al siguiente paso.</p>
+              <div className="dd-filters">
+                <div className="dd-input-wrap grow">
+                  <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nombre del brawler..." className="dd-input" />
+                  <span className="dd-input-icon">🔍</span>
+                </div>
+                <select value={roleF} onChange={(e) => setRoleF(e.target.value as Role | 'Todos')} className="dd-input dd-select-sm">
+                  {['Todos', ...ROLES].map((r) => <option key={r}>{r}</option>)}
+                </select>
+                <select value={rarityF} onChange={(e) => setRarityF(e.target.value)} className="dd-input dd-select-sm">
+                  {RARITIES.map((r) => <option key={r}>{r}</option>)}
+                </select>
+                <span className="dd-muted">{grid.length}/{ALL.length}</span>
+              </div>
+              <div className="dd-brawler-grid scroll-thin">
+                {grid.map((b) => {
+                  const out = unavailable(b.id);
+                  const rec = recs.find((r) => r.brawlerId === b.id);
+                  return (
+                    <button key={b.id} disabled={out} onClick={() => applyAction(b.id)}
+                      className={`dd-brawler ${out ? 'out' : ''}`} title={out ? (banned.includes(b.id) ? 'Baneado' : 'Elegido') : `Tocar = ${action === 'pickBlue' ? 'pick azul' : action === 'pickRed' ? 'pick rojo' : action === 'banBlue' ? 'ban azul' : action === 'banRed' ? 'ban rojo' : 'ban global'} instantáneo`}>
+                      <div className="dd-brawler-img"><BrawlerImg b={b} size="w-full h-full" />
+                        {rec && !out && <span className={`dd-score ${rec.score >= 70 ? 'good' : rec.score >= 50 ? 'mid' : 'bad'}`}>{rec.score}</span>}
+                      </div>
+                      {enemies.length > 0 && (
+                        <div className="dd-tags">
+                          {countersVs(b.id, enemies).length > 0 && <span className="dd-tag good">🎯x{countersVs(b.id, enemies).length}</span>}
+                          {enemies.some((e) => matchupScore(e, b.id).score >= 75) && <span className="dd-tag bad">⚠️</span>}
+                        </div>
+                      )}
+                      <div className="dd-brawler-name">{b.name}{!b.curated && <span className="dd-muted" title="Perfil estimado por clase">~</span>}{(ownership[b.id] ?? 'ok') !== 'ok' && <span title={ownership[b.id] === 'no' ? 'No lo tienes: fuera de tus recomendaciones' : 'Nivel bajo: -15 puntos'}>{ownership[b.id] === 'no' ? '🚫' : '⚠️'}</span>}</div>
+                      <div className="dd-brawler-meta">{b.roles[0]} · {b.rarity}</div>
+                      {(() => { const mt = metaOf(b.id); return (mt.tier || mt.buffy) ? <div className={`dd-tier ${mt.tier === 'S' ? 's' : mt.tier === 'W' ? 'w' : 'a'}`}>{mt.buffy ? '🔥' : ''}{mt.tier === 'S' ? 'META S' : mt.tier === 'A' ? 'A' : mt.tier === 'W' ? 'flojo' : ''}</div> : null; })()}
+                      {out && <div className="dd-out-label">{banned.includes(b.id) ? 'BANEADO' : 'ELEGIDO'}</div>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="dd-mini-grid">
+              <div className="dd-panel dd-mini">
+                <h3>Comparar (⭐ en recs)</h3>
+                {compare.length === 0 && <p className="dd-muted">Añade brawlers con ⭐ en recomendaciones.</p>}
+                {compare.map((id) => { const b = brawlerById(id)!; return <div key={id} className="dd-mini-row"><BrawlerImg b={b} size="w-7 h-7" /> <span><b>{b.name}</b> · DMG {b.damage} MOV {b.mobility} UTI {b.utility}</span> <button className="dd-x" onClick={() => setCompare(compare.filter((c) => c !== id))}>✕</button></div>; })}
+              </div>
+              <div className="dd-panel dd-mini">
+                <h3>Composiciones favoritas</h3>
+                <button className="dd-btn small gray" onClick={() => { if (allies.length === 3) setFavorites([allies, ...favorites].slice(0, 10)); else setMsg('Necesitas 3 picks azules para guardar.'); }}>💾 Guardar azul actual</button>
+                {favorites.map((f, i) => <div key={i} className="dd-mini-row">{f.map((x) => brawlerById(x)?.name).join(' + ')}</div>)}{favorites.length === 0 && <p className="dd-muted">Sin favoritas.</p>}
+              </div>
+              <div className="dd-panel dd-mini">
+                <h3>Historial de drafts</h3>
+                <div className="dd-history scroll-thin">{history.map((h, i) => <div key={i} className="dd-mini-row">{h}</div>)}{history.length === 0 && <p className="dd-muted">Se guarda al completar 6 picks.</p>}</div>
+              </div>
+            </div>
+          </section>
+
+          <aside className="dd-suggest-col">
+            <div className="dd-panel dd-current">
+              <div className="dd-prompt-line">
+                <h2>{centerBadge}</h2>
+                <div className="dd-toolbar">
+                  <button className="dd-btn-icon gray" title="Reiniciar" onClick={reset}>⟲</button>
+                  <button className="dd-btn-icon teal" title="Exportar resumen" onClick={exportSummary}>⧉</button>
+                  <button className="dd-btn-icon blue" title="Rehacer" onClick={() => setDraft(redo(draft))}>↪</button>
+                  <button className="dd-btn-icon blue" title="Deshacer" onClick={() => setDraft(undo(draft))}>↩</button>
+                </div>
+              </div>
+              <p className="dd-instr">
+                {banPhase ? <>🚫 <b>1º registra los {format.bansPerTeam} bans por equipo (1 por jugador)</b> tocando los huecos 🚫 de cada equipo. <b>Los picks están bloqueados 🔒</b> hasta terminar.</>
+                  : <>🎮 <b>2º marca los picks:</b> toca los picks de ELLOS (rojo) y los vuestros (azul). Aquí te digo <b>qué pickear</b> al instante.</>}
+              </p>
+              <div className="dd-chips center">
                 {(Object.entries({
                   pickBlue: `🎯 Pick Azul (${draft.picksBlue.filter(Boolean).length}/3)`,
                   pickRed: `🎯 Pick Rojo (${draft.picksRed.filter(Boolean).length}/3)`,
                   banBlue: `🚫 Ban Azul (${draft.bansBlue.length}/${format.bansPerTeam})`,
                   banRed: `🚫 Ban Rojo (${draft.bansRed.length}/${format.bansPerTeam})`
                 }) as [Action, string][]).map(([a, label]) => (
-                  <button key={a} onClick={() => setAction(a)} className={`text-xs rounded px-2 py-1 font-bold ${action === a ? (a.startsWith('pick') ? (a === 'pickBlue' ? 'bg-blue-500' : 'bg-red-500') : 'bg-yellow-600') : 'bg-gray-700 opacity-70'}`}>{label}</button>
+                  <button key={a} onClick={() => setAction(a)} disabled={pickChipLocked(a)} title={pickChipLocked(a) ? (picksLocked ? '🔒 Primero termina los baneos' : `⏳ Está eligiendo el equipo ${exp.kind === 'pick' && exp.team === 'blue' ? 'AZUL' : 'ROJO'}`) : undefined} className={`dd-chip ${action === a ? (a === 'pickBlue' || a === 'banBlue' ? 'active-blue' : 'active-red') : ''}`}>{label}</button>
                 ))}
                 {format.globalBansPerTeam > 0 && (['globalBlue', 'globalRed'] as Action[]).map((a) => (
-                  <button key={a} onClick={() => setAction(a)} className={`text-xs rounded px-2 py-1 font-bold ${action === a ? 'bg-purple-500' : 'bg-gray-700 opacity-70'}`}>{a === 'globalBlue' ? '🌍 Global Azul' : '🌍 Global Rojo'}</button>
+                  <button key={a} onClick={() => setAction(a)} className={`dd-chip ${action === a ? 'active-purple' : ''}`}>{a === 'globalBlue' ? '🌍 Global Azul' : '🌍 Global Rojo'}</button>
                 ))}
               </div>
-            </div>
-            <div className="mt-2 flex flex-wrap gap-2 text-xs">
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="🔍 Buscar brawler…" className="bg-gray-800 rounded px-2 py-1 flex-1 min-w-[140px]" />
-              <select value={roleF} onChange={(e) => setRoleF(e.target.value as Role | 'Todos')} className="bg-gray-800 rounded px-2 py-1">
-                {['Todos', ...ROLES].map((r) => <option key={r}>{r}</option>)}
-              </select>
-              <select value={rarityF} onChange={(e) => setRarityF(e.target.value)} className="bg-gray-800 rounded px-2 py-1">
-                {RARITIES.map((r) => <option key={r}>{r}</option>)}
-              </select>
-              <span className="text-gray-400 self-center">{grid.length}/{ALL.length} brawlers</span>
-            </div>
-            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-2 max-h-[420px] overflow-y-auto scroll-thin pr-1">
-              {grid.map((b) => {
-                const out = banned.includes(b.id) || picked.includes(b.id);
-                const rec = recs.find((r) => r.brawlerId === b.id);
-                return (
-                  <button key={b.id} disabled={out} onClick={() => applyAction(b.id)}
-                    className={`rounded-lg p-1.5 border text-center border-gray-700 bg-gray-900 ${out ? 'opacity-30' : 'hover:border-white/40 active:scale-95'}`} title={out ? (banned.includes(b.id) ? 'Baneado' : 'Elegido') : `Tocar = ${action === 'pickBlue' ? 'pick azul' : action === 'pickRed' ? 'pick rojo' : action === 'banBlue' ? 'ban azul' : action === 'banRed' ? 'ban rojo' : 'ban global'} instantáneo`}>
-                    <BrawlerImg b={b} size="text-2xl w-12 h-12" />
-                    {enemies.length > 0 && (
-                      <div className="flex justify-center gap-1 h-4">
-                        {countersVs(b.id, enemies).length > 0 && <span className="text-[10px] bg-green-700 rounded px-1 font-bold">🎯x{countersVs(b.id, enemies).length}</span>}
-                        {enemies.some((e) => matchupScore(e, b.id).score >= 75) && <span className="text-[10px] bg-red-700 rounded px-1 font-bold">⚠️</span>}
+
+              {format.coinFlip && (exp.kind === 'coin' || draft.coinWinner) && (
+                <div className="dd-coin">
+                  {!draft.coinWinner ? (
+                    <>
+                      <div className="dd-coin-face">{flipping ? (coinFace === 'blue' ? '🔵' : '🔴') : '🪙'}</div>
+                      <p>{flipping ? 'Girando…' : 'Si sale azul, comenzamos pickeando nosotros; si sale roja, comienzan ellos.'}</p>
+                      <div className="dd-coin-actions">
+                        <button onClick={runCoinFlip} disabled={flipping} className="dd-btn yellow">{flipping ? 'Girando…' : '🪙 Lanzar moneda'}</button>
+                        <button onClick={() => setDraft((d) => flipCoin(d, 'blue'))} className="dd-btn small blue">Empezamos nosotros</button>
+                        <button onClick={() => setDraft((d) => flipCoin(d, 'red'))} className="dd-btn small red">Empiezan ellos</button>
                       </div>
+                    </>
+                  ) : (
+                    <p>🪙 Sorteo: <b className={draft.coinWinner === 'blue' ? 'dd-c-blue' : 'dd-c-red'}>{draft.coinWinner === 'blue' ? 'AZUL — comenzamos nosotros' : 'ROJO — comienzan ellos'}</b>
+                      <button className="dd-btn small gray ml-2" onClick={() => setDraft((d) => { const n = structuredClone(d); n.coinWinner = null; n.history = n.history.filter((h) => h.kind !== 'coin'); n.phase = 'coin'; return n; })}>Repetir sorteo</button></p>
+                  )}
+                </div>
+              )}
+
+              {(() => {
+                const job = ourPickJob(draft.picksBlue);
+                const myTurn = !done && mySlot !== null && allies.length === mySlot;
+                return (
+                  <div className={`dd-myslot ${myTurn ? 'hot' : ''}`}>
+                    {!done && job !== 'DONE' && (
+                      <div>📌 Nuestro pick Nº {allies.length + 1} — {job === 'FP' ? <><b>🛡️ FIRST PICK:</b> asegura poder de mapa difícil de counterear (nada de especialistas).</> : job === 'MID' ? <><b>🧩 MID:</b> completa roles y sinergia con tu {allies.map((a) => brawlerById(a)?.name).join(' + ') || 'FP'}.</> : <><b>🎯 LAST PICK:</b> counter duro a lo suyo, es tu asiento de counter.</>}</div>
                     )}
-                    <div className="text-xs font-bold leading-tight flex items-center justify-center gap-1">{b.name}{!b.curated && <span className="text-[9px] text-gray-500" title="Perfil estimado por clase">~</span>}{(ownership[b.id] ?? 'ok') !== 'ok' && <span className="text-[10px]" title={ownership[b.id] === 'no' ? 'No lo tienes: fuera de tus recomendaciones' : 'Nivel bajo: -15 puntos'}>{ownership[b.id] === 'no' ? '🚫' : '⚠️'}</span>}</div>
-                    <div className="text-[10px] text-gray-400">{b.roles[0]} · {b.rarity}</div>
-                    {(() => { const mt = metaOf(b.id); return (mt.tier || mt.buffy) ? <div className={`text-[10px] font-black ${mt.tier === 'S' ? 'text-amber-300' : mt.tier === 'W' ? 'text-gray-500' : 'text-violet-300'}`}>{mt.buffy ? '🔥' : ''}{mt.tier === 'S' ? 'META S' : mt.tier === 'A' ? 'A' : mt.tier === 'W' ? 'flojo' : ''}</div> : null; })()}
-                    {rec && !out && <div className={`text-[11px] font-black ${rec.score >= 70 ? 'text-green-400' : rec.score >= 50 ? 'text-yellow-300' : 'text-red-400'}`}>{rec.score}</div>}
-                    {out && <div className="text-[10px] text-gray-500">{banned.includes(b.id) ? 'BANEADO' : 'ELEGIDO'}</div>}
-                  </button>
+                    <div className="dd-myslot-row">
+                      <span>¿Qué pick eres tú?</span>
+                      {(['FP', 'MID', 'LAST'] as const).map((j, idx) => (
+                        <button key={j} onClick={() => setMySlot(mySlot === idx ? null : idx)} className={`dd-chip small ${mySlot === idx ? 'active' : ''}`}>{j}</button>
+                      ))}
+                      {mySlot !== null && <span className="dd-c-yellow">🧍 Eres el {(['FP', 'MID', 'LAST'] as const)[mySlot]}{myTurn && recs[0] ? ` — ¡TE TOCA A TI! Elige ${brawlerById(recs[0].brawlerId)?.name} (${recs[0].score})` : myTurn ? ' — ¡TE TOCA A TI!' : ''}</span>}
+                    </div>
+                  </div>
                 );
-              })}
+              })()}
             </div>
-          </div>
 
-          <div className="grid md:grid-cols-3 gap-3">
-            <div className="bg-panel rounded-xl p-3 border border-gray-800">
-              <h3 className="text-xs font-bold text-gray-400 uppercase">Comparar (clic en recs ⭐)</h3>
-              {compare.length === 0 && <p className="text-xs text-gray-500 mt-1">Añade brawlers con ⭐ en recomendaciones.</p>}
-              {compare.map((id) => { const b = brawlerById(id)!; return <div key={id} className="text-xs mt-1 bg-gray-900 rounded p-1.5 flex items-center gap-1"><BrawlerImg b={b} size="w-7 h-7" /> <span><b>{b.name}</b> · DMG {b.damage} MOV {b.mobility} UTI {b.utility}</span> <button className="ml-auto text-red-400" onClick={() => setCompare(compare.filter((c) => c !== id))}>✕</button></div>; })}
-            </div>
-            <div className="bg-panel rounded-xl p-3 border border-gray-800">
-              <h3 className="text-xs font-bold text-gray-400 uppercase">Composiciones favoritas</h3>
-              <button className="text-xs bg-gray-800 rounded px-2 py-1 mt-1" onClick={() => { if (allies.length === 3) setFavorites([allies, ...favorites].slice(0, 10)); else setMsg('Necesitas 3 picks azules para guardar.'); }}>💾 Guardar azul actual</button>
-              <div className="mt-1 space-y-1">{favorites.map((f, i) => <div key={i} className="text-xs bg-gray-900 rounded p-1.5">{f.map((x) => brawlerById(x)?.name).join(' + ')}</div>)}{favorites.length === 0 && <p className="text-xs text-gray-500">Sin favoritas.</p>}</div>
-            </div>
-            <div className="bg-panel rounded-xl p-3 border border-gray-800">
-              <h3 className="text-xs font-bold text-gray-400 uppercase">Historial de drafts</h3>
-              <div className="mt-1 space-y-1 max-h-[120px] overflow-y-auto scroll-thin">{history.map((h, i) => <div key={i} className="text-[11px] bg-gray-900 rounded p-1.5 text-gray-300">{h}</div>)}{history.length === 0 && <p className="text-xs text-gray-500">Se guarda al completar 6 picks.</p>}</div>
-            </div>
-          </div>
-        </section>
-
-        <aside className="space-y-3">
-          {done && vd ? (
-            <div className="bg-panel rounded-xl p-3 border border-yellow-500/70">
-              <h2 className="text-xs font-bold text-yellow-300 uppercase">🔒 Veredicto final (sin cambios)</h2>
-              <div className="grid grid-cols-2 gap-2 mt-1 text-center">
-                <div className="bg-blue-950/50 rounded p-1.5"><div className="text-[11px] text-blue-300 font-bold">NOSOTROS {vd.blue.grade}</div><div className="text-[11px] text-gray-300">Mapa {vd.blue.map} · Duelos {vd.blue.counter}</div></div>
-                <div className="bg-red-950/50 rounded p-1.5"><div className="text-[11px] text-red-300 font-bold">ELLOS {vd.red.grade}</div><div className="text-[11px] text-gray-300">Mapa {vd.red.map} · Duelos {vd.red.counter}</div></div>
+            {done && vd ? (
+              <div className="dd-engine verdict">
+                <h3>🔒 Veredicto final (sin cambios)</h3>
+                <div className="dd-verdict-grid">
+                  <div className="blue"><div className="dd-c-blue">NOSOTROS {vd.blue.grade}</div><div>Mapa {vd.blue.map} · Duelos {vd.blue.counter}</div></div>
+                  <div className="red"><div className="dd-c-red">ELLOS {vd.red.grade}</div><div>Mapa {vd.red.map} · Duelos {vd.red.counter}</div></div>
+                </div>
+                <p className="dd-strong">{vd.edge === 'blue' ? '✅ Ventaja nuestra: ejecuta tu plan.' : vd.edge === 'red' ? '⚠️ Ventaja rival: juega perfecto y evita sus counters.' : '➖ Draft parejo: lo decide la ejecución.'}</p>
+                <p>💡 {vd.tip}</p>
               </div>
-              <p className="text-[11px] mt-1.5 font-bold text-white">{vd.edge === 'blue' ? '✅ Ventaja nuestra: ejecuta tu plan.' : vd.edge === 'red' ? '⚠️ Ventaja rival: juega perfecto y evita sus counters.' : '➖ Draft parejo: lo decide la ejecución.'}</p>
-              <p className="text-[11px] mt-1 text-gray-300">💡 {vd.tip}</p>
-            </div>
-          ) : (
-          <div className="bg-panel rounded-xl p-3 border border-green-700/60">
-            <h2 className="text-xs font-bold text-green-300 uppercase">🎯 Tu mejor pick ahora{enemies.length === 0 ? ' (a ciegas: prioriza pick seguro 🛡️)' : ''}</h2>
-            {recs[0] && (() => { const b = brawlerById(recs[0].brawlerId)!; return (
-              <button className="w-full mt-1 rounded-lg border border-green-500 bg-green-500/10 p-2 flex items-center gap-2" title="Tocar = pickearlo para el azul al instante" onClick={() => doPick('blue', recs[0].brawlerId)}>
-                <BrawlerImg b={b} size="text-3xl w-14 h-14" />
-                <span className="text-left"><span className="text-lg font-black">{b.name} <span className="text-green-400">{recs[0].score}</span></span>
-                <span className="block text-[11px] text-gray-300">{recs[0].explanation}</span></span>
-              </button>); })()}
-              {recs[0] && (() => { const id = recs[0].brawlerId; const st = ownership[id] ?? 'ok'; return (
-                <div className="flex gap-1 mt-1.5">
-                  {st === 'ok' ? <>
-                    <button className="flex-1 text-[11px] bg-gray-800 rounded px-2 py-1" onClick={() => setOwn(id, 'no')}>❌ No lo tengo</button>
-                    <button className="flex-1 text-[11px] bg-gray-800 rounded px-2 py-1" onClick={() => setOwn(id, 'low')}>⚠️ Nivel bajo</button>
-                  </> : <button className="flex-1 text-[11px] bg-green-900 rounded px-2 py-1" onClick={() => setOwn(id, 'ok')}>↩ {st === 'no' ? 'Ya lo tengo' : 'Ya está maxeado'} — volver a incluir</button>}
-                </div>); })()}
-          </div>
-          )}
-          {threats.length > 0 && (
-            <div className="bg-panel rounded-xl p-3 border border-red-600/70">
-              <h2 className="text-xs font-bold text-red-300 uppercase">⚠️ Nos counterean — responde ya</h2>
-              <div className="space-y-1.5 mt-1">
+            ) : (
+              <div className="dd-engine">
+                <h3>🎯 Tu mejor pick ahora{enemies.length === 0 ? <span className="dd-muted"> (a ciegas: prioriza pick seguro 🛡️)</span> : ''}</h3>
+                {recs[0] && (() => { const b = brawlerById(recs[0].brawlerId)!; return (
+                  <button className="dd-best" title="Tocar = pickearlo para el azul al instante" onClick={() => doPick('blue', recs[0].brawlerId)}>
+                    <div className="dd-best-img"><BrawlerImg b={b} size="w-full h-full" /></div>
+                    <span className="dd-best-text"><span className="dd-best-name">{b.name} <span className="dd-c-green">{recs[0].score}</span></span>
+                      <span className="dd-best-expl">{recs[0].explanation}</span></span>
+                  </button>); })()}
+                {recs[0] && (() => { const id = recs[0].brawlerId; const st = ownership[id] ?? 'ok'; return (
+                  <div className="dd-own-row">
+                    {st === 'ok' ? <>
+                      <button className="dd-btn small gray" onClick={() => setOwn(id, 'no')}>❌ No lo tengo</button>
+                      <button className="dd-btn small gray" onClick={() => setOwn(id, 'low')}>⚠️ Nivel bajo</button>
+                    </> : <button className="dd-btn small green" onClick={() => setOwn(id, 'ok')}>↩ {st === 'no' ? 'Ya lo tengo' : 'Ya está maxeado'} — volver a incluir</button>}
+                  </div>); })()}
+              </div>
+            )}
+
+            {threats.length > 0 && (
+              <div className="dd-panel dd-threats">
+                <h3 className="dd-h3 red">⚠️ Nos counterean — responde ya</h3>
                 {threats.slice(0, 3).map((t, i) => {
                   const resp = recs.find((r) => countersVs(r.brawlerId, [t.enemy]).length > 0);
                   const rb = resp ? brawlerById(resp.brawlerId) : null;
                   return (
-                    <div key={i} className="text-[11px] bg-red-950/40 rounded p-1.5 text-gray-200">
+                    <div key={i} className="dd-threat">
                       <b>{brawlerById(t.enemy)?.name}</b> counterea a tu <b>{brawlerById(t.ally)?.name}</b> ({t.score}).
-                      <div className="text-gray-400">{t.note}</div>
-                      {rb && resp && !done && <button className="mt-1 text-green-300 font-bold" onClick={() => doPick('blue', resp.brawlerId)}>↩ Responde con {rb.name} ({resp.score}) — tócalo para pickearlo</button>}
-                      {done && <div className="mt-1 text-gray-400">🔒 Draft cerrado: ya no puedes responder. Evita ese duelo en partida.</div>}
+                      <div className="dd-muted">{t.note}</div>
+                      {rb && resp && !done && <button className="dd-link" onClick={() => doPick('blue', resp.brawlerId)}>↩ Responde con {rb.name} ({resp.score}) — tócalo para pickearlo</button>}
+                      {done && <div className="dd-muted">🔒 Draft cerrado: ya no puedes responder. Evita ese duelo en partida.</div>}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            <div className="dd-panel dd-recs">
+              <h3 className="dd-h3">Recomendaciones</h3>
+              <p className="dd-subtitle">Auto-actualizado · estimación estratégica</p>
+              <div className="dd-rec-grid">
+                {recs.slice(0, 9).map((r, i) => {
+                  const b = brawlerById(r.brawlerId)!;
+                  const open = expanded === r.brawlerId;
+                  return (
+                    <div key={r.brawlerId} className={`dd-rec-card ${i === 0 ? 'top' : ''} ${open ? 'open' : ''}`} onClick={() => setExpanded(open ? null : r.brawlerId)}>
+                      <div className="dd-rec-head">
+                        <div className="dd-rec-img"><BrawlerImg b={b} size="w-full h-full" /></div>
+                        <div className="min-w-0">
+                          <h4>#{i + 1} {b.name}</h4>
+                          <div className={`dd-rec-score ${r.score >= 70 ? 'good' : r.score >= 50 ? 'mid' : 'bad'}`}>{r.score}</div>
+                        </div>
+                        <button className="dd-star" title="Comparar" onClick={(e) => { e.stopPropagation(); setCompare([...new Set([...compare, r.brawlerId])].slice(0, 3)); }}>⭐</button>
+                      </div>
+                      <div className="dd-rec-stats">{b.roles.join(' · ')}{r.safeBlind && enemies.length < 3 ? ' · 🛡️ seguro' : ''}{r.multiCounter >= 1 ? ` · 🎯 x${r.multiCounter}` : ''}<br /><small>riesgo {r.counterRisk}</small></div>
+                      <Bar v={r.score} c={r.score >= 70 ? '#2ecc71' : r.score >= 50 ? '#f1c40f' : '#e74c3c'} />
+                      {open && (
+                        <div className="dd-rec-detail" onClick={(e) => e.stopPropagation()}>
+                          <p>💡 {r.explanation}</p>
+                          {metaLabel(r.brawlerId) && <p>📊 Meta actual: <b>{metaLabel(r.brawlerId)}</b></p>}
+                          {(() => { const cs = countersVs(r.brawlerId, enemies); return cs.length > 0 ? <p>🎯 Countera a: <b>{cs.map((c) => brawlerById(c)?.name).join(', ')}</b></p> : null; })()}
+                          <div className="dd-rec-parts">
+                            <span>🗺 Mapa/modo {r.parts.mapMode}</span><span>⚔ Matchup {r.parts.matchup}</span>
+                            <span>🤝 Sinergia {r.parts.synergy}</span><span>🏆 Comp. {r.parts.competitive}</span>
+                          </div>
+                          <p>⚠ Debilidades: {r.weaknesses.join('; ')}</p>
+                          <p>🔁 Alternativas: {r.alternatives.map((a) => brawlerById(a)?.name).join(', ') || '—'}</p>
+                          {(() => { const st = ownership[r.brawlerId] ?? 'ok'; return (
+                            <p className="dd-own-row">🎒 Mío: <b>{st === 'ok' ? 'listo ✅' : st === 'low' ? 'nivel bajo ⚠️' : 'no lo tengo 🚫'}</b>
+                              {st === 'ok' ? <><button className="dd-btn small gray" onClick={() => setOwn(r.brawlerId, 'no')}>No lo tengo</button><button className="dd-btn small gray" onClick={() => setOwn(r.brawlerId, 'low')}>Nivel bajo</button></>
+                              : <button className="dd-btn small green" onClick={() => setOwn(r.brawlerId, 'ok')}>↩ Incluir</button>}</p>); })()}
+                          {enemies.map((e) => { const m = matchupScore(r.brawlerId, e); return <p key={e}>vs {brawlerById(e)?.name}: <b>{m.score}</b> — {m.note} (conf. {m.confidence}{m.mapDependent ? ', depende del mapa' : ''})</p>; })}
+                          <button className="dd-btn small blue" onClick={() => doPick('blue', r.brawlerId)}>Pick azul</button>
+                        </div>
+                      )}
                     </div>
                   );
                 })}
               </div>
             </div>
-          )}
-          <div className="bg-panel rounded-xl p-3 border border-gray-800">
-            <h2 className="text-xs font-bold text-gray-400 uppercase">Recomendaciones inteligentes</h2>
-            <p className="text-[11px] text-gray-500">Auto-actualizado · estimación estratégica</p>
-            <div className="space-y-2 mt-2 max-h-[560px] overflow-y-auto scroll-thin pr-1">
-              {recs.slice(0, 8).map((r, i) => {
-                const b = brawlerById(r.brawlerId)!;
-                const open = expanded === r.brawlerId;
-                return (
-                  <div key={r.brawlerId} className={`rounded-lg border p-2 ${i === 0 ? 'border-green-500 bg-green-500/5' : 'border-gray-700 bg-gray-900'}`}>
-                    <div className="flex items-center gap-2">
-                      <BrawlerImg b={b} size="text-2xl w-11 h-11" />
-                      <div className="flex-1">
-                        <div className="text-sm font-bold">#{i + 1} {b.name} <span className={`ml-1 ${r.score >= 70 ? 'text-green-400' : r.score >= 50 ? 'text-yellow-300' : 'text-red-400'}`}>{r.score}</span></div>
-                        <div className="text-[11px] text-gray-400">{b.roles.join(' · ')} {r.safeBlind && enemies.length < 3 ? '· 🛡️ seguro' : ''}{r.multiCounter >= 1 ? ` · 🎯 counter x${r.multiCounter}` : ''} · riesgo {r.counterRisk}</div>
-                      </div>
-                      <button className="text-xs" title="Comparar" onClick={() => setCompare([...new Set([...compare, r.brawlerId])].slice(0, 3))}>⭐</button>
-                      <button className="text-xs bg-gray-800 rounded px-1.5 py-0.5" onClick={() => setExpanded(open ? null : r.brawlerId)}>{open ? '▲' : '▼'}</button>
-                    </div>
-                    <Bar v={r.score} c={r.score >= 70 ? '#22c55e' : r.score >= 50 ? '#eab308' : '#ef4444'} />
-                    {open && (
-                      <div className="text-[11px] mt-1.5 space-y-1 text-gray-300">
-                        <p>💡 {r.explanation}</p>
-                        {metaLabel(r.brawlerId) && <p>📊 Meta actual: <b>{metaLabel(r.brawlerId)}</b></p>}
-                        {(() => { const cs = countersVs(r.brawlerId, enemies); return cs.length > 0 ? <p>🎯 Countera a: <b>{cs.map((c) => brawlerById(c)?.name).join(', ')}</b></p> : null; })()}
-                        <div className="grid grid-cols-2 gap-1">
-                          <span>🗺 Mapa/modo {r.parts.mapMode}</span><span>⚔ Matchup {r.parts.matchup}</span>
-                          <span>🤝 Sinergia {r.parts.synergy}</span><span>🏆 Comp. {r.parts.competitive}</span>
-                        </div>
-                        <p>⚠ Debilidades: {r.weaknesses.join('; ')}</p>
-                        <p>🔁 Alternativas: {r.alternatives.map((a) => brawlerById(a)?.name).join(', ') || '—'}</p>
-                        {(() => { const st = ownership[r.brawlerId] ?? 'ok'; return (
-                          <p className="flex gap-1 items-center">🎒 Mío: <b>{st === 'ok' ? 'listo ✅' : st === 'low' ? 'nivel bajo ⚠️' : 'no lo tengo 🚫'}</b>
-                            {st === 'ok' ? <><button className="bg-gray-700 rounded px-1.5 py-0.5" onClick={() => setOwn(r.brawlerId, 'no')}>No lo tengo</button><button className="bg-gray-700 rounded px-1.5 py-0.5" onClick={() => setOwn(r.brawlerId, 'low')}>Nivel bajo</button></>
-                            : <button className="bg-green-900 rounded px-1.5 py-0.5" onClick={() => setOwn(r.brawlerId, 'ok')}>↩ Incluir</button>}</p>); })()}
-                        {enemies.map((e) => { const m = matchupScore(r.brawlerId, e); return <p key={e}>vs {brawlerById(e)?.name}: <b>{m.score}</b> — {m.note} (conf. {m.confidence}{m.mapDependent ? ', depende del mapa' : ''})</p>; })}
-                        <div className="flex gap-1 pt-1">
-                          <button className="bg-blue-600 rounded px-2 py-0.5 font-bold" onClick={() => doPick('blue', r.brawlerId)}>Pick azul</button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                );
-              })}
+
+            <div className="dd-panel dd-avoid">
+              <h3 className="dd-h3 red">⛔ Evitar ahora</h3>
+              {avoid.map((r) => <div key={r.brawlerId} className="dd-mini-row"><b>{brawlerById(r.brawlerId)?.name}</b> ({r.score}) — mal matchup o anti-sinergia. Riesgo {r.counterRisk}.</div>)}
             </div>
-          </div>
-          <div className="bg-panel rounded-xl p-3 border border-red-900/60">
-            <h2 className="text-xs font-bold text-red-300 uppercase">⛔ Evitar ahora</h2>
-            {avoid.map((r) => <div key={r.brawlerId} className="text-xs mt-1 text-gray-300"><b>{brawlerById(r.brawlerId)?.name}</b> ({r.score}) — mal matchup o anti-sinergia. Riesgo {r.counterRisk}.</div>)}
-          </div>
-        </aside>
-      </main>
+
+            <div className="dd-two">
+              <div className="dd-panel">
+                <div className="dd-panel-head">
+                  <h3 className="dd-h3">Baneos sugeridos</h3>
+                  <select value={banCount} onChange={(e) => setBanCount(Number(e.target.value))} className="dd-input dd-select-xs">
+                    {[3, 4, 5].map((n) => <option key={n} value={n}>Top {n}</option>)}
+                  </select>
+                </div>
+                <div className="dd-ban-sugs">
+                  {bans.map((b, i) => {
+                    const bb = brawlerById(b.brawlerId);
+                    return (
+                      <button key={b.brawlerId} onClick={() => { const e = expectedAction(draft); if (e.kind === 'ban') doBan(e.team, b.brawlerId); else if (e.kind === 'globalban') doGlobalBan(e.team, b.brawlerId); else doBan(draft.bansBlue.length <= draft.bansRed.length ? 'blue' : 'red', b.brawlerId); }} title="Tocar = banearlo al instante" className="dd-ban-sug">
+                        {bb && <div className="dd-ban-sug-img"><BrawlerImg b={bb} size="w-full h-full" /></div>}
+                        <span><span className="dd-c-red">#{i + 1} {bb?.name}</span> <span className="dd-muted">({b.score})</span>
+                          <span className="dd-ban-sug-reason">{b.reason}</span></span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="dd-panel">
+                <h3 className="dd-h3">Ponderación</h3>
+                {(Object.keys(weights) as (keyof Weights)[]).map((k) => (
+                  <label key={k} className="dd-weight">
+                    <span className="dd-weight-name">{k}</span>
+                    <input type="range" min={0} max={0.6} step={0.05} value={weights[k]} onChange={(e) => setWeights({ ...weights, [k]: Number(e.target.value) })} />
+                    <span className="dd-weight-val">{Math.round(weights[k] * 100)}%</span>
+                  </label>
+                ))}
+                <p className="dd-muted small">Pesos de demostración, no oficiales. Normalizado 0–100.</p>
+              </div>
+            </div>
+          </aside>
+        </main>
+
+        <footer className="dd-footer">
+          Brawl Draft Pro · {POOL_INFO} · Formatos: en vivo/Ranked (3 bans visibles, libre) y Torneo BSC stage (sorteo + 2 globales + 3 ciegos, rulebook v1.6) · Catálogo, rarezas, clases e imágenes: BrawlAPI/Brawlify (comunidad; imágenes © Supercell; Buzz Lightyear fuera: colaboración eliminada) · Ratings: estimación propia, no oficial.
+        </footer>
+      </div>
 
       {showCollection && (
-        <div className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center p-4" onClick={() => setShowCollection(false)}>
-          <div className="bg-panel border border-gray-700 rounded-xl max-w-3xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
-            <div className="p-3 border-b border-gray-800 flex flex-wrap items-center gap-2">
-              <h2 className="font-black">🎒 Mi colección</h2>
-              <span className="text-xs text-gray-400">{ALL.length - ownCount('no') - ownCount('low')} listos · {ownCount('low')} nivel bajo · {ownCount('no')} sin tener</span>
-              <input value={collQuery} onChange={(e) => setCollQuery(e.target.value)} placeholder="🔍 Buscar…" className="ml-auto text-sm bg-gray-800 rounded px-2 py-1" />
-              <button className="text-xs bg-gray-800 rounded px-2 py-1" onClick={() => setOwnership({})}>↩ Todos listos</button>
-              <button className="text-xs bg-gray-800 rounded px-2 py-1" onClick={() => setShowCollection(false)}>✕ Cerrar</button>
+        <div className="dd-modal-backdrop" onClick={() => setShowCollection(false)}>
+          <div className="dd-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="dd-modal-head">
+              <h2>🎒 Mi colección</h2>
+              <span className="dd-muted">{ALL.length - ownCount('no') - ownCount('low')} listos · {ownCount('low')} nivel bajo · {ownCount('no')} sin tener</span>
+              <input value={collQuery} onChange={(e) => setCollQuery(e.target.value)} placeholder="Buscar..." className="dd-input dd-modal-search" />
+              <button className="dd-btn small gray" onClick={() => setOwnership({})}>↩ Todos listos</button>
+              <button className="dd-btn small gray" onClick={() => setShowCollection(false)}>✕ Cerrar</button>
             </div>
-            <p className="px-3 pt-2 text-[11px] text-gray-400">Toca cada brawler para cambiar: ✅ listo → ⚠️ nivel bajo (−15 pts) → 🚫 no lo tengo (fuera de tus recomendaciones). Los rivales pueden llevar cualquiera.</p>
-            <div className="p-3 grid grid-cols-4 sm:grid-cols-6 gap-2 overflow-y-auto scroll-thin">
+            <p className="dd-modal-hint">Toca cada brawler para cambiar: ✅ listo → ⚠️ nivel bajo (−15 pts) → 🚫 no lo tengo (fuera de tus recomendaciones). Los rivales pueden llevar cualquiera.</p>
+            <div className="dd-modal-grid scroll-thin">
               {ALL.filter((b) => b.name.toLowerCase().includes(collQuery.toLowerCase())).map((b) => {
                 const st = ownership[b.id] ?? 'ok';
                 return (
-                  <button key={b.id} onClick={() => cycleOwnership(b.id)} className={`rounded-lg p-1 border text-center ${st === 'ok' ? 'border-gray-700 bg-gray-900' : st === 'low' ? 'border-yellow-500 bg-yellow-500/10' : 'border-red-600 bg-red-950/40 opacity-70'}`}>
-                    <BrawlerImg b={b} size="w-10 h-10" />
-                    <div className="text-[11px] font-bold leading-tight">{b.name}</div>
-                    <div className="text-[11px]">{st === 'ok' ? '✅' : st === 'low' ? '⚠️ bajo' : '🚫 no'}</div>
+                  <button key={b.id} onClick={() => cycleOwnership(b.id)} className={`dd-coll ${st}`}>
+                    <div className="dd-coll-img"><BrawlerImg b={b} size="w-full h-full" /></div>
+                    <div className="dd-brawler-name">{b.name}</div>
+                    <div>{st === 'ok' ? '✅' : st === 'low' ? '⚠️ bajo' : '🚫 no'}</div>
                   </button>
                 );
               })}
@@ -621,10 +709,6 @@ export default function App() {
           </div>
         </div>
       )}
-
-      <footer className="max-w-[1500px] mx-auto px-4 pb-8 text-[11px] text-gray-500">
-        Brawl Draft Pro · {POOL_INFO} · Formatos: en vivo/Ranked (3 bans visibles, libre) y Torneo BSC stage (sorteo + 2 globales + 3 ciegos, rulebook v1.6) · Catálogo, rarezas, clases e imágenes: BrawlAPI/Brawlify (comunidad; imágenes © Supercell; Buzz Lightyear fuera: colaboración eliminada) · Ratings: estimación propia, no oficial.
-      </footer>
     </div>
   );
 }

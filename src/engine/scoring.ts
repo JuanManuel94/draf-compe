@@ -317,7 +317,7 @@ export function suggestBans(mapId: string, count = 3, alreadyBanned: string[] = 
       const researchedTargets = new Set(RESEARCHED_MATCHUPS.filter((m) => m.attacker === b.id).map((m) => m.defender));
       const dominance = (b.counters.length + researchedTargets.size) * 4 + (b.favoredMaps.includes(map.id) ? 8 : 0);
       const score = Math.round(mm * 0.5 + comp * 0.3 + Math.min(100, 50 + dominance) * 0.2);
-      const reason = `${b.name}: domina ${map.name} (${mm}/100 en mapa/modo) y amenaza a ${b.counters.length + researchedTargets.size} picks. Winrate ejemplo ${(STATS.find((s) => s.brawlerId === b.id)?.winRate ?? 0.5) * 100}% — estimación, no oficial.`;
+      const reason = `${b.name}: domina ${map.name} (${mm}/100 en mapa/modo) y amenaza a ${b.counters.length + researchedTargets.size} picks. Winrate ejemplo ${Math.round((STATS.find((s) => s.brawlerId === b.id)?.winRate ?? 0.5) * 100)}% — estimación, no oficial.`;
       return { brawlerId: b.id, reason, score };
     })
     .sort((a, b) => b.score - a.score)

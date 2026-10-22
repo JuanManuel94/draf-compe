@@ -74,8 +74,12 @@ export function flipCoin(s: DraftState, winner: Team): DraftState {
   return next;
 }
 
+// Ranked (live): los bans son simultáneos (cada jugador banea 1 a la vez), así que se pueden
+// registrar en cualquier orden. Los picks SIEMPRE van por turnos (snake 1-2-2-1): mientras
+// un equipo elige, el otro no puede pickear. Solo el modo manual externo (freeMode) lo salta.
 function checkTurn(s: DraftState, kind: 'globalban' | 'ban' | 'pick', team: Team): string | null {
-  if (!s.strict || s.freeMode || getFormat(s.formatId).freeOrder) return null;
+  if (s.freeMode) return null;
+  if (getFormat(s.formatId).freeOrder && kind !== 'pick') return null;
   const exp = expectedAction(s);
   if (exp.kind === 'done') return 'Draft ya finalizado.';
   if (exp.kind === 'coin') return 'Primero hay que lanzar la moneda.';
@@ -83,7 +87,7 @@ function checkTurn(s: DraftState, kind: 'globalban' | 'ban' | 'pick', team: Team
     const need = exp.kind === 'globalban' ? 'baneos globales' : exp.kind === 'ban' ? 'baneos de set' : 'picks';
     return `Ahora tocan ${need}.`;
   }
-  if (exp.team !== team) return `Turno de ${exp.team === 'blue' ? 'azul' : 'rojo'}.`;
+  if (exp.team !== team) return `⏳ Está eligiendo el equipo ${exp.team === 'blue' ? 'AZUL' : 'ROJO'}: el ${team === 'blue' ? 'azul' : 'rojo'} no puede pickear hasta que termine.`;
   return null;
 }
 
@@ -137,8 +141,16 @@ export function applyPick(s: DraftState, team: Team, brawlerId: string, slot?: n
   return next;
 }
 
+// En Ranked los bans son simultáneos y ocultos: ambos equipos pueden banear al mismo brawler.
+// Solo se rechaza repetirlo dentro del mismo equipo o si ya está pickeado / baneado globalmente.
+export function banBlocked(s: DraftState, team: Team, brawlerId: string): boolean {
+  const own = team === 'blue' ? s.bansBlue : s.bansRed;
+  const taken = [...s.globalBansBlue, ...s.globalBansRed, ...s.picksBlue, ...s.picksRed].filter(Boolean) as string[];
+  return own.includes(brawlerId) || taken.includes(brawlerId);
+}
+
 export function applyBan(s: DraftState, team: Team, brawlerId: string): DraftState | { error: string } {
-  if (usedIds(s).includes(brawlerId)) return { error: 'Brawler no disponible para ban.' };
+  if (banBlocked(s, team, brawlerId)) return { error: 'Brawler no disponible para ban (ya baneado por tu equipo o pickeado).' };
   const err = checkTurn(s, 'ban', team);
   if (err) return { error: err };
   const f = getFormat(s.formatId);
