@@ -1,0 +1,89 @@
+// Esquema Prisma para migrar de JSON local a PostgreSQL sin cambiar la lógica (src/engine/*).
+// Pasos: npm i prisma @prisma/client && npx prisma init && copiar este archivo a prisma/schema.prisma && npx prisma migrate dev
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Brawler {
+  id            String    @id
+  name          String    @unique
+  rarity        String
+  roles         String[]  // ["Control","Daño",...]
+  range         String
+  mobility      Int
+  survivability Int
+  damage        Int
+  utility       Int
+  strengths     String[]
+  weaknesses    String[]
+  favoredModes  String[]
+  favoredMaps   String[]
+  synergies     String[]  // ids
+  counters      String[]  // ids
+  weakAgainst   String[]  // ids
+  gadgetDependent Boolean @default(false)
+  updatedAt     DateTime  @updatedAt
+  source        String    @default("dataset-ejemplo-local v0.1")
+  confidence    String    @default("baja")
+  stats         CompetitiveStat?
+  matchupsAsAttacker Matchup[] @relation("attacker")
+  matchupsAsDefender Matchup[] @relation("defender")
+}
+
+model GameMap {
+  id           String @id
+  name         String
+  mode         String
+  description  String
+  walls        Int
+  bushes       Int
+  openness     Int
+  controlZones Int
+  rangeBias    String
+  active       Boolean @default(true) // para rotaciones / mapas retirados
+  updatedAt    DateTime @updatedAt
+}
+
+model Matchup {
+  id           Int     @id @default(autoincrement())
+  attackerId   String
+  defenderId   String
+  attacker     Brawler @relation("attacker", fields: [attackerId], references: [id])
+  defender     Brawler @relation("defender", fields: [defenderId], references: [id])
+  rating       String  // hardCounter|favorable|neutral|unfavorable|hardCountered
+  note         String
+  confidence   String  @default("baja")
+  mapDependent Boolean @default(true)
+  source       String  @default("dataset-ejemplo-local v0.1")
+  updatedAt    DateTime @updatedAt
+
+  @@unique([attackerId, defenderId])
+}
+
+model CompetitiveStat {
+  brawlerId String  @id
+  brawler   Brawler @relation(fields: [brawlerId], references: [id])
+  winRate   Float
+  pickRate  Float
+  tournaments Int
+  source    String  @default("dataset-ejemplo-local v0.1")
+  updatedAt DateTime @updatedAt
+}
+
+model DraftHistory {
+  id        Int      @id @default(autoincrement())
+  playedAt  DateTime @default(now())
+  mapId     String
+  mode      String
+  bansBlue  String[]
+  bansRed   String[]
+  picksBlue String[]
+  picksRed  String[]
+  summary   String
+}
