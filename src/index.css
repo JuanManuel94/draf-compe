@@ -277,6 +277,7 @@ b, strong { font-weight: 400; color: #fff; }
 .dd-brawler:hover:not(:disabled) { transform: translateY(-4px); background: rgba(255, 255, 255, .1); box-shadow: 0 10px 25px rgba(0, 0, 0, .2); }
 .dd-brawler:active:not(:disabled) { transform: scale(.96); }
 .dd-brawler.out { opacity: .3; }
+.dd-empty { grid-column: 1 / -1; margin: 20px 0; color: var(--dd-muted); text-align: center; }
 .dd-brawler-img { position: relative; width: 58px; height: 58px; overflow: hidden; border-radius: 12px; background: var(--dd-slot); }
 .dd-brawler-img img { width: 100%; height: 100%; object-fit: cover; }
 .dd-score { position: absolute; right: 2px; bottom: 2px; min-width: 22px; padding: 0 4px; border-radius: 7px; background: rgba(0, 0, 0, .75); font-size: 11px; line-height: 16px; }
@@ -417,8 +418,20 @@ input[type="checkbox"] { accent-color: var(--dd-yellow); }
   .dd-team.blue { order: 2; }
   .dd-team.red { order: 3; }
   .dd-map-img { max-height: 320px; }
-  .dd-suggest-col { display: flex; }
+  /* En móvil/tablet: lo que se usa en cada turno, seguido (tablero → turno/deshacer → mejor pick → brawlers) */
+  .dd-main { display: flex; flex-direction: column; }
+  .dd-draft-col, .dd-suggest-col { display: contents; }
+  .dd-board { order: 1; }
+  .dd-current { order: 2; }
+  .dd-engine { order: 3; }
+  .dd-threats { order: 4; }
+  .dd-pool { order: 5; }
+  .dd-recs { order: 6; }
+  .dd-avoid { order: 7; }
+  .dd-two { order: 8; }
+  .dd-mini-grid { order: 9; }
   .dd-mini-grid, .dd-two { grid-template-columns: minmax(0, 1fr); }
+  .dd-map-detail-img { max-height: 220px; }
   .dd-nav { height: auto; min-height: 64px; }
   .dd-nav-title { position: static; flex: 1; min-width: 0; transform: none; white-space: normal; }
   .dd-nav-title h1 { font-size: 1.35rem; }
@@ -431,7 +444,14 @@ input[type="checkbox"] { accent-color: var(--dd-yellow); }
   .dd-nav-right .dd-pill:last-child { display: none; }
   .dd-panel, .dd-setup { padding: 18px; }
   .dd-setup-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
-  .dd-board { grid-template-columns: minmax(0, 1fr); }
+  .dd-board { gap: 10px; }
+  .dd-team { padding: 14px 6px; }
+  .dd-pick-info { width: 58px; }
+  .dd-slot-pick { width: 58px; }
+  .dd-slot-ban { width: 36px; }
+  .dd-ban-row { gap: 6px; }
+  .dd-map-img { max-height: 240px; }
+  .dd-chip { min-height: 32px; }
   .dd-rec-grid { grid-template-columns: minmax(0, 1fr); }
   .dd-main, .dd-draft-col, .dd-suggest-col { gap: 20px; }
 }

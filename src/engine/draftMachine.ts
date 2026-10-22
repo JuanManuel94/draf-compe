@@ -212,7 +212,8 @@ export function redo(s: DraftState): DraftState {
 }
 
 function rebuildFromHistory(s: DraftState) {
-  s.coinWinner = null;
+  // Sin sorteo (Ranked) el primer pick se elige a mano y no está en el historial: se conserva.
+  if (getFormat(s.formatId).coinFlip) s.coinWinner = null;
   s.globalBansBlue = []; s.globalBansRed = [];
   s.bansBlue = []; s.bansRed = [];
   s.picksBlue = [null, null, null]; s.picksRed = [null, null, null];

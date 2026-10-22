@@ -117,5 +117,10 @@ export const ROSTER: [string, number, string, Rarity, Role][] = [
 ];
 
 // Buzz Lightyear eliminado del juego (colaboración temporal): fuera del roster (108 brawlers).
+// Brawlers recién salidos aún sin retrato en el CDN: se usa su icono de perfil (BrawlAPI avatarId).
+const IMG_OVERRIDE: Record<number, string> = {
+  16000109: 'https://cdn.brawlify.com/profile-icons/regular/28001337.png', // Cosmo
+  16000110: 'https://cdn.brawlify.com/profile-icons/regular/28001338.png' // Vince
+};
 export const brawlerImg = (apiId: number) =>
-  `https://cdn.brawlify.com/brawlers/borders/${apiId}.png`;
+  IMG_OVERRIDE[apiId] ?? `https://cdn.brawlify.com/brawlers/borders/${apiId}.png`;

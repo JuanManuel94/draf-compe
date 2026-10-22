@@ -14,6 +14,13 @@ const DEFAULT_MAP = 'bb-triple-dribble';
 
 function validFormat(id: string) { return FORMATS.some((f) => f.id === id) ? id : 'live'; }
 function validMap(id: string) { return MAPS.some((m) => m.id === id) ? id : DEFAULT_MAP; }
+// Recupera el draft en curso tras recargar (útil en móvil); se descarta si no encaja con el formato/mapa guardados.
+function loadDraft(mode: GameMode, mapId: string, formatId: string): DraftState {
+  const saved = store.load<DraftState | null>('draft', null);
+  const ok = saved && Array.isArray(saved.history) && Array.isArray(saved.picksBlue) && saved.picksBlue.length === 3
+    && Array.isArray(saved.picksRed) && saved.picksRed.length === 3 && saved.formatId === formatId && MAPS.some((m) => m.id === saved.mapId);
+  return ok ? { ...saved, mode, mapId } : initialDraft(mode, mapId, formatId);
+}
 
 function Bar({ v, c }: { v: number; c: string }) {
   return <div className="h-1.5 rounded bg-gray-800 overflow-hidden"><div className="h-full rounded" style={{ width: `${v}%`, background: c }} /></div>;
@@ -37,7 +44,7 @@ export default function App() {
   const [mapId, setMapId] = useState(() => validMap(store.load('mapId', DEFAULT_MAP)));
   const [formatId, setFormatId] = useState(() => validFormat(store.load('formatId', 'live')));
   const [mapQuery, setMapQuery] = useState('');
-  const [draft, setDraft] = useState(() => initialDraft(store.load('mode', DEFAULT_MODE), validMap(store.load('mapId', DEFAULT_MAP)), validFormat(store.load('formatId', 'live'))));
+  const [draft, setDraft] = useState(() => loadDraft(store.load('mode', DEFAULT_MODE), validMap(store.load('mapId', DEFAULT_MAP)), validFormat(store.load('formatId', 'live'))));
   const [weights, setWeights] = useState<Weights>(() => store.load('weights', DEFAULT_WEIGHTS));
   const [query, setQuery] = useState('');
   const [roleF, setRoleF] = useState<Role | 'Todos'>('Todos');
@@ -60,6 +67,7 @@ export default function App() {
 
   useEffect(() => { store.save('mode', mode); store.save('mapId', mapId); store.save('formatId', formatId); store.save('weights', weights); store.save('blindHide', blindHide); store.save('ownership', ownership); store.save('mySlot', mySlot); store.save('action', action); }, [mode, mapId, formatId, weights, blindHide, ownership, mySlot, action]);
   useEffect(() => { store.save('favorites', favorites); store.save('history', history); }, [favorites, history]);
+  useEffect(() => { store.save('draft', draft); }, [draft]);
 
   const mapsForMode = useMemo(() => MAPS.filter((m) => m.mode === mode && m.name.toLowerCase().includes(mapQuery.toLowerCase())), [mode, mapQuery]);
   const map = MAPS.find((m) => m.id === mapId) ?? MAPS.find((m) => m.mode === mode) ?? MAPS[0];
@@ -76,6 +84,15 @@ export default function App() {
   const banPhase = format.bansPerTeam > 0 && setBansDone < setBansTotal;
   // Picks bloqueados mientras se banea (salvo modo manual externo)
   const picksLocked = !bansComplete(draft) && !draft.freeMode;
+
+  useEffect(() => {
+    if (draft.freeMode || exp.kind === 'coin' || exp.kind === 'done') return;
+    const kind = action.startsWith('global') ? 'globalban' : action.startsWith('ban') ? 'ban' : 'pick';
+    const team = action.endsWith('Blue') ? 'blue' : 'red';
+    const teamFree = format.freeOrder && exp.kind === 'ban'; // bans de Ranked: simultáneos
+    if (kind !== exp.kind || (!teamFree && team !== exp.team)) setAction(actionFor(draft));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft]);
 
   const recs = useMemo(() => scoreAll({ mapId: map.id, allies, enemies, weights, banned, picked, ownership }), [map.id, allies, enemies, weights, banned, picked, ownership]);
   const threats = useMemo(() => threatsTo(allies, enemies), [allies, enemies]);
@@ -105,9 +122,10 @@ export default function App() {
     setDraft((d) => ({ ...d, mapId: id, mode: mm.mode }));
   }
   function changeFormat(id: string) {
+    // Los formatos no son compatibles entre sí (sorteo, globales, ciegos): se empieza un draft nuevo.
     setFormatId(id);
-    setDraft((d) => ({ ...d, formatId: id, strict: !getFormat(id).freeOrder }));
-    setAction('banBlue');
+    setDraft(initialDraft(mode, mapId, id));
+    setAction('banBlue'); setMsg('');
   }
   function actionFor(d: DraftState): Action {
     const e = expectedAction(d);
@@ -197,7 +215,7 @@ export default function App() {
     : exp.kind === 'ban' ? `🚫 Banea (set${format.blindBans ? ', ciego' : ''}): ${teamName(exp.team)}`
     : `👉 Elige: ${teamName(exp.team)}`;
   const turnText = exp.kind === 'done' ? '✅ Draft completo'
-    : banPhase && exp.kind !== 'coin' ? `🚫 1º Baneos (${setBansDone}/${setBansTotal}) — completa las casillas 🚫 · luego 2º picks`
+    : banPhase && exp.kind === 'ban' ? `🚫 1º Baneos (${setBansDone}/${setBansTotal}) — completa las casillas 🚫 · luego 2º picks`
     : `${baseTurn.replace(/^👉 /, '👉 2º ')}`;
   const centerBadge = exp.kind === 'done' ? '✅ Draft completo'
     : banPhase && exp.kind !== 'coin' && exp.kind !== 'globalban' ? `🚫 1º Banea: ${exp.team === 'blue' ? 'AZUL' : 'ROJO'} (${setBansDone}/${setBansTotal})`
@@ -434,6 +452,7 @@ export default function App() {
                 <span className="dd-muted">{grid.length}/{ALL.length}</span>
               </div>
               <div className="dd-brawler-grid scroll-thin">
+                {grid.length === 0 && <p className="dd-empty">Ningún brawler coincide con la búsqueda.</p>}
                 {grid.map((b) => {
                   const out = unavailable(b.id);
                   const rec = recs.find((r) => r.brawlerId === b.id);
