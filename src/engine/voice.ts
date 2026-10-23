@@ -42,6 +42,7 @@ const ALIASES: Record<string, string[]> = {
   '8-bit': ['ocho bit', 'eight bit', 'eit bit', 'ocho bits'],
   max: ['macs', 'maks'],
   leon: ['leon', 'lion'],
+  gene: ['genio', 'yen', 'yeni', 'yene', 'lleni'],
   rico: ['rico', 'riko'],
   amber: ['amber', 'ember'],
   'jae-yong': ['jaeyong', 'jay yong', 'jay young', 'jei yong', 'yei yong', 'yei yon', 'yei young', 'yeiyong', 'yeiyon', 'jeiyon', 'yeyong', 'jai yong', 'jai yon', 'jei yon'],
