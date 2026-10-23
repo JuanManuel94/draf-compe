@@ -1,0 +1,6319 @@
+{
+ "source": "brawlbetter.com (Ranked de jugadores top)",
+ "updatedAt": "2026-10-23",
+ "windowDays": 21,
+ "blindSafety": {
+  "shelly": 6,
+  "colt": 5,
+  "bull": 5,
+  "brock": 5,
+  "rico": 6,
+  "spike": 6,
+  "barley": 7,
+  "jessie": 6,
+  "nita": 6,
+  "dynamike": 6,
+  "el-primo": 5,
+  "mortis": 4,
+  "crow": 5,
+  "poco": 7,
+  "bo": 7,
+  "piper": 4,
+  "pam": 7,
+  "tara": 7,
+  "darryl": 5,
+  "penny": 6,
+  "frank": 4,
+  "gene": 8,
+  "tick": 6,
+  "leon": 5,
+  "rosa": 6,
+  "carl": 6,
+  "bibi": 6,
+  "8-bit": 4,
+  "sandy": 7,
+  "bea": 5,
+  "emz": 6,
+  "mr-p": 6,
+  "max": 7,
+  "jacky": 6,
+  "gale": 5,
+  "nani": 4,
+  "sprout": 6,
+  "surge": 6,
+  "colette": 6,
+  "amber": 5,
+  "lou": 7,
+  "byron": 6,
+  "edgar": 4,
+  "ruffs": 4,
+  "stu": 6,
+  "belle": 5,
+  "squeak": 6,
+  "grom": 6,
+  "buzz": 5,
+  "griff": 5,
+  "ash": 4,
+  "meg": 4,
+  "lola": 5,
+  "fang": 5,
+  "eve": 5,
+  "janet": 5,
+  "bonnie": 5,
+  "otis": 6,
+  "sam": 5,
+  "gus": 7,
+  "buster": 6,
+  "chester": 6,
+  "gray": 6,
+  "mandy": 5,
+  "r-t": 6,
+  "willow": 5,
+  "maisie": 6,
+  "hank": 5,
+  "cordelius": 5,
+  "doug": 6,
+  "pearl": 5,
+  "chuck": 5,
+  "charlie": 6,
+  "mico": 5,
+  "kit": 6,
+  "larry-lawrie": 6,
+  "melodie": 5,
+  "angelo": 5,
+  "draco": 5,
+  "lily": 5,
+  "berry": 6,
+  "clancy": 6,
+  "moe": 5,
+  "kenji": 5,
+  "shade": 5,
+  "juju": 6,
+  "meeple": 5,
+  "ollie": 5,
+  "lumi": 5,
+  "finx": 5,
+  "jae-yong": 5,
+  "kaze": 5,
+  "alli": 5,
+  "trunk": 5,
+  "mina": 5,
+  "ziggy": 5,
+  "pierce": 5,
+  "gigi": 5,
+  "glowy": 5,
+  "sirius": 5,
+  "najia": 5,
+  "damian": 5,
+  "starr-nova": 5,
+  "bolt": 5,
+  "nori": 5,
+  "wendy": 5,
+  "vince": 3,
+  "cosmo": 3
+ },
+ "maps": {
+  "gem-double-swoosh": {
+   "slug": "double-swoosh",
+   "battles": 1129,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "tara": {
+     "wr": 0.6424,
+     "games": 165,
+     "pick": 0.1461,
+     "modeWr": 0.5795,
+     "modeGames": 371,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "el-primo": {
+     "wr": 0.6299,
+     "games": 127,
+     "pick": 0.1125,
+     "modeWr": 0.5683,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.6126,
+     "games": 111,
+     "pick": 0.0983,
+     "modeWr": 0.5655,
+     "modeGames": 672,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "spike": {
+     "wr": 0.5938,
+     "games": 128,
+     "pick": 0.1134,
+     "modeWr": 0.5297,
+     "modeGames": 387,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "ash": {
+     "wr": 0.5537,
+     "games": 307,
+     "pick": 0.2719,
+     "modeWr": 0.5064,
+     "modeGames": 1100,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "wendy": {
+     "wr": 0.5531,
+     "games": 311,
+     "pick": 0.2755,
+     "modeWr": 0.5664,
+     "modeGames": 1250,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "emz": {
+     "wr": 0.5478,
+     "games": 460,
+     "pick": 0.4074,
+     "modeWr": 0.5503,
+     "modeGames": 1312,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "chester": {
+     "wr": 0.5758,
+     "games": 66,
+     "pick": 0.0585,
+     "modeWr": 0.52,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "crow": {
+     "wr": 0.5625,
+     "games": 80,
+     "pick": 0.0709,
+     "modeWr": 0.4877,
+     "modeGames": 203,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "sandy": {
+     "wr": 0.5854,
+     "games": 41,
+     "pick": 0.0363,
+     "modeWr": 0.5065,
+     "modeGames": 77,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gus": {
+     "wr": 0.5305,
+     "games": 426,
+     "pick": 0.3773,
+     "modeWr": 0.5303,
+     "modeGames": 1718,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "gale": {
+     "wr": 0.6,
+     "games": 30,
+     "pick": 0.0266,
+     "modeWr": 0.5397,
+     "modeGames": 63,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "surge": {
+     "wr": 0.5401,
+     "games": 137,
+     "pick": 0.1213,
+     "modeWr": 0.518,
+     "modeGames": 529,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "rico": {
+     "wr": 0.4851,
+     "games": 336,
+     "pick": 0.2976,
+     "modeWr": 0.5144,
+     "modeGames": 2053,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colette": {
+     "wr": 0.4966,
+     "games": 439,
+     "pick": 0.3888,
+     "modeWr": 0.456,
+     "modeGames": 1638,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "griff": {
+     "wr": 0.4277,
+     "games": 346,
+     "pick": 0.3065,
+     "modeWr": 0.4489,
+     "modeGames": 1116,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "stu": {
+     "wr": 0.5032,
+     "games": 308,
+     "pick": 0.2728,
+     "modeWr": 0.484,
+     "modeGames": 1221,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gigi": {
+     "wr": 0.6,
+     "games": 30,
+     "pick": 0.0266,
+     "modeWr": 0.4437,
+     "modeGames": 160,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "rosa": {
+     "wr": 0.4848,
+     "games": 33,
+     "pick": 0.0292,
+     "modeWr": 0.419,
+     "modeGames": 105,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "bull": {
+     "wr": 0.2885,
+     "games": 52,
+     "pick": 0.0461,
+     "modeWr": 0.505,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "janet": {
+     "wr": 0.4667,
+     "games": 60,
+     "pick": 0.0531,
+     "modeWr": 0.5762,
+     "modeGames": 151,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "shade": {
+     "wr": 0.4427,
+     "games": 192,
+     "pick": 0.1701,
+     "modeWr": 0.536,
+     "modeGames": 694,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "charlie": {
+     "wr": 0.5,
+     "games": 42,
+     "pick": 0.0372,
+     "modeWr": 0.5714,
+     "modeGames": 112,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "edgar": {
+     "wr": 0.4353,
+     "games": 85,
+     "pick": 0.0753,
+     "modeWr": 0.5042,
+     "modeGames": 599,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "sirius": {
+     "wr": 0.451,
+     "games": 102,
+     "pick": 0.0903,
+     "modeWr": 0.5083,
+     "modeGames": 421,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.3926,
+     "games": 135,
+     "pick": 0.1196,
+     "modeWr": 0.4139,
+     "modeGames": 389,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "lumi": {
+     "wr": 0.4096,
+     "games": 166,
+     "pick": 0.147,
+     "modeWr": 0.4367,
+     "modeGames": 403,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "buzz": {
+     "wr": 0.4253,
+     "games": 87,
+     "pick": 0.0771,
+     "modeWr": 0.4791,
+     "modeGames": 478,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "gem-fort": {
+   "slug": "gem-fort",
+   "battles": 1115,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6606,
+     "games": 165,
+     "pick": 0.148,
+     "modeWr": 0.536,
+     "modeGames": 694,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "el-primo": {
+     "wr": 0.6271,
+     "games": 177,
+     "pick": 0.1587,
+     "modeWr": 0.5683,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "emz": {
+     "wr": 0.5901,
+     "games": 344,
+     "pick": 0.3085,
+     "modeWr": 0.5503,
+     "modeGames": 1312,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "trunk": {
+     "wr": 0.6579,
+     "games": 38,
+     "pick": 0.0341,
+     "modeWr": 0.5103,
+     "modeGames": 145,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "wendy": {
+     "wr": 0.562,
+     "games": 274,
+     "pick": 0.2457,
+     "modeWr": 0.5664,
+     "modeGames": 1250,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5657,
+     "games": 198,
+     "pick": 0.1776,
+     "modeWr": 0.5655,
+     "modeGames": 672,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "spike": {
+     "wr": 0.55,
+     "games": 80,
+     "pick": 0.0717,
+     "modeWr": 0.5297,
+     "modeGames": 387,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "ruffs": {
+     "wr": 0.5538,
+     "games": 65,
+     "pick": 0.0583,
+     "modeWr": 0.4958,
+     "modeGames": 240,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "max": {
+     "wr": 0.5267,
+     "games": 300,
+     "pick": 0.2691,
+     "modeWr": 0.48,
+     "modeGames": 1202,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "surge": {
+     "wr": 0.527,
+     "games": 148,
+     "pick": 0.1327,
+     "modeWr": 0.518,
+     "modeGames": 529,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "edgar": {
+     "wr": 0.5202,
+     "games": 173,
+     "pick": 0.1552,
+     "modeWr": 0.5042,
+     "modeGames": 599,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "kit": {
+     "wr": 0.5405,
+     "games": 37,
+     "pick": 0.0332,
+     "modeWr": 0.48,
+     "modeGames": 125,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mortis": {
+     "wr": 0.4679,
+     "games": 265,
+     "pick": 0.2377,
+     "modeWr": 0.4739,
+     "modeGames": 996,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "rico": {
+     "wr": 0.5043,
+     "games": 577,
+     "pick": 0.5175,
+     "modeWr": 0.5144,
+     "modeGames": 2053,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gus": {
+     "wr": 0.4977,
+     "games": 444,
+     "pick": 0.3982,
+     "modeWr": 0.5303,
+     "modeGames": 1718,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.4457,
+     "games": 359,
+     "pick": 0.322,
+     "modeWr": 0.456,
+     "modeGames": 1638,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "stu": {
+     "wr": 0.4403,
+     "games": 268,
+     "pick": 0.2404,
+     "modeWr": 0.484,
+     "modeGames": 1221,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gigi": {
+     "wr": 0.5,
+     "games": 36,
+     "pick": 0.0323,
+     "modeWr": 0.4437,
+     "modeGames": 160,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "chester": {
+     "wr": 0.3721,
+     "games": 43,
+     "pick": 0.0386,
+     "modeWr": 0.52,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "cordelius": {
+     "wr": 0.2941,
+     "games": 34,
+     "pick": 0.0305,
+     "modeWr": 0.4051,
+     "modeGames": 79,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "tara": {
+     "wr": 0.4933,
+     "games": 75,
+     "pick": 0.0673,
+     "modeWr": 0.5795,
+     "modeGames": 371,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "pierce": {
+     "wr": 0.5,
+     "games": 64,
+     "pick": 0.0574,
+     "modeWr": 0.565,
+     "modeGames": 246,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "bo": {
+     "wr": 0.4343,
+     "games": 175,
+     "pick": 0.157,
+     "modeWr": 0.4929,
+     "modeGames": 635,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "meeple": {
+     "wr": 0.4054,
+     "games": 74,
+     "pick": 0.0664,
+     "modeWr": 0.4624,
+     "modeGames": 346,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "gem-hard-rock": {
+   "slug": "hard-rock-mine",
+   "battles": 1040,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6283,
+     "games": 113,
+     "pick": 0.1087,
+     "modeWr": 0.536,
+     "modeGames": 694,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "pierce": {
+     "wr": 0.64,
+     "games": 75,
+     "pick": 0.0721,
+     "modeWr": 0.565,
+     "modeGames": 246,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "carl": {
+     "wr": 0.6531,
+     "games": 49,
+     "pick": 0.0471,
+     "modeWr": 0.479,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "maisie": {
+     "wr": 0.6232,
+     "games": 69,
+     "pick": 0.0663,
+     "modeWr": 0.5053,
+     "modeGames": 376,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "wendy": {
+     "wr": 0.5593,
+     "games": 329,
+     "pick": 0.3163,
+     "modeWr": 0.5664,
+     "modeGames": 1250,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "bull": {
+     "wr": 0.6429,
+     "games": 42,
+     "pick": 0.0404,
+     "modeWr": 0.505,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gus": {
+     "wr": 0.545,
+     "games": 422,
+     "pick": 0.4058,
+     "modeWr": 0.5303,
+     "modeGames": 1718,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "sirius": {
+     "wr": 0.5574,
+     "games": 122,
+     "pick": 0.1173,
+     "modeWr": 0.5083,
+     "modeGames": 421,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "rico": {
+     "wr": 0.5351,
+     "games": 527,
+     "pick": 0.5067,
+     "modeWr": 0.5144,
+     "modeGames": 2053,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "edgar": {
+     "wr": 0.5412,
+     "games": 194,
+     "pick": 0.1865,
+     "modeWr": 0.5042,
+     "modeGames": 599,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "starr-nova": {
+     "wr": 0.5682,
+     "games": 44,
+     "pick": 0.0423,
+     "modeWr": 0.5096,
+     "modeGames": 208,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "alli": {
+     "wr": 0.5676,
+     "games": 37,
+     "pick": 0.0356,
+     "modeWr": 0.4476,
+     "modeGames": 248,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "colette": {
+     "wr": 0.3886,
+     "games": 422,
+     "pick": 0.4058,
+     "modeWr": 0.456,
+     "modeGames": 1638,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "ash": {
+     "wr": 0.5175,
+     "games": 286,
+     "pick": 0.275,
+     "modeWr": 0.5064,
+     "modeGames": 1100,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "stu": {
+     "wr": 0.5,
+     "games": 282,
+     "pick": 0.2712,
+     "modeWr": 0.484,
+     "modeGames": 1221,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.5055,
+     "games": 275,
+     "pick": 0.2644,
+     "modeWr": 0.48,
+     "modeGames": 1202,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "emz": {
+     "wr": 0.513,
+     "games": 230,
+     "pick": 0.2212,
+     "modeWr": 0.5503,
+     "modeGames": 1312,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "8-bit": {
+     "wr": 0.5484,
+     "games": 31,
+     "pick": 0.0298,
+     "modeWr": 0.4419,
+     "modeGames": 86,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "otis": {
+     "wr": 0.3514,
+     "games": 37,
+     "pick": 0.0356,
+     "modeWr": 0.4863,
+     "modeGames": 292,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "moe": {
+     "wr": 0.3729,
+     "games": 59,
+     "pick": 0.0567,
+     "modeWr": 0.4975,
+     "modeGames": 408,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "trunk": {
+     "wr": 0.3889,
+     "games": 36,
+     "pick": 0.0346,
+     "modeWr": 0.5103,
+     "modeGames": 145,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "bibi": {
+     "wr": 0.359,
+     "games": 39,
+     "pick": 0.0375,
+     "modeWr": 0.4766,
+     "modeGames": 128,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "tara": {
+     "wr": 0.4762,
+     "games": 42,
+     "pick": 0.0404,
+     "modeWr": 0.5795,
+     "modeGames": 371,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "el-primo": {
+     "wr": 0.4684,
+     "games": 158,
+     "pick": 0.1519,
+     "modeWr": 0.5683,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "griff": {
+     "wr": 0.4211,
+     "games": 190,
+     "pick": 0.1827,
+     "modeWr": 0.4489,
+     "modeGames": 1116,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "brock": {
+     "wr": 0.3958,
+     "games": 48,
+     "pick": 0.0462,
+     "modeWr": 0.4379,
+     "modeGames": 169,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "gem-undermine": {
+   "slug": "undermine",
+   "battles": 1116,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.5793,
+     "games": 309,
+     "pick": 0.2769,
+     "modeWr": 0.5664,
+     "modeGames": 1250,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5647,
+     "games": 170,
+     "pick": 0.1523,
+     "modeWr": 0.5655,
+     "modeGames": 672,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "tara": {
+     "wr": 0.5843,
+     "games": 89,
+     "pick": 0.0797,
+     "modeWr": 0.5795,
+     "modeGames": 371,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "bull": {
+     "wr": 0.6038,
+     "games": 53,
+     "pick": 0.0475,
+     "modeWr": 0.505,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gus": {
+     "wr": 0.5464,
+     "games": 399,
+     "pick": 0.3575,
+     "modeWr": 0.5303,
+     "modeGames": 1718,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "ruffs": {
+     "wr": 0.5918,
+     "games": 49,
+     "pick": 0.0439,
+     "modeWr": 0.4958,
+     "modeGames": 240,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "el-primo": {
+     "wr": 0.5507,
+     "games": 138,
+     "pick": 0.1237,
+     "modeWr": 0.5683,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "moe": {
+     "wr": 0.552,
+     "games": 125,
+     "pick": 0.112,
+     "modeWr": 0.4975,
+     "modeGames": 408,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "emz": {
+     "wr": 0.5362,
+     "games": 276,
+     "pick": 0.2473,
+     "modeWr": 0.5503,
+     "modeGames": 1312,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "bo": {
+     "wr": 0.543,
+     "games": 151,
+     "pick": 0.1353,
+     "modeWr": 0.4929,
+     "modeGames": 635,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "janet": {
+     "wr": 0.6,
+     "games": 30,
+     "pick": 0.0269,
+     "modeWr": 0.5762,
+     "modeGames": 151,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mina": {
+     "wr": 0.5443,
+     "games": 79,
+     "pick": 0.0708,
+     "modeWr": 0.5061,
+     "modeGames": 330,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "rico": {
+     "wr": 0.5189,
+     "games": 582,
+     "pick": 0.5215,
+     "modeWr": 0.5144,
+     "modeGames": 2053,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.4947,
+     "games": 374,
+     "pick": 0.3351,
+     "modeWr": 0.456,
+     "modeGames": 1638,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "stu": {
+     "wr": 0.4909,
+     "games": 328,
+     "pick": 0.2939,
+     "modeWr": 0.484,
+     "modeGames": 1221,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "griff": {
+     "wr": 0.4462,
+     "games": 325,
+     "pick": 0.2912,
+     "modeWr": 0.4489,
+     "modeGames": 1116,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "max": {
+     "wr": 0.4373,
+     "games": 311,
+     "pick": 0.2787,
+     "modeWr": 0.48,
+     "modeGames": 1202,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "buzz": {
+     "wr": 0.5299,
+     "games": 117,
+     "pick": 0.1048,
+     "modeWr": 0.4791,
+     "modeGames": 478,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "lumi": {
+     "wr": 0.4868,
+     "games": 76,
+     "pick": 0.0681,
+     "modeWr": 0.4367,
+     "modeGames": 403,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "colt": {
+     "wr": 0.4286,
+     "games": 63,
+     "pick": 0.0565,
+     "modeWr": 0.5407,
+     "modeGames": 135,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "alli": {
+     "wr": 0.3485,
+     "games": 66,
+     "pick": 0.0591,
+     "modeWr": 0.4476,
+     "modeGames": 248,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gigi": {
+     "wr": 0.359,
+     "games": 39,
+     "pick": 0.0349,
+     "modeWr": 0.4437,
+     "modeGames": 160,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "carl": {
+     "wr": 0.3958,
+     "games": 48,
+     "pick": 0.043,
+     "modeWr": 0.479,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.475,
+     "games": 200,
+     "pick": 0.1792,
+     "modeWr": 0.536,
+     "modeGames": 694,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.3971,
+     "games": 68,
+     "pick": 0.0609,
+     "modeWr": 0.4139,
+     "modeGames": 389,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "hz-open-business": {
+   "slug": "open-business",
+   "battles": 1103,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "ruffs": {
+     "wr": 0.7714,
+     "games": 35,
+     "pick": 0.0317,
+     "modeWr": 0.5039,
+     "modeGames": 127,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "amber": {
+     "wr": 0.6148,
+     "games": 135,
+     "pick": 0.1224,
+     "modeWr": 0.6041,
+     "modeGames": 740,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "chuck": {
+     "wr": 0.6765,
+     "games": 34,
+     "pick": 0.0308,
+     "modeWr": 0.601,
+     "modeGames": 208,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "wendy": {
+     "wr": 0.5593,
+     "games": 329,
+     "pick": 0.2983,
+     "modeWr": 0.5559,
+     "modeGames": 1495,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "barley": {
+     "wr": 0.5976,
+     "games": 82,
+     "pick": 0.0743,
+     "modeWr": 0.5563,
+     "modeGames": 302,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gus": {
+     "wr": 0.5524,
+     "games": 420,
+     "pick": 0.3808,
+     "modeWr": 0.5307,
+     "modeGames": 2214,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "maisie": {
+     "wr": 0.6066,
+     "games": 61,
+     "pick": 0.0553,
+     "modeWr": 0.5,
+     "modeGames": 410,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "emz": {
+     "wr": 0.5412,
+     "games": 473,
+     "pick": 0.4288,
+     "modeWr": 0.5193,
+     "modeGames": 1945,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "nori": {
+     "wr": 0.6,
+     "games": 35,
+     "pick": 0.0317,
+     "modeWr": 0.5062,
+     "modeGames": 405,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "ash": {
+     "wr": 0.5408,
+     "games": 196,
+     "pick": 0.1777,
+     "modeWr": 0.5448,
+     "modeGames": 1037,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "colette": {
+     "wr": 0.5332,
+     "games": 377,
+     "pick": 0.3418,
+     "modeWr": 0.5018,
+     "modeGames": 2236,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "frank": {
+     "wr": 0.5938,
+     "games": 32,
+     "pick": 0.029,
+     "modeWr": 0.5506,
+     "modeGames": 89,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "lou": {
+     "wr": 0.5366,
+     "games": 123,
+     "pick": 0.1115,
+     "modeWr": 0.5189,
+     "modeGames": 557,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "griff": {
+     "wr": 0.5023,
+     "games": 430,
+     "pick": 0.3898,
+     "modeWr": 0.5077,
+     "modeGames": 1678,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "stu": {
+     "wr": 0.5184,
+     "games": 380,
+     "pick": 0.3445,
+     "modeWr": 0.5273,
+     "modeGames": 1500,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.4175,
+     "games": 297,
+     "pick": 0.2693,
+     "modeWr": 0.4395,
+     "modeGames": 1165,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "bo": {
+     "wr": 0.46,
+     "games": 200,
+     "pick": 0.1813,
+     "modeWr": 0.5265,
+     "modeGames": 868,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "pierce": {
+     "wr": 0.5374,
+     "games": 147,
+     "pick": 0.1333,
+     "modeWr": 0.4902,
+     "modeGames": 871,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "kenji": {
+     "wr": 0.5484,
+     "games": 62,
+     "pick": 0.0562,
+     "modeWr": 0.5017,
+     "modeGames": 293,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "brock": {
+     "wr": 0.225,
+     "games": 40,
+     "pick": 0.0363,
+     "modeWr": 0.3854,
+     "modeGames": 288,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "finx": {
+     "wr": 0.3871,
+     "games": 31,
+     "pick": 0.0281,
+     "modeWr": 0.4868,
+     "modeGames": 189,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "fang": {
+     "wr": 0.2258,
+     "games": 31,
+     "pick": 0.0281,
+     "modeWr": 0.3254,
+     "modeGames": 126,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mortis": {
+     "wr": 0.4551,
+     "games": 167,
+     "pick": 0.1514,
+     "modeWr": 0.5362,
+     "modeGames": 802,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.4974,
+     "games": 189,
+     "pick": 0.1714,
+     "modeWr": 0.5511,
+     "modeGames": 842,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "colt": {
+     "wr": 0.3529,
+     "games": 68,
+     "pick": 0.0617,
+     "modeWr": 0.3949,
+     "modeGames": 195,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.3462,
+     "games": 52,
+     "pick": 0.0471,
+     "modeWr": 0.3991,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.4128,
+     "games": 109,
+     "pick": 0.0988,
+     "modeWr": 0.4298,
+     "modeGames": 726,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "hz-ring-of-fire": {
+   "slug": "ring-of-fire",
+   "battles": 1054,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.6399,
+     "games": 311,
+     "pick": 0.2951,
+     "modeWr": 0.5559,
+     "modeGames": 1495,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.6061,
+     "games": 132,
+     "pick": 0.1252,
+     "modeWr": 0.6041,
+     "modeGames": 740,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "mortis": {
+     "wr": 0.6014,
+     "games": 148,
+     "pick": 0.1404,
+     "modeWr": 0.5362,
+     "modeGames": 802,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "maisie": {
+     "wr": 0.625,
+     "games": 56,
+     "pick": 0.0531,
+     "modeWr": 0.5,
+     "modeGames": 410,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "bo": {
+     "wr": 0.5625,
+     "games": 272,
+     "pick": 0.2581,
+     "modeWr": 0.5265,
+     "modeGames": 868,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "bea": {
+     "wr": 0.6389,
+     "games": 36,
+     "pick": 0.0342,
+     "modeWr": 0.5714,
+     "modeGames": 77,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "el-primo": {
+     "wr": 0.625,
+     "games": 40,
+     "pick": 0.038,
+     "modeWr": 0.5272,
+     "modeGames": 569,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mina": {
+     "wr": 0.5714,
+     "games": 98,
+     "pick": 0.093,
+     "modeWr": 0.4766,
+     "modeGames": 449,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "shade": {
+     "wr": 0.5533,
+     "games": 197,
+     "pick": 0.1869,
+     "modeWr": 0.5511,
+     "modeGames": 842,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "griff": {
+     "wr": 0.5488,
+     "games": 246,
+     "pick": 0.2334,
+     "modeWr": 0.5077,
+     "modeGames": 1678,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "stu": {
+     "wr": 0.5488,
+     "games": 246,
+     "pick": 0.2334,
+     "modeWr": 0.5273,
+     "modeGames": 1500,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "ash": {
+     "wr": 0.5596,
+     "games": 109,
+     "pick": 0.1034,
+     "modeWr": 0.5448,
+     "modeGames": 1037,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "pierce": {
+     "wr": 0.4853,
+     "games": 408,
+     "pick": 0.3871,
+     "modeWr": 0.4902,
+     "modeGames": 871,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.4723,
+     "games": 379,
+     "pick": 0.3596,
+     "modeWr": 0.5307,
+     "modeGames": 2214,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colette": {
+     "wr": 0.5113,
+     "games": 485,
+     "pick": 0.4602,
+     "modeWr": 0.5018,
+     "modeGames": 2236,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.4548,
+     "games": 354,
+     "pick": 0.3359,
+     "modeWr": 0.4395,
+     "modeGames": 1165,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "glowy": {
+     "wr": 0.5714,
+     "games": 35,
+     "pick": 0.0332,
+     "modeWr": 0.4627,
+     "modeGames": 67,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "fang": {
+     "wr": 0.4154,
+     "games": 65,
+     "pick": 0.0617,
+     "modeWr": 0.3254,
+     "modeGames": 126,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "colt": {
+     "wr": 0.4839,
+     "games": 31,
+     "pick": 0.0294,
+     "modeWr": 0.3949,
+     "modeGames": 195,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "sirius": {
+     "wr": 0.3704,
+     "games": 54,
+     "pick": 0.0512,
+     "modeWr": 0.4994,
+     "modeGames": 849,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "meg": {
+     "wr": 0.4,
+     "games": 30,
+     "pick": 0.0285,
+     "modeWr": 0.4921,
+     "modeGames": 189,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "chuck": {
+     "wr": 0.5161,
+     "games": 31,
+     "pick": 0.0294,
+     "modeWr": 0.601,
+     "modeGames": 208,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.3243,
+     "games": 74,
+     "pick": 0.0702,
+     "modeWr": 0.3991,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "emz": {
+     "wr": 0.4624,
+     "games": 186,
+     "pick": 0.1765,
+     "modeWr": 0.5193,
+     "modeGames": 1945,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "rico": {
+     "wr": 0.387,
+     "games": 230,
+     "pick": 0.2182,
+     "modeWr": 0.4298,
+     "modeGames": 726,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "brock": {
+     "wr": 0.3766,
+     "games": 154,
+     "pick": 0.1461,
+     "modeWr": 0.3854,
+     "modeGames": 288,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.3579,
+     "games": 95,
+     "pick": 0.0901,
+     "modeWr": 0.3704,
+     "modeGames": 162,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "hz-beetles": {
+   "slug": "dueling-beetles",
+   "battles": 1121,
+   "lastPlayed": "2026-10-23",
+   "inRotation": true,
+   "brawlers": {
+    "gus": {
+     "wr": 0.6119,
+     "games": 420,
+     "pick": 0.3747,
+     "modeWr": 0.5307,
+     "modeGames": 2214,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "amber": {
+     "wr": 0.6104,
+     "games": 154,
+     "pick": 0.1374,
+     "modeWr": 0.6041,
+     "modeGames": 740,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "barley": {
+     "wr": 0.6081,
+     "games": 148,
+     "pick": 0.132,
+     "modeWr": 0.5563,
+     "modeGames": 302,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "spike": {
+     "wr": 0.6132,
+     "games": 106,
+     "pick": 0.0946,
+     "modeWr": 0.5066,
+     "modeGames": 456,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "meg": {
+     "wr": 0.6154,
+     "games": 52,
+     "pick": 0.0464,
+     "modeWr": 0.4921,
+     "modeGames": 189,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "stu": {
+     "wr": 0.5505,
+     "games": 287,
+     "pick": 0.256,
+     "modeWr": 0.5273,
+     "modeGames": 1500,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "shade": {
+     "wr": 0.5519,
+     "games": 154,
+     "pick": 0.1374,
+     "modeWr": 0.5511,
+     "modeGames": 842,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "chuck": {
+     "wr": 0.6,
+     "games": 40,
+     "pick": 0.0357,
+     "modeWr": 0.601,
+     "modeGames": 208,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "kenji": {
+     "wr": 0.5814,
+     "games": 43,
+     "pick": 0.0384,
+     "modeWr": 0.5017,
+     "modeGames": 293,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mortis": {
+     "wr": 0.5313,
+     "games": 192,
+     "pick": 0.1713,
+     "modeWr": 0.5362,
+     "modeGames": 802,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "edgar": {
+     "wr": 0.5235,
+     "games": 149,
+     "pick": 0.1329,
+     "modeWr": 0.4912,
+     "modeGames": 794,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "griff": {
+     "wr": 0.5119,
+     "games": 377,
+     "pick": 0.3363,
+     "modeWr": 0.5077,
+     "modeGames": 1678,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "emz": {
+     "wr": 0.5043,
+     "games": 466,
+     "pick": 0.4157,
+     "modeWr": 0.5193,
+     "modeGames": 1945,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.4978,
+     "games": 454,
+     "pick": 0.405,
+     "modeWr": 0.5018,
+     "modeGames": 2236,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "wendy": {
+     "wr": 0.5098,
+     "games": 306,
+     "pick": 0.273,
+     "modeWr": 0.5559,
+     "modeGames": 1495,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "bo": {
+     "wr": 0.5101,
+     "games": 247,
+     "pick": 0.2203,
+     "modeWr": 0.5265,
+     "modeGames": 868,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.491,
+     "games": 222,
+     "pick": 0.198,
+     "modeWr": 0.4395,
+     "modeGames": 1165,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.5135,
+     "games": 37,
+     "pick": 0.033,
+     "modeWr": 0.3991,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "finx": {
+     "wr": 0.3542,
+     "games": 48,
+     "pick": 0.0428,
+     "modeWr": 0.4868,
+     "modeGames": 189,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "ruffs": {
+     "wr": 0.375,
+     "games": 32,
+     "pick": 0.0285,
+     "modeWr": 0.5039,
+     "modeGames": 127,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "el-primo": {
+     "wr": 0.4138,
+     "games": 87,
+     "pick": 0.0776,
+     "modeWr": 0.5272,
+     "modeGames": 569,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "starr-nova": {
+     "wr": 0.3846,
+     "games": 39,
+     "pick": 0.0348,
+     "modeWr": 0.4806,
+     "modeGames": 258,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gray": {
+     "wr": 0.3643,
+     "games": 140,
+     "pick": 0.1249,
+     "modeWr": 0.4444,
+     "modeGames": 441,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "nori": {
+     "wr": 0.4324,
+     "games": 74,
+     "pick": 0.066,
+     "modeWr": 0.5062,
+     "modeGames": 405,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "lumi": {
+     "wr": 0.435,
+     "games": 200,
+     "pick": 0.1784,
+     "modeWr": 0.4474,
+     "modeGames": 932,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gigi": {
+     "wr": 0.3548,
+     "games": 31,
+     "pick": 0.0277,
+     "modeWr": 0.4158,
+     "modeGames": 101,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "brock": {
+     "wr": 0.3958,
+     "games": 48,
+     "pick": 0.0428,
+     "modeWr": 0.3854,
+     "modeGames": 288,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "hz-parallel": {
+   "slug": "parallel-plays",
+   "battles": 1150,
+   "lastPlayed": "2026-10-23",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6569,
+     "games": 102,
+     "pick": 0.0887,
+     "modeWr": 0.5511,
+     "modeGames": 842,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5804,
+     "games": 224,
+     "pick": 0.1948,
+     "modeWr": 0.6041,
+     "modeGames": 740,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "el-primo": {
+     "wr": 0.5761,
+     "games": 184,
+     "pick": 0.16,
+     "modeWr": 0.5272,
+     "modeGames": 569,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "mortis": {
+     "wr": 0.5654,
+     "games": 191,
+     "pick": 0.1661,
+     "modeWr": 0.5362,
+     "modeGames": 802,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "nori": {
+     "wr": 0.5607,
+     "games": 173,
+     "pick": 0.1504,
+     "modeWr": 0.5062,
+     "modeGames": 405,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "willow": {
+     "wr": 0.5678,
+     "games": 118,
+     "pick": 0.1026,
+     "modeWr": 0.5766,
+     "modeGames": 137,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "juju": {
+     "wr": 0.5508,
+     "games": 236,
+     "pick": 0.2052,
+     "modeWr": 0.5367,
+     "modeGames": 259,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "lou": {
+     "wr": 0.5882,
+     "games": 34,
+     "pick": 0.0296,
+     "modeWr": 0.5189,
+     "modeGames": 557,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "sirius": {
+     "wr": 0.526,
+     "games": 346,
+     "pick": 0.3009,
+     "modeWr": 0.4994,
+     "modeGames": 849,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "trunk": {
+     "wr": 0.5368,
+     "games": 95,
+     "pick": 0.0826,
+     "modeWr": 0.5243,
+     "modeGames": 185,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "starr-nova": {
+     "wr": 0.5472,
+     "games": 53,
+     "pick": 0.0461,
+     "modeWr": 0.4806,
+     "modeGames": 258,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "emz": {
+     "wr": 0.5192,
+     "games": 364,
+     "pick": 0.3165,
+     "modeWr": 0.5193,
+     "modeGames": 1945,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "edgar": {
+     "wr": 0.4776,
+     "games": 312,
+     "pick": 0.2713,
+     "modeWr": 0.4912,
+     "modeGames": 794,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "stu": {
+     "wr": 0.4604,
+     "games": 328,
+     "pick": 0.2852,
+     "modeWr": 0.5273,
+     "modeGames": 1500,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.5089,
+     "games": 505,
+     "pick": 0.4391,
+     "modeWr": 0.5307,
+     "modeGames": 2214,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.5013,
+     "games": 383,
+     "pick": 0.333,
+     "modeWr": 0.5018,
+     "modeGames": 2236,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "wendy": {
+     "wr": 0.49,
+     "games": 300,
+     "pick": 0.2609,
+     "modeWr": 0.5559,
+     "modeGames": 1495,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "ash": {
+     "wr": 0.5091,
+     "games": 275,
+     "pick": 0.2391,
+     "modeWr": 0.5448,
+     "modeGames": 1037,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "berry": {
+     "wr": 0.4688,
+     "games": 32,
+     "pick": 0.0278,
+     "modeWr": 0.3611,
+     "modeGames": 72,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "buzz": {
+     "wr": 0.4907,
+     "games": 108,
+     "pick": 0.0939,
+     "modeWr": 0.3923,
+     "modeGames": 260,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.4848,
+     "games": 33,
+     "pick": 0.0287,
+     "modeWr": 0.3991,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "barley": {
+     "wr": 0.4154,
+     "games": 65,
+     "pick": 0.0565,
+     "modeWr": 0.5563,
+     "modeGames": 302,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "moe": {
+     "wr": 0.3095,
+     "games": 42,
+     "pick": 0.0365,
+     "modeWr": 0.4322,
+     "modeGames": 118,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "chuck": {
+     "wr": 0.5273,
+     "games": 55,
+     "pick": 0.0478,
+     "modeWr": 0.601,
+     "modeGames": 208,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mina": {
+     "wr": 0.4182,
+     "games": 55,
+     "pick": 0.0478,
+     "modeWr": 0.4766,
+     "modeGames": 449,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "cordelius": {
+     "wr": 0.3333,
+     "games": 57,
+     "pick": 0.0496,
+     "modeWr": 0.367,
+     "modeGames": 109,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "surge": {
+     "wr": 0.4351,
+     "games": 262,
+     "pick": 0.2278,
+     "modeWr": 0.4477,
+     "modeGames": 679,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "doug": {
+     "wr": 0.3958,
+     "games": 48,
+     "pick": 0.0417,
+     "modeWr": 0.4253,
+     "modeGames": 87,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mico": {
+     "wr": 0.3947,
+     "games": 38,
+     "pick": 0.033,
+     "modeWr": 0.3962,
+     "modeGames": 53,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-belles-rock": {
+   "slug": "belle-s-rock",
+   "battles": 1066,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "brock": {
+     "wr": 0.5877,
+     "games": 604,
+     "pick": 0.5666,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "sprout": {
+     "wr": 0.5821,
+     "games": 268,
+     "pick": 0.2514,
+     "modeWr": 0.5807,
+     "modeGames": 675,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "rico": {
+     "wr": 0.5606,
+     "games": 553,
+     "pick": 0.5188,
+     "modeWr": 0.5384,
+     "modeGames": 1224,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "wendy": {
+     "wr": 0.5468,
+     "games": 278,
+     "pick": 0.2608,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "mortis": {
+     "wr": 0.5644,
+     "games": 101,
+     "pick": 0.0947,
+     "modeWr": 0.4723,
+     "modeGames": 379,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "shade": {
+     "wr": 0.5509,
+     "games": 167,
+     "pick": 0.1567,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "tick": {
+     "wr": 0.5534,
+     "games": 103,
+     "pick": 0.0966,
+     "modeWr": 0.507,
+     "modeGames": 286,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gus": {
+     "wr": 0.5299,
+     "games": 351,
+     "pick": 0.3293,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "ollie": {
+     "wr": 0.55,
+     "games": 60,
+     "pick": 0.0563,
+     "modeWr": 0.5138,
+     "modeGames": 181,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gene": {
+     "wr": 0.5212,
+     "games": 165,
+     "pick": 0.1548,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "belle": {
+     "wr": 0.5224,
+     "games": 134,
+     "pick": 0.1257,
+     "modeWr": 0.498,
+     "modeGames": 739,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.5233,
+     "games": 86,
+     "pick": 0.0807,
+     "modeWr": 0.5372,
+     "modeGames": 484,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "max": {
+     "wr": 0.481,
+     "games": 343,
+     "pick": 0.3218,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gray": {
+     "wr": 0.4757,
+     "games": 370,
+     "pick": 0.3471,
+     "modeWr": 0.49,
+     "modeGames": 1206,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "piper": {
+     "wr": 0.4414,
+     "games": 256,
+     "pick": 0.2402,
+     "modeWr": 0.4887,
+     "modeGames": 1731,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "ruffs": {
+     "wr": 0.2821,
+     "games": 39,
+     "pick": 0.0366,
+     "modeWr": 0.495,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "leon": {
+     "wr": 0.3864,
+     "games": 44,
+     "pick": 0.0413,
+     "modeWr": 0.4927,
+     "modeGames": 274,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "squeak": {
+     "wr": 0.3714,
+     "games": 35,
+     "pick": 0.0328,
+     "modeWr": 0.4677,
+     "modeGames": 186,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "amber": {
+     "wr": 0.4104,
+     "games": 173,
+     "pick": 0.1623,
+     "modeWr": 0.5,
+     "modeGames": 900,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "carl": {
+     "wr": 0.3333,
+     "games": 54,
+     "pick": 0.0507,
+     "modeWr": 0.422,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "meeple": {
+     "wr": 0.3832,
+     "games": 107,
+     "pick": 0.1004,
+     "modeWr": 0.4714,
+     "modeGames": 507,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "mina": {
+     "wr": 0.407,
+     "games": 172,
+     "pick": 0.1614,
+     "modeWr": 0.4756,
+     "modeGames": 902,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "griff": {
+     "wr": 0.3409,
+     "games": 44,
+     "pick": 0.0413,
+     "modeWr": 0.4128,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-flaring-phoenix": {
+   "slug": "flaring-phoenix",
+   "battles": 1161,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "amber": {
+     "wr": 0.6071,
+     "games": 168,
+     "pick": 0.1447,
+     "modeWr": 0.5,
+     "modeGames": 900,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "sprout": {
+     "wr": 0.5951,
+     "games": 205,
+     "pick": 0.1766,
+     "modeWr": 0.5807,
+     "modeGames": 675,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "edgar": {
+     "wr": 0.596,
+     "games": 198,
+     "pick": 0.1705,
+     "modeWr": 0.4789,
+     "modeGames": 641,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "brock": {
+     "wr": 0.5636,
+     "games": 676,
+     "pick": 0.5823,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.5882,
+     "games": 119,
+     "pick": 0.1025,
+     "modeWr": 0.5372,
+     "modeGames": 484,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "doug": {
+     "wr": 0.6182,
+     "games": 55,
+     "pick": 0.0474,
+     "modeWr": 0.6016,
+     "modeGames": 123,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "shade": {
+     "wr": 0.5584,
+     "games": 231,
+     "pick": 0.199,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "najia": {
+     "wr": 0.5497,
+     "games": 151,
+     "pick": 0.1301,
+     "modeWr": 0.5639,
+     "modeGames": 853,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "squeak": {
+     "wr": 0.5692,
+     "games": 65,
+     "pick": 0.056,
+     "modeWr": 0.4677,
+     "modeGames": 186,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "leon": {
+     "wr": 0.5625,
+     "games": 48,
+     "pick": 0.0413,
+     "modeWr": 0.4927,
+     "modeGames": 274,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "mandy": {
+     "wr": 0.5313,
+     "games": 192,
+     "pick": 0.1654,
+     "modeWr": 0.5039,
+     "modeGames": 649,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "el-primo": {
+     "wr": 0.5625,
+     "games": 32,
+     "pick": 0.0276,
+     "modeWr": 0.5128,
+     "modeGames": 78,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "wendy": {
+     "wr": 0.4783,
+     "games": 299,
+     "pick": 0.2575,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.4955,
+     "games": 448,
+     "pick": 0.3859,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gene": {
+     "wr": 0.4975,
+     "games": 400,
+     "pick": 0.3445,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.4481,
+     "games": 395,
+     "pick": 0.3402,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gray": {
+     "wr": 0.5093,
+     "games": 322,
+     "pick": 0.2773,
+     "modeWr": 0.49,
+     "modeGames": 1206,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.5089,
+     "games": 281,
+     "pick": 0.242,
+     "modeWr": 0.4849,
+     "modeGames": 1229,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "spike": {
+     "wr": 0.3542,
+     "games": 48,
+     "pick": 0.0413,
+     "modeWr": 0.4395,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gigi": {
+     "wr": 0.4125,
+     "games": 80,
+     "pick": 0.0689,
+     "modeWr": 0.4771,
+     "modeGames": 350,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "tick": {
+     "wr": 0.4505,
+     "games": 91,
+     "pick": 0.0784,
+     "modeWr": 0.507,
+     "modeGames": 286,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.4842,
+     "games": 95,
+     "pick": 0.0818,
+     "modeWr": 0.5384,
+     "modeGames": 1224,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "lily": {
+     "wr": 0.4474,
+     "games": 38,
+     "pick": 0.0327,
+     "modeWr": 0.5,
+     "modeGames": 66,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "sirius": {
+     "wr": 0.3563,
+     "games": 87,
+     "pick": 0.0749,
+     "modeWr": 0.3667,
+     "modeGames": 210,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.4293,
+     "games": 191,
+     "pick": 0.1645,
+     "modeWr": 0.4718,
+     "modeGames": 1314,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "meeple": {
+     "wr": 0.4286,
+     "games": 133,
+     "pick": 0.1146,
+     "modeWr": 0.4714,
+     "modeGames": 507,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "griff": {
+     "wr": 0.403,
+     "games": 67,
+     "pick": 0.0577,
+     "modeWr": 0.4128,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-new-horizons": {
+   "slug": "new-horizons",
+   "battles": 1096,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "najia": {
+     "wr": 0.6257,
+     "games": 171,
+     "pick": 0.156,
+     "modeWr": 0.5639,
+     "modeGames": 853,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "ruffs": {
+     "wr": 0.6667,
+     "games": 36,
+     "pick": 0.0328,
+     "modeWr": 0.495,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "shade": {
+     "wr": 0.5691,
+     "games": 188,
+     "pick": 0.1715,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5492,
+     "games": 295,
+     "pick": 0.2692,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "rico": {
+     "wr": 0.5359,
+     "games": 237,
+     "pick": 0.2162,
+     "modeWr": 0.5384,
+     "modeGames": 1224,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "sprout": {
+     "wr": 0.5488,
+     "games": 82,
+     "pick": 0.0748,
+     "modeWr": 0.5807,
+     "modeGames": 675,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gus": {
+     "wr": 0.5291,
+     "games": 327,
+     "pick": 0.2984,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "leon": {
+     "wr": 0.5479,
+     "games": 73,
+     "pick": 0.0666,
+     "modeWr": 0.4927,
+     "modeGames": 274,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "brock": {
+     "wr": 0.5194,
+     "games": 618,
+     "pick": 0.5639,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.5319,
+     "games": 94,
+     "pick": 0.0858,
+     "modeWr": 0.5372,
+     "modeGames": 484,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "meeple": {
+     "wr": 0.5238,
+     "games": 126,
+     "pick": 0.115,
+     "modeWr": 0.4714,
+     "modeGames": 507,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "colt": {
+     "wr": 0.5174,
+     "games": 172,
+     "pick": 0.1569,
+     "modeWr": 0.4777,
+     "modeGames": 404,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "byron": {
+     "wr": 0.4806,
+     "games": 283,
+     "pick": 0.2582,
+     "modeWr": 0.4718,
+     "modeGames": 1314,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gene": {
+     "wr": 0.4747,
+     "games": 257,
+     "pick": 0.2345,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "max": {
+     "wr": 0.4571,
+     "games": 455,
+     "pick": 0.4151,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "piper": {
+     "wr": 0.4929,
+     "games": 422,
+     "pick": 0.385,
+     "modeWr": 0.4887,
+     "modeGames": 1731,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gray": {
+     "wr": 0.5061,
+     "games": 328,
+     "pick": 0.2993,
+     "modeWr": 0.49,
+     "modeGames": 1206,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "bea": {
+     "wr": 0.5,
+     "games": 30,
+     "pick": 0.0274,
+     "modeWr": 0.4237,
+     "modeGames": 118,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "stu": {
+     "wr": 0.4375,
+     "games": 32,
+     "pick": 0.0292,
+     "modeWr": 0.3737,
+     "modeGames": 99,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "griff": {
+     "wr": 0.475,
+     "games": 40,
+     "pick": 0.0365,
+     "modeWr": 0.4128,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "kit": {
+     "wr": 0.3667,
+     "games": 30,
+     "pick": 0.0274,
+     "modeWr": 0.4887,
+     "modeGames": 133,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mortis": {
+     "wr": 0.3542,
+     "games": 96,
+     "pick": 0.0876,
+     "modeWr": 0.4723,
+     "modeGames": 379,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "ollie": {
+     "wr": 0.4,
+     "games": 30,
+     "pick": 0.0274,
+     "modeWr": 0.5138,
+     "modeGames": 181,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "nani": {
+     "wr": 0.36,
+     "games": 50,
+     "pick": 0.0456,
+     "modeWr": 0.4444,
+     "modeGames": 234,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.4174,
+     "games": 115,
+     "pick": 0.1049,
+     "modeWr": 0.4789,
+     "modeGames": 641,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "carl": {
+     "wr": 0.3913,
+     "games": 46,
+     "pick": 0.042,
+     "modeWr": 0.422,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-open": {
+   "slug": "out-in-the-open",
+   "battles": 1180,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "brock": {
+     "wr": 0.5676,
+     "games": 599,
+     "pick": 0.5076,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5601,
+     "games": 341,
+     "pick": 0.289,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "rico": {
+     "wr": 0.5804,
+     "games": 112,
+     "pick": 0.0949,
+     "modeWr": 0.5384,
+     "modeGames": 1224,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gene": {
+     "wr": 0.5406,
+     "games": 357,
+     "pick": 0.3025,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "meeple": {
+     "wr": 0.5579,
+     "games": 95,
+     "pick": 0.0805,
+     "modeWr": 0.4714,
+     "modeGames": 507,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "angelo": {
+     "wr": 0.5328,
+     "games": 259,
+     "pick": 0.2195,
+     "modeWr": 0.5112,
+     "modeGames": 489,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "najia": {
+     "wr": 0.5359,
+     "games": 181,
+     "pick": 0.1534,
+     "modeWr": 0.5639,
+     "modeGames": 853,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.5259,
+     "games": 135,
+     "pick": 0.1144,
+     "modeWr": 0.5372,
+     "modeGames": 484,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "belle": {
+     "wr": 0.5154,
+     "games": 227,
+     "pick": 0.1924,
+     "modeWr": 0.498,
+     "modeGames": 739,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "mortis": {
+     "wr": 0.5263,
+     "games": 57,
+     "pick": 0.0483,
+     "modeWr": 0.4723,
+     "modeGames": 379,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "maisie": {
+     "wr": 0.5294,
+     "games": 34,
+     "pick": 0.0288,
+     "modeWr": 0.4741,
+     "modeGames": 116,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gigi": {
+     "wr": 0.5192,
+     "games": 52,
+     "pick": 0.0441,
+     "modeWr": 0.4771,
+     "modeGames": 350,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "piper": {
+     "wr": 0.4876,
+     "games": 566,
+     "pick": 0.4797,
+     "modeWr": 0.4887,
+     "modeGames": 1731,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "byron": {
+     "wr": 0.4856,
+     "games": 381,
+     "pick": 0.3229,
+     "modeWr": 0.4718,
+     "modeGames": 1314,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.4791,
+     "games": 359,
+     "pick": 0.3042,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "pearl": {
+     "wr": 0.4953,
+     "games": 426,
+     "pick": 0.361,
+     "modeWr": 0.4849,
+     "modeGames": 1229,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.494,
+     "games": 417,
+     "pick": 0.3534,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pierce": {
+     "wr": 0.5029,
+     "games": 342,
+     "pick": 0.2898,
+     "modeWr": 0.4925,
+     "modeGames": 1064,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "spike": {
+     "wr": 0.5179,
+     "games": 56,
+     "pick": 0.0475,
+     "modeWr": 0.4395,
+     "modeGames": 223,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "gray": {
+     "wr": 0.3434,
+     "games": 99,
+     "pick": 0.0839,
+     "modeWr": 0.49,
+     "modeGames": 1206,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.339,
+     "games": 59,
+     "pick": 0.05,
+     "modeWr": 0.4789,
+     "modeGames": 641,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "bea": {
+     "wr": 0.3143,
+     "games": 35,
+     "pick": 0.0297,
+     "modeWr": 0.4237,
+     "modeGames": 118,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "fang": {
+     "wr": 0.2727,
+     "games": 33,
+     "pick": 0.028,
+     "modeWr": 0.3798,
+     "modeGames": 129,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "squeak": {
+     "wr": 0.3611,
+     "games": 36,
+     "pick": 0.0305,
+     "modeWr": 0.4677,
+     "modeGames": 186,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.434,
+     "games": 106,
+     "pick": 0.0898,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-goldarm-gulch": {
+   "slug": "goldarm-gulch",
+   "battles": 441,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "brock": {
+     "wr": 0.5923,
+     "games": 260,
+     "pick": 0.5896,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "najia": {
+     "wr": 0.6667,
+     "games": 39,
+     "pick": 0.0884,
+     "modeWr": 0.5639,
+     "modeGames": 853,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gigi": {
+     "wr": 0.65,
+     "games": 40,
+     "pick": 0.0907,
+     "modeWr": 0.4771,
+     "modeGames": 350,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "sprout": {
+     "wr": 0.6102,
+     "games": 59,
+     "pick": 0.1338,
+     "modeWr": 0.5807,
+     "modeGames": 675,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gray": {
+     "wr": 0.5909,
+     "games": 66,
+     "pick": 0.1497,
+     "modeWr": 0.49,
+     "modeGames": 1206,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "piper": {
+     "wr": 0.5612,
+     "games": 98,
+     "pick": 0.2222,
+     "modeWr": 0.4887,
+     "modeGames": 1731,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "byron": {
+     "wr": 0.5604,
+     "games": 91,
+     "pick": 0.2063,
+     "modeWr": 0.4718,
+     "modeGames": 1314,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gus": {
+     "wr": 0.5395,
+     "games": 152,
+     "pick": 0.3447,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "gene": {
+     "wr": 0.5417,
+     "games": 96,
+     "pick": 0.2177,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "wendy": {
+     "wr": 0.5271,
+     "games": 129,
+     "pick": 0.2925,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "shade": {
+     "wr": 0.527,
+     "games": 74,
+     "pick": 0.1678,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "ruffs": {
+     "wr": 0.5405,
+     "games": 37,
+     "pick": 0.0839,
+     "modeWr": 0.495,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "rico": {
+     "wr": 0.4856,
+     "games": 208,
+     "pick": 0.4717,
+     "modeWr": 0.5384,
+     "modeGames": 1224,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "max": {
+     "wr": 0.4148,
+     "games": 135,
+     "pick": 0.3061,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.5122,
+     "games": 123,
+     "pick": 0.2789,
+     "modeWr": 0.4849,
+     "modeGames": 1229,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "griff": {
+     "wr": 0.4706,
+     "games": 34,
+     "pick": 0.0771,
+     "modeWr": 0.4128,
+     "modeGames": 218,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "colt": {
+     "wr": 0.3455,
+     "games": 55,
+     "pick": 0.1247,
+     "modeWr": 0.4777,
+     "modeGames": 404,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "belle": {
+     "wr": 0.3696,
+     "games": 46,
+     "pick": 0.1043,
+     "modeWr": 0.498,
+     "modeGames": 739,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mortis": {
+     "wr": 0.4146,
+     "games": 41,
+     "pick": 0.093,
+     "modeWr": 0.4723,
+     "modeGames": 379,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.4247,
+     "games": 73,
+     "pick": 0.1655,
+     "modeWr": 0.4789,
+     "modeGames": 641,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "pierce": {
+     "wr": 0.4583,
+     "games": 72,
+     "pick": 0.1633,
+     "modeWr": 0.4925,
+     "modeGames": 1064,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "ko-flowing-springs": {
+   "slug": "flowing-springs",
+   "battles": 411,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "najia": {
+     "wr": 0.6465,
+     "games": 99,
+     "pick": 0.2409,
+     "modeWr": 0.5639,
+     "modeGames": 853,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5703,
+     "games": 128,
+     "pick": 0.3114,
+     "modeWr": 0.5367,
+     "modeGames": 1470,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "pierce": {
+     "wr": 0.5679,
+     "games": 81,
+     "pick": 0.1971,
+     "modeWr": 0.4925,
+     "modeGames": 1064,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "piper": {
+     "wr": 0.5419,
+     "games": 179,
+     "pick": 0.4355,
+     "modeWr": 0.4887,
+     "modeGames": 1731,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "brock": {
+     "wr": 0.5234,
+     "games": 235,
+     "pick": 0.5718,
+     "modeWr": 0.5595,
+     "modeGames": 2992,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "mandy": {
+     "wr": 0.5326,
+     "games": 92,
+     "pick": 0.2238,
+     "modeWr": 0.5039,
+     "modeGames": 649,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "sprout": {
+     "wr": 0.5238,
+     "games": 42,
+     "pick": 0.1022,
+     "modeWr": 0.5807,
+     "modeGames": 675,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "belle": {
+     "wr": 0.5077,
+     "games": 65,
+     "pick": 0.1582,
+     "modeWr": 0.498,
+     "modeGames": 739,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "nani": {
+     "wr": 0.5,
+     "games": 58,
+     "pick": 0.1411,
+     "modeWr": 0.4444,
+     "modeGames": 234,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "alli": {
+     "wr": 0.5,
+     "games": 40,
+     "pick": 0.0973,
+     "modeWr": 0.5614,
+     "modeGames": 57,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "amber": {
+     "wr": 0.4948,
+     "games": 97,
+     "pick": 0.236,
+     "modeWr": 0.5,
+     "modeGames": 900,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "angelo": {
+     "wr": 0.4882,
+     "games": 170,
+     "pick": 0.4136,
+     "modeWr": 0.5112,
+     "modeGames": 489,
+     "reliability": "fair",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.4854,
+     "games": 171,
+     "pick": 0.4161,
+     "modeWr": 0.5077,
+     "modeGames": 1808,
+     "reliability": "fair",
+     "verdict": "overrated"
+    },
+    "byron": {
+     "wr": 0.391,
+     "games": 133,
+     "pick": 0.3236,
+     "modeWr": 0.4718,
+     "modeGames": 1314,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.3239,
+     "games": 71,
+     "pick": 0.1727,
+     "modeWr": 0.4849,
+     "modeGames": 1229,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gene": {
+     "wr": 0.4058,
+     "games": 69,
+     "pick": 0.1679,
+     "modeWr": 0.506,
+     "modeGames": 1344,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.4429,
+     "games": 70,
+     "pick": 0.1703,
+     "modeWr": 0.5311,
+     "modeGames": 836,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "max": {
+     "wr": 0.4478,
+     "games": 67,
+     "pick": 0.163,
+     "modeWr": 0.4647,
+     "modeGames": 1812,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "heist-bridge": {
+   "slug": "bridge-too-far",
+   "battles": 1022,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.6723,
+     "games": 238,
+     "pick": 0.2329,
+     "modeWr": 0.6011,
+     "modeGames": 895,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5906,
+     "games": 171,
+     "pick": 0.1673,
+     "modeWr": 0.5265,
+     "modeGames": 680,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "8-bit": {
+     "wr": 0.5727,
+     "games": 337,
+     "pick": 0.3297,
+     "modeWr": 0.5091,
+     "modeGames": 1102,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "melodie": {
+     "wr": 0.5709,
+     "games": 275,
+     "pick": 0.2691,
+     "modeWr": 0.5227,
+     "modeGames": 1102,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.5541,
+     "games": 527,
+     "pick": 0.5157,
+     "modeWr": 0.5319,
+     "modeGames": 2401,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "nori": {
+     "wr": 0.5568,
+     "games": 273,
+     "pick": 0.2671,
+     "modeWr": 0.5621,
+     "modeGames": 1329,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "max": {
+     "wr": 0.5802,
+     "games": 81,
+     "pick": 0.0793,
+     "modeWr": 0.5374,
+     "modeGames": 294,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "colt": {
+     "wr": 0.5396,
+     "games": 619,
+     "pick": 0.6057,
+     "modeWr": 0.5109,
+     "modeGames": 2294,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "angelo": {
+     "wr": 0.5294,
+     "games": 170,
+     "pick": 0.1663,
+     "modeWr": 0.5096,
+     "modeGames": 314,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "carl": {
+     "wr": 0.5405,
+     "games": 37,
+     "pick": 0.0362,
+     "modeWr": 0.5,
+     "modeGames": 546,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "shade": {
+     "wr": 0.5022,
+     "games": 223,
+     "pick": 0.2182,
+     "modeWr": 0.5792,
+     "modeGames": 827,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "eve": {
+     "wr": 0.4949,
+     "games": 99,
+     "pick": 0.0969,
+     "modeWr": 0.4715,
+     "modeGames": 193,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "brock": {
+     "wr": 0.4601,
+     "games": 489,
+     "pick": 0.4785,
+     "modeWr": 0.4432,
+     "modeGames": 1875,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "pierce": {
+     "wr": 0.4949,
+     "games": 392,
+     "pick": 0.3836,
+     "modeWr": 0.5087,
+     "modeGames": 1209,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "piper": {
+     "wr": 0.4304,
+     "games": 381,
+     "pick": 0.3728,
+     "modeWr": 0.4111,
+     "modeGames": 669,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gus": {
+     "wr": 0.367,
+     "games": 327,
+     "pick": 0.32,
+     "modeWr": 0.4482,
+     "modeGames": 1593,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.4466,
+     "games": 103,
+     "pick": 0.1008,
+     "modeWr": 0.5408,
+     "modeGames": 967,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "charlie": {
+     "wr": 0.3548,
+     "games": 31,
+     "pick": 0.0303,
+     "modeWr": 0.4375,
+     "modeGames": 80,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "belle": {
+     "wr": 0.4419,
+     "games": 86,
+     "pick": 0.0841,
+     "modeWr": 0.5197,
+     "modeGames": 229,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.3889,
+     "games": 54,
+     "pick": 0.0528,
+     "modeWr": 0.4662,
+     "modeGames": 517,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.3565,
+     "games": 115,
+     "pick": 0.1125,
+     "modeWr": 0.4041,
+     "modeGames": 245,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "lola": {
+     "wr": 0.283,
+     "games": 53,
+     "pick": 0.0519,
+     "modeWr": 0.344,
+     "modeGames": 125,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "alli": {
+     "wr": 0.3429,
+     "games": 35,
+     "pick": 0.0342,
+     "modeWr": 0.321,
+     "modeGames": 81,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "nani": {
+     "wr": 0.4314,
+     "games": 153,
+     "pick": 0.1497,
+     "modeWr": 0.4323,
+     "modeGames": 192,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "heist-kaboom": {
+   "slug": "kaboom-canyon",
+   "battles": 1039,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.6066,
+     "games": 272,
+     "pick": 0.2618,
+     "modeWr": 0.6011,
+     "modeGames": 895,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "shade": {
+     "wr": 0.5971,
+     "games": 206,
+     "pick": 0.1983,
+     "modeWr": 0.5792,
+     "modeGames": 827,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.5697,
+     "games": 595,
+     "pick": 0.5727,
+     "modeWr": 0.5319,
+     "modeGames": 2401,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "rico": {
+     "wr": 0.5915,
+     "games": 71,
+     "pick": 0.0683,
+     "modeWr": 0.5408,
+     "modeGames": 967,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "nori": {
+     "wr": 0.5432,
+     "games": 278,
+     "pick": 0.2676,
+     "modeWr": 0.5621,
+     "modeGames": 1329,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "finx": {
+     "wr": 0.5781,
+     "games": 64,
+     "pick": 0.0616,
+     "modeWr": 0.55,
+     "modeGames": 80,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "melodie": {
+     "wr": 0.5401,
+     "games": 324,
+     "pick": 0.3118,
+     "modeWr": 0.5227,
+     "modeGames": 1102,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "chuck": {
+     "wr": 0.5763,
+     "games": 59,
+     "pick": 0.0568,
+     "modeWr": 0.4815,
+     "modeGames": 243,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "pearl": {
+     "wr": 0.6129,
+     "games": 31,
+     "pick": 0.0298,
+     "modeWr": 0.4211,
+     "modeGames": 114,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "amber": {
+     "wr": 0.5474,
+     "games": 137,
+     "pick": 0.1319,
+     "modeWr": 0.5265,
+     "modeGames": 680,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "pierce": {
+     "wr": 0.5331,
+     "games": 332,
+     "pick": 0.3195,
+     "modeWr": 0.5087,
+     "modeGames": 1209,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "gigi": {
+     "wr": 0.5938,
+     "games": 32,
+     "pick": 0.0308,
+     "modeWr": 0.5106,
+     "modeGames": 141,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gus": {
+     "wr": 0.4842,
+     "games": 444,
+     "pick": 0.4273,
+     "modeWr": 0.4482,
+     "modeGames": 1593,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colt": {
+     "wr": 0.4964,
+     "games": 554,
+     "pick": 0.5332,
+     "modeWr": 0.5109,
+     "modeGames": 2294,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "brock": {
+     "wr": 0.4542,
+     "games": 469,
+     "pick": 0.4514,
+     "modeWr": 0.4432,
+     "modeGames": 1875,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.4857,
+     "games": 35,
+     "pick": 0.0337,
+     "modeWr": 0.4295,
+     "modeGames": 156,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "max": {
+     "wr": 0.4455,
+     "games": 110,
+     "pick": 0.1059,
+     "modeWr": 0.5374,
+     "modeGames": 294,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "maisie": {
+     "wr": 0.42,
+     "games": 50,
+     "pick": 0.0481,
+     "modeWr": 0.5035,
+     "modeGames": 284,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "piper": {
+     "wr": 0.3364,
+     "games": 110,
+     "pick": 0.1059,
+     "modeWr": 0.4111,
+     "modeGames": 669,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.3333,
+     "games": 60,
+     "pick": 0.0577,
+     "modeWr": 0.4041,
+     "modeGames": 245,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "penny": {
+     "wr": 0.4595,
+     "games": 37,
+     "pick": 0.0356,
+     "modeWr": 0.5287,
+     "modeGames": 522,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "bull": {
+     "wr": 0.4324,
+     "games": 37,
+     "pick": 0.0356,
+     "modeWr": 0.4942,
+     "modeGames": 172,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "crow": {
+     "wr": 0.3621,
+     "games": 58,
+     "pick": 0.0558,
+     "modeWr": 0.3636,
+     "modeGames": 132,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "lola": {
+     "wr": 0.3585,
+     "games": 53,
+     "pick": 0.051,
+     "modeWr": 0.344,
+     "modeGames": 125,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "alli": {
+     "wr": 0.3125,
+     "games": 32,
+     "pick": 0.0308,
+     "modeWr": 0.321,
+     "modeGames": 81,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "heist-hot-potato": {
+   "slug": "hot-potato",
+   "battles": 1082,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6483,
+     "games": 145,
+     "pick": 0.134,
+     "modeWr": 0.5792,
+     "modeGames": 827,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "rico": {
+     "wr": 0.5775,
+     "games": 568,
+     "pick": 0.525,
+     "modeWr": 0.5408,
+     "modeGames": 967,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "wendy": {
+     "wr": 0.5882,
+     "games": 85,
+     "pick": 0.0786,
+     "modeWr": 0.6011,
+     "modeGames": 895,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "nori": {
+     "wr": 0.5499,
+     "games": 371,
+     "pick": 0.3429,
+     "modeWr": 0.5621,
+     "modeGames": 1329,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "nita": {
+     "wr": 0.5664,
+     "games": 113,
+     "pick": 0.1044,
+     "modeWr": 0.5163,
+     "modeGames": 153,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "kaze": {
+     "wr": 0.5503,
+     "games": 189,
+     "pick": 0.1747,
+     "modeWr": 0.4966,
+     "modeGames": 739,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "berry": {
+     "wr": 0.5644,
+     "games": 101,
+     "pick": 0.0933,
+     "modeWr": 0.488,
+     "modeGames": 125,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "bibi": {
+     "wr": 0.5612,
+     "games": 98,
+     "pick": 0.0906,
+     "modeWr": 0.5952,
+     "modeGames": 168,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "maisie": {
+     "wr": 0.5414,
+     "games": 157,
+     "pick": 0.1451,
+     "modeWr": 0.5035,
+     "modeGames": 284,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "pierce": {
+     "wr": 0.5571,
+     "games": 70,
+     "pick": 0.0647,
+     "modeWr": 0.5087,
+     "modeGames": 1209,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "ash": {
+     "wr": 0.6,
+     "games": 30,
+     "pick": 0.0277,
+     "modeWr": 0.5556,
+     "modeGames": 54,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "bull": {
+     "wr": 0.5319,
+     "games": 94,
+     "pick": 0.0869,
+     "modeWr": 0.4942,
+     "modeGames": 172,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "edgar": {
+     "wr": 0.4751,
+     "games": 221,
+     "pick": 0.2043,
+     "modeWr": 0.4662,
+     "modeGames": 517,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colt": {
+     "wr": 0.4727,
+     "games": 495,
+     "pick": 0.4575,
+     "modeWr": 0.5109,
+     "modeGames": 2294,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colette": {
+     "wr": 0.5043,
+     "games": 587,
+     "pick": 0.5425,
+     "modeWr": 0.5319,
+     "modeGames": 2401,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gus": {
+     "wr": 0.4363,
+     "games": 369,
+     "pick": 0.341,
+     "modeWr": 0.4482,
+     "modeGames": 1593,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "griff": {
+     "wr": 0.4966,
+     "games": 296,
+     "pick": 0.2736,
+     "modeWr": 0.4786,
+     "modeGames": 585,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "brock": {
+     "wr": 0.3904,
+     "games": 228,
+     "pick": 0.2107,
+     "modeWr": 0.4432,
+     "modeGames": 1875,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.4912,
+     "games": 57,
+     "pick": 0.0527,
+     "modeWr": 0.4295,
+     "modeGames": 156,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "surge": {
+     "wr": 0.4375,
+     "games": 48,
+     "pick": 0.0444,
+     "modeWr": 0.3774,
+     "modeGames": 106,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "penny": {
+     "wr": 0.3333,
+     "games": 45,
+     "pick": 0.0416,
+     "modeWr": 0.5287,
+     "modeGames": 522,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "amber": {
+     "wr": 0.3953,
+     "games": 172,
+     "pick": 0.159,
+     "modeWr": 0.5265,
+     "modeGames": 680,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "melodie": {
+     "wr": 0.4194,
+     "games": 186,
+     "pick": 0.1719,
+     "modeWr": 0.5227,
+     "modeGames": 1102,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "chuck": {
+     "wr": 0.431,
+     "games": 58,
+     "pick": 0.0536,
+     "modeWr": 0.4815,
+     "modeGames": 243,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "barley": {
+     "wr": 0.4103,
+     "games": 39,
+     "pick": 0.036,
+     "modeWr": 0.3793,
+     "modeGames": 58,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "heist-safe-zone": {
+   "slug": "safe-zone",
+   "battles": 1158,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "max": {
+     "wr": 0.6429,
+     "games": 84,
+     "pick": 0.0725,
+     "modeWr": 0.5374,
+     "modeGames": 294,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "nori": {
+     "wr": 0.5854,
+     "games": 357,
+     "pick": 0.3083,
+     "modeWr": 0.5621,
+     "modeGames": 1329,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5843,
+     "games": 166,
+     "pick": 0.1434,
+     "modeWr": 0.5265,
+     "modeGames": 680,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "shade": {
+     "wr": 0.5721,
+     "games": 222,
+     "pick": 0.1917,
+     "modeWr": 0.5792,
+     "modeGames": 827,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "belle": {
+     "wr": 0.5909,
+     "games": 88,
+     "pick": 0.076,
+     "modeWr": 0.5197,
+     "modeGames": 229,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5539,
+     "games": 269,
+     "pick": 0.2323,
+     "modeWr": 0.6011,
+     "modeGames": 895,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "penny": {
+     "wr": 0.541,
+     "games": 390,
+     "pick": 0.3368,
+     "modeWr": 0.5287,
+     "modeGames": 522,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "colt": {
+     "wr": 0.5306,
+     "games": 571,
+     "pick": 0.4931,
+     "modeWr": 0.5109,
+     "modeGames": 2294,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "byron": {
+     "wr": 0.5682,
+     "games": 44,
+     "pick": 0.038,
+     "modeWr": 0.4041,
+     "modeGames": 245,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "melodie": {
+     "wr": 0.5235,
+     "games": 298,
+     "pick": 0.2573,
+     "modeWr": 0.5227,
+     "modeGames": 1102,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "carl": {
+     "wr": 0.5121,
+     "games": 207,
+     "pick": 0.1788,
+     "modeWr": 0.5,
+     "modeGames": 546,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "bo": {
+     "wr": 0.5192,
+     "games": 52,
+     "pick": 0.0449,
+     "modeWr": 0.4621,
+     "modeGames": 145,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "gus": {
+     "wr": 0.4864,
+     "games": 403,
+     "pick": 0.348,
+     "modeWr": 0.4482,
+     "modeGames": 1593,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "brock": {
+     "wr": 0.4381,
+     "games": 646,
+     "pick": 0.5579,
+     "modeWr": 0.4432,
+     "modeGames": 1875,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "colette": {
+     "wr": 0.4992,
+     "games": 627,
+     "pick": 0.5415,
+     "modeWr": 0.5319,
+     "modeGames": 2401,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pierce": {
+     "wr": 0.5037,
+     "games": 403,
+     "pick": 0.348,
+     "modeWr": 0.5087,
+     "modeGames": 1209,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "8-bit": {
+     "wr": 0.4985,
+     "games": 325,
+     "pick": 0.2807,
+     "modeWr": 0.5091,
+     "modeGames": 1102,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "mandy": {
+     "wr": 0.4103,
+     "games": 39,
+     "pick": 0.0337,
+     "modeWr": 0.3542,
+     "modeGames": 96,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.2581,
+     "games": 31,
+     "pick": 0.0268,
+     "modeWr": 0.4211,
+     "modeGames": 114,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.2927,
+     "games": 41,
+     "pick": 0.0354,
+     "modeWr": 0.4295,
+     "modeGames": 156,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.4854,
+     "games": 171,
+     "pick": 0.1477,
+     "modeWr": 0.5408,
+     "modeGames": 967,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "mico": {
+     "wr": 0.4014,
+     "games": 142,
+     "pick": 0.1226,
+     "modeWr": 0.4524,
+     "modeGames": 515,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "eve": {
+     "wr": 0.4222,
+     "games": 45,
+     "pick": 0.0389,
+     "modeWr": 0.4715,
+     "modeGames": 193,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "piper": {
+     "wr": 0.4037,
+     "games": 161,
+     "pick": 0.139,
+     "modeWr": 0.4111,
+     "modeGames": 669,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.4393,
+     "games": 107,
+     "pick": 0.0924,
+     "modeWr": 0.4662,
+     "modeGames": 517,
+     "reliability": "fair",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bounty-dry-season": {
+   "slug": "dry-season",
+   "battles": 1156,
+   "lastPlayed": "2026-10-23",
+   "inRotation": true,
+   "brawlers": {
+    "sprout": {
+     "wr": 0.6364,
+     "games": 77,
+     "pick": 0.0666,
+     "modeWr": 0.5462,
+     "modeGames": 357,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "shade": {
+     "wr": 0.568,
+     "games": 169,
+     "pick": 0.1462,
+     "modeWr": 0.5263,
+     "modeGames": 570,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "ash": {
+     "wr": 0.6471,
+     "games": 34,
+     "pick": 0.0294,
+     "modeWr": 0.5732,
+     "modeGames": 157,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "piper": {
+     "wr": 0.5503,
+     "games": 318,
+     "pick": 0.2751,
+     "modeWr": 0.5377,
+     "modeGames": 1391,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "mortis": {
+     "wr": 0.5419,
+     "games": 358,
+     "pick": 0.3097,
+     "modeWr": 0.5229,
+     "modeGames": 1115,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "pierce": {
+     "wr": 0.5392,
+     "games": 332,
+     "pick": 0.2872,
+     "modeWr": 0.4924,
+     "modeGames": 1056,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "brock": {
+     "wr": 0.5324,
+     "games": 663,
+     "pick": 0.5735,
+     "modeWr": 0.5104,
+     "modeGames": 2545,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5303,
+     "games": 347,
+     "pick": 0.3002,
+     "modeWr": 0.5591,
+     "modeGames": 1261,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "mandy": {
+     "wr": 0.5421,
+     "games": 107,
+     "pick": 0.0926,
+     "modeWr": 0.5062,
+     "modeGames": 320,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "bolt": {
+     "wr": 0.5714,
+     "games": 35,
+     "pick": 0.0303,
+     "modeWr": 0.5462,
+     "modeGames": 130,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "carl": {
+     "wr": 0.5362,
+     "games": 69,
+     "pick": 0.0597,
+     "modeWr": 0.5097,
+     "modeGames": 155,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "8-bit": {
+     "wr": 0.5405,
+     "games": 37,
+     "pick": 0.032,
+     "modeWr": 0.54,
+     "modeGames": 100,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "byron": {
+     "wr": 0.4857,
+     "games": 315,
+     "pick": 0.2725,
+     "modeWr": 0.4862,
+     "modeGames": 1123,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "max": {
+     "wr": 0.4787,
+     "games": 470,
+     "pick": 0.4066,
+     "modeWr": 0.5097,
+     "modeGames": 1860,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.5091,
+     "games": 383,
+     "pick": 0.3313,
+     "modeWr": 0.5074,
+     "modeGames": 1417,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "spike": {
+     "wr": 0.4762,
+     "games": 42,
+     "pick": 0.0363,
+     "modeWr": 0.3924,
+     "modeGames": 158,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "ruffs": {
+     "wr": 0.4516,
+     "games": 31,
+     "pick": 0.0268,
+     "modeWr": 0.3768,
+     "modeGames": 69,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "meeple": {
+     "wr": 0.5145,
+     "games": 138,
+     "pick": 0.1194,
+     "modeWr": 0.4683,
+     "modeGames": 442,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "tick": {
+     "wr": 0.3077,
+     "games": 39,
+     "pick": 0.0337,
+     "modeWr": 0.4611,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "maisie": {
+     "wr": 0.4545,
+     "games": 33,
+     "pick": 0.0285,
+     "modeWr": 0.5372,
+     "modeGames": 121,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "colt": {
+     "wr": 0.3548,
+     "games": 62,
+     "pick": 0.0536,
+     "modeWr": 0.4338,
+     "modeGames": 272,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "nori": {
+     "wr": 0.4857,
+     "games": 35,
+     "pick": 0.0303,
+     "modeWr": 0.5533,
+     "modeGames": 150,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "ollie": {
+     "wr": 0.4375,
+     "games": 32,
+     "pick": 0.0277,
+     "modeWr": 0.5049,
+     "modeGames": 103,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "fang": {
+     "wr": 0.4259,
+     "games": 54,
+     "pick": 0.0467,
+     "modeWr": 0.486,
+     "modeGames": 179,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gene": {
+     "wr": 0.4522,
+     "games": 272,
+     "pick": 0.2353,
+     "modeWr": 0.4495,
+     "modeGames": 821,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.4343,
+     "games": 99,
+     "pick": 0.0856,
+     "modeWr": 0.4538,
+     "modeGames": 390,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "squeak": {
+     "wr": 0.3824,
+     "games": 34,
+     "pick": 0.0294,
+     "modeWr": 0.3708,
+     "modeGames": 89,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mina": {
+     "wr": 0.4576,
+     "games": 271,
+     "pick": 0.2344,
+     "modeWr": 0.4944,
+     "modeGames": 1072,
+     "reliability": "solid",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bounty-hideout": {
+   "slug": "hideout",
+   "battles": 1082,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.6509,
+     "games": 275,
+     "pick": 0.2542,
+     "modeWr": 0.5591,
+     "modeGames": 1261,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5929,
+     "games": 140,
+     "pick": 0.1294,
+     "modeWr": 0.534,
+     "modeGames": 661,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "gray": {
+     "wr": 0.5746,
+     "games": 134,
+     "pick": 0.1238,
+     "modeWr": 0.515,
+     "modeGames": 701,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "piper": {
+     "wr": 0.5508,
+     "games": 463,
+     "pick": 0.4279,
+     "modeWr": 0.5377,
+     "modeGames": 1391,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "gus": {
+     "wr": 0.5452,
+     "games": 310,
+     "pick": 0.2865,
+     "modeWr": 0.5074,
+     "modeGames": 1417,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "max": {
+     "wr": 0.5369,
+     "games": 529,
+     "pick": 0.4889,
+     "modeWr": 0.5097,
+     "modeGames": 1860,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "bolt": {
+     "wr": 0.6053,
+     "games": 38,
+     "pick": 0.0351,
+     "modeWr": 0.5462,
+     "modeGames": 130,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "kaze": {
+     "wr": 0.5882,
+     "games": 34,
+     "pick": 0.0314,
+     "modeWr": 0.4606,
+     "modeGames": 165,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "najia": {
+     "wr": 0.5271,
+     "games": 129,
+     "pick": 0.1192,
+     "modeWr": 0.4957,
+     "modeGames": 579,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "tick": {
+     "wr": 0.55,
+     "games": 40,
+     "pick": 0.037,
+     "modeWr": 0.4611,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "jae-yong": {
+     "wr": 0.54,
+     "games": 50,
+     "pick": 0.0462,
+     "modeWr": 0.4952,
+     "modeGames": 105,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "nori": {
+     "wr": 0.5429,
+     "games": 35,
+     "pick": 0.0323,
+     "modeWr": 0.5533,
+     "modeGames": 150,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "brock": {
+     "wr": 0.452,
+     "games": 615,
+     "pick": 0.5684,
+     "modeWr": 0.5104,
+     "modeGames": 2545,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.4913,
+     "games": 344,
+     "pick": 0.3179,
+     "modeWr": 0.4862,
+     "modeGames": 1123,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "mina": {
+     "wr": 0.5032,
+     "games": 308,
+     "pick": 0.2847,
+     "modeWr": 0.4944,
+     "modeGames": 1072,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "pierce": {
+     "wr": 0.4448,
+     "games": 299,
+     "pick": 0.2763,
+     "modeWr": 0.4924,
+     "modeGames": 1056,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "sprout": {
+     "wr": 0.3846,
+     "games": 39,
+     "pick": 0.036,
+     "modeWr": 0.5462,
+     "modeGames": 357,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "carl": {
+     "wr": 0.4,
+     "games": 30,
+     "pick": 0.0277,
+     "modeWr": 0.5097,
+     "modeGames": 155,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.375,
+     "games": 32,
+     "pick": 0.0296,
+     "modeWr": 0.4674,
+     "modeGames": 522,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "stu": {
+     "wr": 0.3953,
+     "games": 43,
+     "pick": 0.0397,
+     "modeWr": 0.4818,
+     "modeGames": 110,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mandy": {
+     "wr": 0.4416,
+     "games": 77,
+     "pick": 0.0712,
+     "modeWr": 0.5062,
+     "modeGames": 320,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.4624,
+     "games": 173,
+     "pick": 0.1599,
+     "modeWr": 0.5263,
+     "modeGames": 570,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "nani": {
+     "wr": 0.4236,
+     "games": 203,
+     "pick": 0.1876,
+     "modeWr": 0.4815,
+     "modeGames": 486,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gene": {
+     "wr": 0.4409,
+     "games": 220,
+     "pick": 0.2033,
+     "modeWr": 0.4495,
+     "modeGames": 821,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "edgar": {
+     "wr": 0.4035,
+     "games": 57,
+     "pick": 0.0527,
+     "modeWr": 0.4538,
+     "modeGames": 390,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "leon": {
+     "wr": 0.4189,
+     "games": 74,
+     "pick": 0.0684,
+     "modeWr": 0.4791,
+     "modeGames": 263,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bounty-shooting-star": {
+   "slug": "shooting-star",
+   "battles": 1032,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "wendy": {
+     "wr": 0.5672,
+     "games": 268,
+     "pick": 0.2597,
+     "modeWr": 0.5591,
+     "modeGames": 1261,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.5732,
+     "games": 157,
+     "pick": 0.1521,
+     "modeWr": 0.534,
+     "modeGames": 661,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "angelo": {
+     "wr": 0.5725,
+     "games": 138,
+     "pick": 0.1337,
+     "modeWr": 0.546,
+     "modeGames": 174,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "mina": {
+     "wr": 0.539,
+     "games": 282,
+     "pick": 0.2733,
+     "modeWr": 0.4944,
+     "modeGames": 1072,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "max": {
+     "wr": 0.5315,
+     "games": 444,
+     "pick": 0.4302,
+     "modeWr": 0.5097,
+     "modeGames": 1860,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "nani": {
+     "wr": 0.5349,
+     "games": 258,
+     "pick": 0.25,
+     "modeWr": 0.4815,
+     "modeGames": 486,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "piper": {
+     "wr": 0.5248,
+     "games": 585,
+     "pick": 0.5669,
+     "modeWr": 0.5377,
+     "modeGames": 1391,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "belle": {
+     "wr": 0.523,
+     "games": 174,
+     "pick": 0.1686,
+     "modeWr": 0.4972,
+     "modeGames": 535,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "fang": {
+     "wr": 0.54,
+     "games": 50,
+     "pick": 0.0484,
+     "modeWr": 0.486,
+     "modeGames": 179,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "bolt": {
+     "wr": 0.5385,
+     "games": 39,
+     "pick": 0.0378,
+     "modeWr": 0.5462,
+     "modeGames": 130,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "pearl": {
+     "wr": 0.5094,
+     "games": 159,
+     "pick": 0.1541,
+     "modeWr": 0.4749,
+     "modeGames": 716,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "8-bit": {
+     "wr": 0.5135,
+     "games": 37,
+     "pick": 0.0359,
+     "modeWr": 0.54,
+     "modeGames": 100,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "pierce": {
+     "wr": 0.4848,
+     "games": 297,
+     "pick": 0.2878,
+     "modeWr": 0.4924,
+     "modeGames": 1056,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "brock": {
+     "wr": 0.4964,
+     "games": 562,
+     "pick": 0.5446,
+     "modeWr": 0.5104,
+     "modeGames": 2545,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "byron": {
+     "wr": 0.4987,
+     "games": 393,
+     "pick": 0.3808,
+     "modeWr": 0.4862,
+     "modeGames": 1123,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gus": {
+     "wr": 0.4402,
+     "games": 259,
+     "pick": 0.251,
+     "modeWr": 0.5074,
+     "modeGames": 1417,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "gigi": {
+     "wr": 0.2889,
+     "games": 45,
+     "pick": 0.0436,
+     "modeWr": 0.492,
+     "modeGames": 250,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "rico": {
+     "wr": 0.3421,
+     "games": 38,
+     "pick": 0.0368,
+     "modeWr": 0.4674,
+     "modeGames": 522,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "shade": {
+     "wr": 0.4273,
+     "games": 110,
+     "pick": 0.1066,
+     "modeWr": 0.5263,
+     "modeGames": 570,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.303,
+     "games": 33,
+     "pick": 0.032,
+     "modeWr": 0.3924,
+     "modeGames": 158,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "gene": {
+     "wr": 0.44,
+     "games": 200,
+     "pick": 0.1938,
+     "modeWr": 0.4495,
+     "modeGames": 821,
+     "reliability": "solid",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bounty-layer-cake": {
+   "slug": "layer-cake",
+   "battles": 1098,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6525,
+     "games": 118,
+     "pick": 0.1075,
+     "modeWr": 0.5263,
+     "modeGames": 570,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "sprout": {
+     "wr": 0.5857,
+     "games": 140,
+     "pick": 0.1275,
+     "modeWr": 0.5462,
+     "modeGames": 357,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "surge": {
+     "wr": 0.6271,
+     "games": 59,
+     "pick": 0.0537,
+     "modeWr": 0.5652,
+     "modeGames": 92,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "juju": {
+     "wr": 0.7,
+     "games": 30,
+     "pick": 0.0273,
+     "modeWr": 0.7027,
+     "modeGames": 37,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gigi": {
+     "wr": 0.6,
+     "games": 85,
+     "pick": 0.0774,
+     "modeWr": 0.492,
+     "modeGames": 250,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "brock": {
+     "wr": 0.5518,
+     "games": 705,
+     "pick": 0.6421,
+     "modeWr": 0.5104,
+     "modeGames": 2545,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "mortis": {
+     "wr": 0.551,
+     "games": 294,
+     "pick": 0.2678,
+     "modeWr": 0.5229,
+     "modeGames": 1115,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "ash": {
+     "wr": 0.5701,
+     "games": 107,
+     "pick": 0.0974,
+     "modeWr": 0.5732,
+     "modeGames": 157,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "nori": {
+     "wr": 0.5965,
+     "games": 57,
+     "pick": 0.0519,
+     "modeWr": 0.5533,
+     "modeGames": 150,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "penny": {
+     "wr": 0.573,
+     "games": 89,
+     "pick": 0.0811,
+     "modeWr": 0.5357,
+     "modeGames": 196,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "mandy": {
+     "wr": 0.5882,
+     "games": 34,
+     "pick": 0.031,
+     "modeWr": 0.5062,
+     "modeGames": 320,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "lumi": {
+     "wr": 0.5676,
+     "games": 37,
+     "pick": 0.0337,
+     "modeWr": 0.5254,
+     "modeGames": 59,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gray": {
+     "wr": 0.526,
+     "games": 192,
+     "pick": 0.1749,
+     "modeWr": 0.515,
+     "modeGames": 701,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "max": {
+     "wr": 0.4868,
+     "games": 417,
+     "pick": 0.3798,
+     "modeWr": 0.5097,
+     "modeGames": 1860,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "rico": {
+     "wr": 0.484,
+     "games": 407,
+     "pick": 0.3707,
+     "modeWr": 0.4674,
+     "modeGames": 522,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "mina": {
+     "wr": 0.4692,
+     "games": 211,
+     "pick": 0.1922,
+     "modeWr": 0.4944,
+     "modeGames": 1072,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.5183,
+     "games": 465,
+     "pick": 0.4235,
+     "modeWr": 0.5074,
+     "modeGames": 1417,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "wendy": {
+     "wr": 0.5121,
+     "games": 371,
+     "pick": 0.3379,
+     "modeWr": 0.5591,
+     "modeGames": 1261,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "meeple": {
+     "wr": 0.44,
+     "games": 200,
+     "pick": 0.1821,
+     "modeWr": 0.4683,
+     "modeGames": 442,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "starr-nova": {
+     "wr": 0.4872,
+     "games": 39,
+     "pick": 0.0355,
+     "modeWr": 0.4048,
+     "modeGames": 84,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "tick": {
+     "wr": 0.5385,
+     "games": 52,
+     "pick": 0.0474,
+     "modeWr": 0.4611,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "squeak": {
+     "wr": 0.4412,
+     "games": 34,
+     "pick": 0.031,
+     "modeWr": 0.3708,
+     "modeGames": 89,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "kit": {
+     "wr": 0.3429,
+     "games": 35,
+     "pick": 0.0319,
+     "modeWr": 0.4805,
+     "modeGames": 77,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "byron": {
+     "wr": 0.3944,
+     "games": 71,
+     "pick": 0.0647,
+     "modeWr": 0.4862,
+     "modeGames": 1123,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "ollie": {
+     "wr": 0.4412,
+     "games": 34,
+     "pick": 0.031,
+     "modeWr": 0.5049,
+     "modeGames": 103,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "doug": {
+     "wr": 0.3947,
+     "games": 38,
+     "pick": 0.0346,
+     "modeWr": 0.4521,
+     "modeGames": 73,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.4254,
+     "games": 134,
+     "pick": 0.122,
+     "modeWr": 0.4749,
+     "modeGames": 716,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "dynamike": {
+     "wr": 0.4848,
+     "games": 33,
+     "pick": 0.0301,
+     "modeWr": 0.5333,
+     "modeGames": 60,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "alli": {
+     "wr": 0.2941,
+     "games": 34,
+     "pick": 0.031,
+     "modeWr": 0.3077,
+     "modeGames": 39,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.375,
+     "games": 56,
+     "pick": 0.051,
+     "modeWr": 0.3924,
+     "modeGames": 158,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bb-palco-central": {
+   "slug": "center-stage",
+   "battles": 1105,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6603,
+     "games": 156,
+     "pick": 0.1412,
+     "modeWr": 0.655,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.619,
+     "games": 168,
+     "pick": 0.152,
+     "modeWr": 0.5979,
+     "modeGames": 679,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "wendy": {
+     "wr": 0.5685,
+     "games": 241,
+     "pick": 0.2181,
+     "modeWr": 0.5264,
+     "modeGames": 1060,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "surge": {
+     "wr": 0.5766,
+     "games": 111,
+     "pick": 0.1005,
+     "modeWr": 0.4985,
+     "modeGames": 688,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "bull": {
+     "wr": 0.6111,
+     "games": 54,
+     "pick": 0.0489,
+     "modeWr": 0.531,
+     "modeGames": 258,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "ash": {
+     "wr": 0.5538,
+     "games": 251,
+     "pick": 0.2271,
+     "modeWr": 0.5366,
+     "modeGames": 969,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "maisie": {
+     "wr": 0.5595,
+     "games": 168,
+     "pick": 0.152,
+     "modeWr": 0.5224,
+     "modeGames": 559,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "spike": {
+     "wr": 0.5556,
+     "games": 180,
+     "pick": 0.1629,
+     "modeWr": 0.5488,
+     "modeGames": 523,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "emz": {
+     "wr": 0.5414,
+     "games": 399,
+     "pick": 0.3611,
+     "modeWr": 0.5242,
+     "modeGames": 1629,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "stu": {
+     "wr": 0.5451,
+     "games": 266,
+     "pick": 0.2407,
+     "modeWr": 0.4778,
+     "modeGames": 1327,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "shelly": {
+     "wr": 0.5882,
+     "games": 34,
+     "pick": 0.0308,
+     "modeWr": 0.5263,
+     "modeGames": 95,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "gus": {
+     "wr": 0.5213,
+     "games": 493,
+     "pick": 0.4462,
+     "modeWr": 0.5125,
+     "modeGames": 2088,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "edgar": {
+     "wr": 0.531,
+     "games": 113,
+     "pick": 0.1023,
+     "modeWr": 0.5356,
+     "modeGames": 702,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "rico": {
+     "wr": 0.4871,
+     "games": 544,
+     "pick": 0.4923,
+     "modeWr": 0.5095,
+     "modeGames": 2432,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "max": {
+     "wr": 0.4758,
+     "games": 269,
+     "pick": 0.2434,
+     "modeWr": 0.4983,
+     "modeGames": 883,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "griff": {
+     "wr": 0.4613,
+     "games": 375,
+     "pick": 0.3394,
+     "modeWr": 0.4695,
+     "modeGames": 1476,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "colette": {
+     "wr": 0.5012,
+     "games": 415,
+     "pick": 0.3756,
+     "modeWr": 0.4726,
+     "modeGames": 1295,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "mina": {
+     "wr": 0.4773,
+     "games": 44,
+     "pick": 0.0398,
+     "modeWr": 0.4225,
+     "modeGames": 187,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "nori": {
+     "wr": 0.5185,
+     "games": 54,
+     "pick": 0.0489,
+     "modeWr": 0.4762,
+     "modeGames": 210,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "carl": {
+     "wr": 0.3614,
+     "games": 83,
+     "pick": 0.0751,
+     "modeWr": 0.4835,
+     "modeGames": 242,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "moe": {
+     "wr": 0.3864,
+     "games": 44,
+     "pick": 0.0398,
+     "modeWr": 0.4786,
+     "modeGames": 280,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "meeple": {
+     "wr": 0.4063,
+     "games": 96,
+     "pick": 0.0869,
+     "modeWr": 0.4904,
+     "modeGames": 467,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "el-primo": {
+     "wr": 0.4444,
+     "games": 216,
+     "pick": 0.1955,
+     "modeWr": 0.5174,
+     "modeGames": 862,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "chester": {
+     "wr": 0.3696,
+     "games": 46,
+     "pick": 0.0416,
+     "modeWr": 0.4311,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "buzz": {
+     "wr": 0.4299,
+     "games": 107,
+     "pick": 0.0968,
+     "modeWr": 0.4888,
+     "modeGames": 358,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "lumi": {
+     "wr": 0.4322,
+     "games": 236,
+     "pick": 0.2136,
+     "modeWr": 0.4261,
+     "modeGames": 697,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "brock": {
+     "wr": 0.4118,
+     "games": 85,
+     "pick": 0.0769,
+     "modeWr": 0.4183,
+     "modeGames": 251,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "ruffs": {
+     "wr": 0.3968,
+     "games": 63,
+     "pick": 0.057,
+     "modeWr": 0.4177,
+     "modeGames": 158,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bb-pinball-dreams": {
+   "slug": "pinball-dreams",
+   "battles": 1155,
+   "lastPlayed": "2026-10-23",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6333,
+     "games": 150,
+     "pick": 0.1299,
+     "modeWr": 0.655,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "willow": {
+     "wr": 0.6218,
+     "games": 156,
+     "pick": 0.1351,
+     "modeWr": 0.5306,
+     "modeGames": 458,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "amber": {
+     "wr": 0.6163,
+     "games": 172,
+     "pick": 0.1489,
+     "modeWr": 0.5979,
+     "modeGames": 679,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "ash": {
+     "wr": 0.5837,
+     "games": 221,
+     "pick": 0.1913,
+     "modeWr": 0.5366,
+     "modeGames": 969,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "el-primo": {
+     "wr": 0.5771,
+     "games": 175,
+     "pick": 0.1515,
+     "modeWr": 0.5174,
+     "modeGames": 862,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "spike": {
+     "wr": 0.5955,
+     "games": 89,
+     "pick": 0.0771,
+     "modeWr": 0.5488,
+     "modeGames": 523,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "meeple": {
+     "wr": 0.5448,
+     "games": 145,
+     "pick": 0.1255,
+     "modeWr": 0.4904,
+     "modeGames": 467,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "maisie": {
+     "wr": 0.5462,
+     "games": 119,
+     "pick": 0.103,
+     "modeWr": 0.5224,
+     "modeGames": 559,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "edgar": {
+     "wr": 0.5266,
+     "games": 207,
+     "pick": 0.1792,
+     "modeWr": 0.5356,
+     "modeGames": 702,
+     "reliability": "solid",
+     "verdict": "strong-late"
+    },
+    "emz": {
+     "wr": 0.5221,
+     "games": 339,
+     "pick": 0.2935,
+     "modeWr": 0.5242,
+     "modeGames": 1629,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "rico": {
+     "wr": 0.5163,
+     "games": 614,
+     "pick": 0.5316,
+     "modeWr": 0.5095,
+     "modeGames": 2432,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "chester": {
+     "wr": 0.5484,
+     "games": 31,
+     "pick": 0.0268,
+     "modeWr": 0.4311,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "barley": {
+     "wr": 0.5227,
+     "games": 88,
+     "pick": 0.0762,
+     "modeWr": 0.535,
+     "modeGames": 314,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "colette": {
+     "wr": 0.4731,
+     "games": 279,
+     "pick": 0.2416,
+     "modeWr": 0.4726,
+     "modeGames": 1295,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.5019,
+     "games": 514,
+     "pick": 0.445,
+     "modeWr": 0.5125,
+     "modeGames": 2088,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "stu": {
+     "wr": 0.4556,
+     "games": 439,
+     "pick": 0.3801,
+     "modeWr": 0.4778,
+     "modeGames": 1327,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "griff": {
+     "wr": 0.4913,
+     "games": 403,
+     "pick": 0.3489,
+     "modeWr": 0.4695,
+     "modeGames": 1476,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "wendy": {
+     "wr": 0.5133,
+     "games": 300,
+     "pick": 0.2597,
+     "modeWr": 0.5264,
+     "modeGames": 1060,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "cordelius": {
+     "wr": 0.5294,
+     "games": 34,
+     "pick": 0.0294,
+     "modeWr": 0.4455,
+     "modeGames": 101,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "starr-nova": {
+     "wr": 0.5349,
+     "games": 43,
+     "pick": 0.0372,
+     "modeWr": 0.4524,
+     "modeGames": 168,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "colt": {
+     "wr": 0.5038,
+     "games": 133,
+     "pick": 0.1152,
+     "modeWr": 0.4467,
+     "modeGames": 403,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "larry-lawrie": {
+     "wr": 0.4839,
+     "games": 31,
+     "pick": 0.0268,
+     "modeWr": 0.6701,
+     "modeGames": 97,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "otis": {
+     "wr": 0.2979,
+     "games": 47,
+     "pick": 0.0407,
+     "modeWr": 0.4469,
+     "modeGames": 226,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "pierce": {
+     "wr": 0.3824,
+     "games": 102,
+     "pick": 0.0883,
+     "modeWr": 0.4951,
+     "modeGames": 206,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "frank": {
+     "wr": 0.3429,
+     "games": 35,
+     "pick": 0.0303,
+     "modeWr": 0.4539,
+     "modeGames": 141,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "mina": {
+     "wr": 0.3158,
+     "games": 57,
+     "pick": 0.0494,
+     "modeWr": 0.4225,
+     "modeGames": 187,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "nori": {
+     "wr": 0.3871,
+     "games": 62,
+     "pick": 0.0537,
+     "modeWr": 0.4762,
+     "modeGames": 210,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "brock": {
+     "wr": 0.3656,
+     "games": 93,
+     "pick": 0.0805,
+     "modeWr": 0.4183,
+     "modeGames": 251,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "pearl": {
+     "wr": 0.3333,
+     "games": 39,
+     "pick": 0.0338,
+     "modeWr": 0.415,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "bo": {
+     "wr": 0.3617,
+     "games": 47,
+     "pick": 0.0407,
+     "modeWr": 0.4091,
+     "modeGames": 132,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bb-sneaky-fields": {
+   "slug": "sneaky-fields",
+   "battles": 1110,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.6383,
+     "games": 141,
+     "pick": 0.127,
+     "modeWr": 0.655,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "spike": {
+     "wr": 0.5652,
+     "games": 138,
+     "pick": 0.1243,
+     "modeWr": 0.5488,
+     "modeGames": 523,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "amber": {
+     "wr": 0.5608,
+     "games": 148,
+     "pick": 0.1333,
+     "modeWr": 0.5979,
+     "modeGames": 679,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "rico": {
+     "wr": 0.5386,
+     "games": 570,
+     "pick": 0.5135,
+     "modeWr": 0.5095,
+     "modeGames": 2432,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "brock": {
+     "wr": 0.6111,
+     "games": 36,
+     "pick": 0.0324,
+     "modeWr": 0.4183,
+     "modeGames": 251,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "edgar": {
+     "wr": 0.546,
+     "games": 163,
+     "pick": 0.1468,
+     "modeWr": 0.5356,
+     "modeGames": 702,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "el-primo": {
+     "wr": 0.5362,
+     "games": 276,
+     "pick": 0.2486,
+     "modeWr": 0.5174,
+     "modeGames": 862,
+     "reliability": "solid",
+     "verdict": "strong"
+    },
+    "nori": {
+     "wr": 0.6,
+     "games": 30,
+     "pick": 0.027,
+     "modeWr": 0.4762,
+     "modeGames": 210,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "carl": {
+     "wr": 0.5536,
+     "games": 56,
+     "pick": 0.0505,
+     "modeWr": 0.4835,
+     "modeGames": 242,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "maisie": {
+     "wr": 0.5309,
+     "games": 162,
+     "pick": 0.1459,
+     "modeWr": 0.5224,
+     "modeGames": 559,
+     "reliability": "fair",
+     "verdict": "safe-early"
+    },
+    "emz": {
+     "wr": 0.521,
+     "games": 476,
+     "pick": 0.4288,
+     "modeWr": 0.5242,
+     "modeGames": 1629,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "buzz": {
+     "wr": 0.5299,
+     "games": 117,
+     "pick": 0.1054,
+     "modeWr": 0.4888,
+     "modeGames": 358,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "colette": {
+     "wr": 0.4664,
+     "games": 283,
+     "pick": 0.255,
+     "modeWr": 0.4726,
+     "modeGames": 1295,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "gus": {
+     "wr": 0.5054,
+     "games": 556,
+     "pick": 0.5009,
+     "modeWr": 0.5125,
+     "modeGames": 2088,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "griff": {
+     "wr": 0.455,
+     "games": 411,
+     "pick": 0.3703,
+     "modeWr": 0.4695,
+     "modeGames": 1476,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "ash": {
+     "wr": 0.5143,
+     "games": 280,
+     "pick": 0.2523,
+     "modeWr": 0.5366,
+     "modeGames": 969,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "wendy": {
+     "wr": 0.5195,
+     "games": 231,
+     "pick": 0.2081,
+     "modeWr": 0.5264,
+     "modeGames": 1060,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "frank": {
+     "wr": 0.5362,
+     "games": 69,
+     "pick": 0.0622,
+     "modeWr": 0.4539,
+     "modeGames": 141,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "pearl": {
+     "wr": 0.4737,
+     "games": 38,
+     "pick": 0.0342,
+     "modeWr": 0.415,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "rosa": {
+     "wr": 0.4063,
+     "games": 32,
+     "pick": 0.0288,
+     "modeWr": 0.5172,
+     "modeGames": 58,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "colt": {
+     "wr": 0.375,
+     "games": 96,
+     "pick": 0.0865,
+     "modeWr": 0.4467,
+     "modeGames": 403,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "willow": {
+     "wr": 0.4651,
+     "games": 43,
+     "pick": 0.0387,
+     "modeWr": 0.5306,
+     "modeGames": 458,
+     "reliability": "early",
+     "verdict": "even"
+    },
+    "lumi": {
+     "wr": 0.3978,
+     "games": 186,
+     "pick": 0.1676,
+     "modeWr": 0.4261,
+     "modeGames": 697,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "stu": {
+     "wr": 0.4424,
+     "games": 217,
+     "pick": 0.1955,
+     "modeWr": 0.4778,
+     "modeGames": 1327,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "ruffs": {
+     "wr": 0.3871,
+     "games": 31,
+     "pick": 0.0279,
+     "modeWr": 0.4177,
+     "modeGames": 158,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "chester": {
+     "wr": 0.4231,
+     "games": 52,
+     "pick": 0.0468,
+     "modeWr": 0.4311,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  },
+  "bb-triple-dribble": {
+   "slug": "triple-dribble",
+   "battles": 1089,
+   "lastPlayed": "2026-10-22",
+   "inRotation": true,
+   "brawlers": {
+    "shade": {
+     "wr": 0.7132,
+     "games": 129,
+     "pick": 0.1185,
+     "modeWr": 0.655,
+     "modeGames": 600,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "larry-lawrie": {
+     "wr": 0.7818,
+     "games": 55,
+     "pick": 0.0505,
+     "modeWr": 0.6701,
+     "modeGames": 97,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "amber": {
+     "wr": 0.5833,
+     "games": 156,
+     "pick": 0.1433,
+     "modeWr": 0.5979,
+     "modeGames": 679,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "moe": {
+     "wr": 0.5909,
+     "games": 66,
+     "pick": 0.0606,
+     "modeWr": 0.4786,
+     "modeGames": 280,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "barley": {
+     "wr": 0.5524,
+     "games": 210,
+     "pick": 0.1928,
+     "modeWr": 0.535,
+     "modeGames": 314,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "carl": {
+     "wr": 0.5833,
+     "games": 48,
+     "pick": 0.0441,
+     "modeWr": 0.4835,
+     "modeGames": 242,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "edgar": {
+     "wr": 0.5361,
+     "games": 194,
+     "pick": 0.1781,
+     "modeWr": 0.5356,
+     "modeGames": 702,
+     "reliability": "fair",
+     "verdict": "strong-late"
+    },
+    "el-primo": {
+     "wr": 0.5333,
+     "games": 180,
+     "pick": 0.1653,
+     "modeWr": 0.5174,
+     "modeGames": 862,
+     "reliability": "fair",
+     "verdict": "strong"
+    },
+    "gus": {
+     "wr": 0.5236,
+     "games": 466,
+     "pick": 0.4279,
+     "modeWr": 0.5125,
+     "modeGames": 2088,
+     "reliability": "solid",
+     "verdict": "safe-early"
+    },
+    "pierce": {
+     "wr": 0.5676,
+     "games": 37,
+     "pick": 0.034,
+     "modeWr": 0.4951,
+     "modeGames": 206,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "emz": {
+     "wr": 0.5174,
+     "games": 402,
+     "pick": 0.3691,
+     "modeWr": 0.5242,
+     "modeGames": 1629,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "gigi": {
+     "wr": 0.5484,
+     "games": 31,
+     "pick": 0.0285,
+     "modeWr": 0.4759,
+     "modeGames": 187,
+     "reliability": "early",
+     "verdict": "promising"
+    },
+    "griff": {
+     "wr": 0.4816,
+     "games": 245,
+     "pick": 0.225,
+     "modeWr": 0.4695,
+     "modeGames": 1476,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "stu": {
+     "wr": 0.4807,
+     "games": 362,
+     "pick": 0.3324,
+     "modeWr": 0.4778,
+     "modeGames": 1327,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "willow": {
+     "wr": 0.4781,
+     "games": 251,
+     "pick": 0.2305,
+     "modeWr": 0.5306,
+     "modeGames": 458,
+     "reliability": "solid",
+     "verdict": "overrated"
+    },
+    "rico": {
+     "wr": 0.4961,
+     "games": 641,
+     "pick": 0.5886,
+     "modeWr": 0.5095,
+     "modeGames": 2432,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "colette": {
+     "wr": 0.4291,
+     "games": 275,
+     "pick": 0.2525,
+     "modeWr": 0.4726,
+     "modeGames": 1295,
+     "reliability": "solid",
+     "verdict": "avoid"
+    },
+    "wendy": {
+     "wr": 0.5156,
+     "games": 256,
+     "pick": 0.2351,
+     "modeWr": 0.5264,
+     "modeGames": 1060,
+     "reliability": "solid",
+     "verdict": "even"
+    },
+    "maisie": {
+     "wr": 0.4479,
+     "games": 96,
+     "pick": 0.0882,
+     "modeWr": 0.5224,
+     "modeGames": 559,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "spike": {
+     "wr": 0.4757,
+     "games": 103,
+     "pick": 0.0946,
+     "modeWr": 0.5488,
+     "modeGames": 523,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "starr-nova": {
+     "wr": 0.381,
+     "games": 42,
+     "pick": 0.0386,
+     "modeWr": 0.4524,
+     "modeGames": 168,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "ash": {
+     "wr": 0.4898,
+     "games": 196,
+     "pick": 0.18,
+     "modeWr": 0.5366,
+     "modeGames": 969,
+     "reliability": "fair",
+     "verdict": "even"
+    },
+    "pearl": {
+     "wr": 0.3714,
+     "games": 35,
+     "pick": 0.0321,
+     "modeWr": 0.415,
+     "modeGames": 200,
+     "reliability": "early",
+     "verdict": "avoid"
+    },
+    "lumi": {
+     "wr": 0.4444,
+     "games": 162,
+     "pick": 0.1488,
+     "modeWr": 0.4261,
+     "modeGames": 697,
+     "reliability": "fair",
+     "verdict": "avoid"
+    },
+    "chester": {
+     "wr": 0.4054,
+     "games": 37,
+     "pick": 0.034,
+     "modeWr": 0.4311,
+     "modeGames": 167,
+     "reliability": "early",
+     "verdict": "avoid"
+    }
+   }
+  }
+ }
+}

@@ -5,6 +5,7 @@ import { brawlerById } from '../engine/scoring';
 import type { Team } from '../types';
 import { Timer, useTurnTexts } from './PhasePanel';
 import { BrawlerImg, norm } from './ui';
+import { VoiceButton, type VoiceHandle } from './VoiceButton';
 
 // Buscador con autocompletado: escribe, elige con ↑/↓ y Enter aplica la acción actual
 export const QuickSearch = forwardRef<HTMLInputElement>(function QuickSearch(_, ref) {
@@ -42,7 +43,7 @@ export const QuickSearch = forwardRef<HTMLInputElement>(function QuickSearch(_, 
   );
 });
 
-export const TurnPanel = forwardRef<HTMLInputElement>(function TurnPanel(_, searchRef) {
+export const TurnPanel = forwardRef<HTMLInputElement, { voiceRef?: React.Ref<VoiceHandle> }>(function TurnPanel({ voiceRef }, searchRef) {
   const a = useApp();
   const { centerBadge } = useTurnTexts();
   const { draft, format, exp, done } = a;
@@ -135,6 +136,8 @@ export const TurnPanel = forwardRef<HTMLInputElement>(function TurnPanel(_, sear
           </div>
         </>
       )}
+
+      <VoiceButton ref={voiceRef} />
 
       {format.coinFlip && (exp.kind === 'coin' || draft.coinWinner) && (
         <div className="dd-coin">

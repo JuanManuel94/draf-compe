@@ -10,14 +10,16 @@ import { PhasePanel } from './components/PhasePanel';
 import { Pool } from './components/Pool';
 import { SetupPanel } from './components/SetupPanel';
 import { TurnPanel } from './components/TurnPanel';
+import type { VoiceHandle } from './components/VoiceButton';
 
 export default function App() {
   const app = useDraftApp();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showCollection, setShowCollection] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
+  const voiceRef = useRef<VoiceHandle>(null);
 
-  // Atajos: B/R primer pick · Enter sugerencia · / buscar · Ctrl+Z / Ctrl+Y · Esc cerrar
+  // Atajos: B/R primer pick · V voz · Enter sugerencia · / buscar · Ctrl+Z / Ctrl+Y · Esc cerrar
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === 'Escape') { setMenuOpen(false); setShowCollection(false); return; }
@@ -31,6 +33,7 @@ export default function App() {
       else if (mod || e.altKey) return;
       else if (k === 'b') app.setFirstPicker('blue');
       else if (k === 'r') app.setFirstPicker('red');
+      else if (k === 'v') voiceRef.current?.toggle();
       else if (e.key === '/') { e.preventDefault(); searchRef.current?.focus(); }
       // Enter sobre un botón enfocado lo pulsa; solo se usa como atajo si el foco no está en un control
       else if (e.key === 'Enter' && el.tagName !== 'BUTTON' && el.tagName !== 'A') { e.preventDefault(); app.applySuggestion(); }
@@ -57,7 +60,7 @@ export default function App() {
               </div>
             </section>
             <aside className="dd-suggest-col" aria-label="Asistente">
-              <TurnPanel ref={searchRef} />
+              <TurnPanel ref={searchRef} voiceRef={voiceRef} />
               <BestPick />
               <Threats />
               <Recommendations />

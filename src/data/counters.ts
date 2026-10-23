@@ -414,14 +414,11 @@ export const MAP_BOOST: Record<string, string[]> = {
   stu: ['hz-beetles'],
   belle: ['bounty-hideout', 'heist-safe-zone'],
   kenji: ['bounty-layer-cake', 'hz-beetles'],
-  draco: ['hz-open-zone'],
   crow: ['gem-double-swoosh', 'heist-kaboom', 'gem-fort'],
   leon: ['bounty-hideout'],
   bibi: ['hz-parallel'],
   rico: ['gem-hard-rock'],
-  poco: ['hz-open-zone'],
-  pam: ['hz-open-zone'],
   gene: ['ko-new-horizons', 'ko-flaring-phoenix'],
-  tara: ['gem-double-swoosh', 'gem-undermine'],
-  amber: ['hz-open-zone']
+  tara: ['gem-double-swoosh', 'gem-undermine']
+  // draco, poco, pam y amber destacaban en Open Zone, que salió de la rotación (oct-2026)
 };

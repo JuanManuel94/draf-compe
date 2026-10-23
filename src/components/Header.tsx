@@ -36,10 +36,12 @@ export function Header({ menuOpen, setMenuOpen, openCollection }: { menuOpen: bo
           <button onClick={() => { a.reset(); close(); }}>⟲ Reiniciar draft</button>
           <button onClick={() => { a.newSeries(); close(); }}>🏁 Nueva serie (Bo3)</button>
           <label className="dd-menu-toggle"><input type="checkbox" checked={a.timerOn} onChange={(e) => a.setTimerOn(e.target.checked)} /> ⏱ Temporizador de turno</label>
+          <label className="dd-menu-toggle"><input type="checkbox" checked={a.voiceFeedback} onChange={(e) => a.setVoiceFeedback(e.target.checked)} /> 🔊 Confirmar en voz alta</label>
         </nav>
         <div className="dd-menu-keys">
           <b>Atajos de teclado</b>
           <span><kbd>B</kbd>/<kbd>R</kbd> quién pickea primero</span>
+          <span><kbd>V</kbd> dictar por voz: «banea Piper», «pick rojo Mortis», «deshacer»</span>
           <span><kbd>Enter</kbd> aplicar la sugerencia</span>
           <span><kbd>/</kbd> buscar brawler</span>
           <span><kbd>Ctrl+Z</kbd> deshacer · <kbd>Ctrl+Y</kbd> rehacer</span>

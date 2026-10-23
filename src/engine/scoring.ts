@@ -3,10 +3,11 @@ import { MAPS } from '../data/maps';
 import { MATCHUPS, STATS } from '../data/meta';
 import { ROSTER, brawlerImg } from '../data/roster';
 import { RESEARCHED_MATCHUPS, MAP_BOOST, RESEARCHED, metaOf } from '../data/counters';
+import { REAL_META, blindSafety, hasRealMap, realCompetitive, realLabel, realMapScore, realOf } from './realMeta';
 import type { Brawler, GameMap, GameMode, MatchupRating, Ownership, Recommendation, Role, Weights } from '../types';
 
 export const DEFAULT_WEIGHTS: Weights = { mapMode: 0.3, matchup: 0.3, synergy: 0.2, competitive: 0.1, flex: 0.1 };
-export const DATA_SOURCE = 'BrawlAPI/Brawlify (comunidad, imágenes © Supercell) + fichas propias de estimación';
+export const DATA_SOURCE = `BrawlAPI/Brawlify (catálogo e imágenes © Supercell) + meta Ranked real de ${REAL_META.source.split(' ')[0]} (${REAL_META.updatedAt}) + fichas propias de estimación`;
 export { metaOf };
 
 // ---------- Roster extendido: 24 fichas detalladas + resto estimado por clase ----------
@@ -103,16 +104,26 @@ export function matchupScore(attackerId: string, defenderId: string): { score: n
 }
 
 function mapModeScore(b: Brawler, map: GameMap): number {
+  const est = estimatedMapScore(b, map);
+  const r = realOf(map.id, b.id);
+  // Mapa con datos Ranked pero este brawler no sale entre los destacados ni entre los que pierden:
+  // o es del montón o casi no se juega. Su estimación se acerca a la media en vez de competir con los medidos.
+  if (!r) return hasRealMap(map.id) ? Math.round(50 + (est - 50) * 0.35) : est;
+  const { score, weight } = realMapScore(r);
+  return Math.round(est * (1 - weight) + score * weight);
+}
+
+function estimatedMapScore(b: Brawler, map: GameMap): number {
   let s = 50;
   if (b.favoredModes.includes(map.mode)) s += 18;
   // Alias de mapas legacy (rotaciones anteriores) al pool competitivo actual
   const ALIAS: Record<string, string[]> = {
-    'gem-shooting-star': ['bounty-hideout', 'bounty-layer-cake', 'bounty-dry-season'],
-    'knockout-belle-rock': ['ko-belles-rock', 'ko-flaring-phoenix', 'ko-open', 'ko-new-horizons'],
+    'gem-shooting-star': ['bounty-shooting-star', 'bounty-hideout', 'bounty-layer-cake', 'bounty-dry-season'],
+    'knockout-belle-rock': ['ko-belles-rock', 'ko-flaring-phoenix', 'ko-open', 'ko-new-horizons', 'ko-goldarm-gulch', 'ko-flowing-springs'],
     'knockout-out-law': ['ko-flaring-phoenix'],
-    'hot-ring': ['hz-over-top', 'hz-open-zone', 'hz-beetles', 'hz-parallel', 'hz-quick-travel'],
-    'hot-open-business': ['hz-parallel'],
-    'brawl-ball-center': ['bb-triple-dribble', 'bb-palco-central'],
+    'hot-ring': ['hz-ring-of-fire', 'hz-beetles', 'hz-parallel'],
+    'hot-open-business': ['hz-open-business'],
+    'brawl-ball-center': ['bb-triple-dribble', 'bb-palco-central', 'bb-pinball-dreams'],
     'brawl-ball-sneaky': ['bb-sneaky-fields']
   };
   const fav = new Set([...b.favoredMaps, ...b.favoredMaps.flatMap((f) => ALIAS[f] ?? []), ...(MAP_BOOST[b.id] ?? [])]);
@@ -135,7 +146,7 @@ function matchupPart(b: Brawler, enemies: string[]): { avg: number; multi: numbe
   return { avg, multi, risk };
 }
 
-function synergyPart(b: Brawler, allies: string[]): number {
+function synergyPart(b: Brawler, allies: string[], map: GameMap): number {
   if (allies.length === 0) return 55;
   let s = 50;
   for (const a of allies) {
@@ -148,12 +159,22 @@ function synergyPart(b: Brawler, allies: string[]): number {
   const roles = new Set<string>();
   [...allies, b.id].forEach((id) => brawlerById(id)?.roles.forEach((r) => roles.add(r)));
   if (roles.size >= 3) s += 6;
+  // Tercer brawler del mismo rol = composición coja (p. ej. tres asesinos)
+  const sameRole = allies.filter((a) => roleOf(a) === b.roles[0]).length;
+  if (sameRole >= 2) s -= 18; else if (sameRole === 1 && allies.length === 2) s -= 6;
+  // Alcance: en mapas abiertos hace falta al menos un brawler de rango largo, en cerrados uno de corto
+  const ranges = allies.map((a) => brawlerById(a)?.range);
+  if (map.rangeBias === 'Larga' && !ranges.includes('Largo') && b.range === 'Largo') s += 10;
+  if (map.rangeBias === 'Corta' && !ranges.includes('Corto') && b.range === 'Corto') s += 8;
   return Math.max(0, Math.min(100, s));
 }
 
 function competitivePart(brawlerId: string): number {
-  // 1º meta real oct-2026 investigado, 2º stats de ejemplo, 3º neutral
+  // 1º meta Ranked real (winrate y presencia en todos los mapas), mezclado con el tier investigado;
+  // 2º tier investigado oct-2026; 3º stats de ejemplo; 4º neutral
+  const real = realCompetitive(brawlerId);
   const meta = metaOf(brawlerId);
+  if (real !== null) return Math.round(meta.score !== null ? real * 0.65 + meta.score * 0.35 : real);
   if (meta.score !== null) return meta.score;
   const st = STATS.find((s) => s.brawlerId === brawlerId);
   if (!st) return 50;
@@ -172,6 +193,9 @@ function flexPart(b: Brawler, map: GameMap): number {
   if (!b.gadgetDependent) s += 5;
   if (b.mobility >= 4) s += 5;
   if (map.rangeBias === 'Mixta') s += 4;
+  // Seguridad a ciegas medida (1-10): lo difícil que es castigarlo si lo pickeas sin ver al rival
+  const blind = blindSafety(b.id);
+  if (blind !== null) s = s * 0.4 + blind * 10 * 0.6;
   return Math.max(0, Math.min(100, s));
 }
 
@@ -212,7 +236,7 @@ export function scoreAll(input: ScoreInput): Recommendation[] {
     // Con rivales, el matchup rinde entre el 55% (mapa horrible) y el 100% (mapa ideal).
     const mapFit = mapMode / 100;
     const matchupAdj = enemySet.length > 0 ? avg * (0.55 + 0.45 * mapFit) : avg;
-    const synergy = synergyPart(b, allySet);
+    const synergy = synergyPart(b, allySet, map);
     const competitive = competitivePart(b.id);
     const flex = flexPart(b, map);
     const raw = mapMode * w.mapMode + matchupAdj * w.matchup + synergy * w.synergy + competitive * w.competitive + flex * w.flex;
@@ -222,38 +246,47 @@ export function scoreAll(input: ScoreInput): Recommendation[] {
     const riskPenalty = risk * 0.35 * (unknownEnemies / 3);
     // Colección: sin tener = excluido (arriba); a bajo nivel = -15 y aviso
     const isLow = own[b.id] === 'low';
-    const score = Math.round(Math.max(0, Math.min(100, raw - riskPenalty - (isLow ? 15 : 0))));
-    const safeBlind = risk <= 35 && flex >= 55;
+    const real = realOf(map.id, b.id);
+    const early = allySet.length === 0;
+    let verdictAdj = 0;
+    if (real?.verdict === 'safe-early') verdictAdj += early ? 6 : 2;
+    if (real?.verdict === 'strong-late') verdictAdj += early ? -7 : enemySet.length >= 2 ? 4 : 0;
+    if (real?.verdict === 'avoid' || real?.verdict === 'overrated') verdictAdj -= 5;
+    const score = Math.round(Math.max(0, Math.min(100, raw - riskPenalty + verdictAdj - (isLow ? 15 : 0))));
+    const safeBlind = (risk <= 35 && flex >= 55) || real?.verdict === 'safe-early';
     const parts = { mapMode: Math.round(mapMode), matchup: Math.round(matchupAdj), synergy: Math.round(synergy), competitive: Math.round(competitive), flex: Math.round(flex) };
-    const explanation = buildExplanation(b, map, enemySet, allySet, multi, parts);
+    const explanation = buildExplanation(b, map, enemySet, allySet, multi, parts, real ? realLabel(real) : null);
     const weaknesses = [...b.weaknesses];
     if (risk >= 65) weaknesses.push(`Alto riesgo de ser contrarrestado (${Math.round(risk)}/100) por el draft rival actual.`);
     if (multi >= 1 && mapMode < 45 && enemySet.length > 0) weaknesses.push(`Counterea pero va MAL en ${map.name} (${Math.round(mapMode)}/100 en mapa): elige solo si no hay otro counter que vaya bien aquí.`);
+    if (real?.verdict === 'strong-late') weaknesses.push(`Gana en ${map.name} pero es fácil de counterear: guárdalo para un pick tardío (datos Ranked).`);
+    if (real?.verdict === 'avoid' || real?.verdict === 'overrated') weaknesses.push(`En ${map.name} pierde más de lo que gana: ${realLabel(real)}.`);
     if (isLow) weaknesses.push('Lo tienes a BAJO NIVEL: rinde por debajo de su potencial. Máxéalo o elige la alternativa.');
     const alternatives = all
       .filter((x) => x.id !== b.id && !excluded.has(x.id) && x.roles.some((r) => b.roles.includes(r)))
       .sort((x, y) => (own[x.id] === 'low' ? 1 : 0) - (own[y.id] === 'low' ? 1 : 0))
       .slice(0, 3).map((x) => x.id);
     const known = b.curated || RESEARCHED.has(b.id);
-    const confidence = (!known ? 'baja' : enemySet.length >= 2 || b.favoredMaps.includes(map.id) || (MAP_BOOST[b.id] ?? []).includes(map.id) ? 'media' : 'baja') as Recommendation['confidence'];
+    const confidence = (real && real.reliability === 'solid' ? 'alta' : real ? 'media' : !known ? 'baja' : enemySet.length >= 2 || b.favoredMaps.includes(map.id) || (MAP_BOOST[b.id] ?? []).includes(map.id) ? 'media' : 'baja') as Recommendation['confidence'];
     return { brawlerId: b.id, score, parts, explanation, weaknesses, alternatives, multiCounter: multi, counterRisk: Math.round(risk), confidence, safeBlind };
   });
   return recs.sort((a, b) => b.score - a.score);
 }
 
-function buildExplanation(b: Brawler, map: GameMap, enemies: string[], allies: string[], multi: number, parts: Recommendation['parts']): string {
+function buildExplanation(b: Brawler, map: GameMap, enemies: string[], allies: string[], multi: number, parts: Recommendation['parts'], realText: string | null): string {
   const job = allies.length === 0 ? 'FP' : allies.length === 1 ? 'MID' : 'LAST';
   const bits: string[] = [];
   if (job === 'FP') bits.push('primer pick: poder seguro de mapa');
   if (job === 'LAST') bits.push('último pick: remata el counter');
-  if (parts.mapMode >= 65) bits.push(`rinde bien en ${map.name} (${map.mode}, terreno ${map.rangeBias.toLowerCase()})`);
+  if (realText && parts.mapMode >= 60) bits.push(`gana en ${map.name}: ${realText}`);
+  else if (parts.mapMode >= 65) bits.push(`rinde bien en ${map.name} (${map.mode}, terreno ${map.rangeBias.toLowerCase()})`);
   if (multi >= 2) bits.push(`presiona a ${multi} rivales a la vez`);
   else if (multi === 1) {
     const target = enemies[0] ? brawlerById(enemies[0])?.name ?? 'rival' : 'rival';
     bits.push(`responde al pick rival (${target})`);
   }
   if (allies.length > 0 && parts.synergy >= 65) bits.push('complementa la composición aliada');
-  if (parts.competitive >= 55) bits.push('buen winrate de ejemplo en torneos');
+  if (parts.competitive >= 60) bits.push('fuerte en el meta Ranked actual');
   if (bits.length === 0) bits.push(b.curated ? 'opción flexible sin grandes pegas en este mapa' : 'perfil estimado por clase:opción flexible');
   return `${b.name} ${bits.join(', ')}.`;
 }
@@ -316,8 +349,15 @@ export function suggestBans(mapId: string, count = 3, alreadyBanned: string[] = 
       const comp = competitivePart(b.id);
       const researchedTargets = new Set(RESEARCHED_MATCHUPS.filter((m) => m.attacker === b.id).map((m) => m.defender));
       const dominance = (b.counters.length + researchedTargets.size) * 4 + (b.favoredMaps.includes(map.id) ? 8 : 0);
-      const score = Math.round(mm * 0.5 + comp * 0.3 + Math.min(100, 50 + dominance) * 0.2);
-      const reason = `${b.name}: domina ${map.name} (${mm}/100 en mapa/modo) y amenaza a ${b.counters.length + researchedTargets.size} picks. Winrate ejemplo ${Math.round((STATS.find((s) => s.brawlerId === b.id)?.winRate ?? 0.5) * 100)}% — estimación, no oficial.`;
+      const real = realOf(map.id, b.id);
+      const presence = real ? Math.min(100, real.pick * 250) : 0;
+      // En un mapa medido solo merece ban lo que de verdad gana y se juega: sin datos, pierde prioridad
+      const score = Math.round(real
+        ? mm * 0.55 + presence * 0.25 + comp * 0.2
+        : (mm * 0.5 + comp * 0.3 + Math.min(100, 50 + dominance) * 0.2) * (hasRealMap(map.id) ? 0.8 : 1));
+      const reason = real
+        ? `${b.name}: ${realLabel(real)} en ${map.name}, aparece en el ${Math.round(real.pick * 100)}% de partidas.`
+        : `${b.name}: domina ${map.name} (${mm}/100 en mapa/modo) y amenaza a ${b.counters.length + researchedTargets.size} picks — estimación, sin datos Ranked de este mapa.`;
       return { brawlerId: b.id, reason, score };
     })
     .sort((a, b) => b.score - a.score)

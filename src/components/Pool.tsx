@@ -44,6 +44,7 @@ export function Pool() {
               title={out ? (status || 'No disponible') : `Tocar = ${actionLabel.toLowerCase()} instantáneo`}>
               <div className="dd-brawler-img"><BrawlerImg b={b} size="w-full h-full" />
                 {rec && !out && <span className={`dd-score ${scoreClass(rec.score)}`}>{rec.score}</span>}
+                {a.realStats[b.id] && <span className="dd-score-real" title={`Ranked real: ${Math.round(a.realStats[b.id].wr * 100)}% en ${a.realStats[b.id].games} partidas`}>{Math.round(a.realStats[b.id].wr * 100)}%</span>}
               </div>
               {a.enemies.length > 0 && (
                 <div className="dd-tags">

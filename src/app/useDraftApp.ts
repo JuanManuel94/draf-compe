@@ -1,10 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { MAPS } from '../data/maps';
 import { FORMATS } from '../data/meta';
-import { ROSTER } from '../data/roster';
+import { REAL_META } from '../engine/realMeta';
 import { scoreAll, suggestBans, DEFAULT_WEIGHTS, threatsTo, verdict, getAllBrawlers, brawlerById } from '../engine/scoring';
 import { initialDraft, expectedAction, applyPick, applyBan, applyGlobalBan, banBlocked, flipCoin, undo, redo, getFormat, bansComplete, restoreDraft } from '../engine/draftMachine';
 import { store } from '../engine/storage';
+import { parseVoice } from '../engine/voice';
+import { speak } from './useSpeech';
 import type { DraftAction, DraftState, GameMode, GameResult, HistoryEntry, Ownership, Role, Team, Weights } from '../types';
 
 export const MODES: GameMode[] = ['Atrapagemas', 'Balón Brawl', 'Recompensa', 'Noqueo', 'Atraco', 'Zona Restringida'];
@@ -20,7 +22,6 @@ const DEFAULT_MODE: GameMode = 'Balón Brawl';
 const DEFAULT_MAP = 'bb-triple-dribble';
 
 export type Action = 'pickBlue' | 'pickRed' | 'banBlue' | 'banRed' | 'globalBlue' | 'globalRed';
-export type RealStat = { winRate: number; useRate: number };
 
 const validFormat = (id: string) => (FORMATS.some((f) => f.id === id) ? id : 'live');
 const validMap = (id: string) => (MAPS.some((m) => m.id === id) ? id : DEFAULT_MAP);
@@ -59,7 +60,6 @@ const sharedFromUrl = (): DraftState | null => {
 const sigOf = (e: { formatId: string; mapId: string; coinWinner: Team | null; history: DraftAction[] }) =>
   JSON.stringify([e.formatId, e.mapId, e.coinWinner, e.history.map((h) => [h.kind, h.team, h.brawlerId, h.slot ?? null])]);
 
-const apiIdToKey = new Map(ROSTER.map(([key, apiId]) => [apiId, key]));
 
 export function useDraftApp() {
   const ALL = useMemo(() => getAllBrawlers(), []);
@@ -80,9 +80,9 @@ export function useDraftApp() {
   const [ownership, setOwnership] = useState<Record<string, Ownership>>(() => store.load('ownership', {}));
   const [action, setAction] = useState<Action>(() => store.load('action', 'banBlue'));
   const [timerOn, setTimerOn] = useState<boolean>(() => store.load('timerOn', true));
+  const [voiceFeedback, setVoiceFeedback] = useState<boolean>(() => store.load('voiceFeedback', true));
+  const [lastVoice, setLastVoice] = useState<{ heard: string; result: string; ok: boolean } | null>(null);
   const [setupOpen, setSetupOpen] = useState<boolean>(() => !shared && store.load('draft', null) === null);
-  const [realStats, setRealStats] = useState<Record<string, RealStat>>({});
-  const [realStatus, setRealStatus] = useState<'loading' | 'ok' | 'empty' | 'error'>('loading');
 
   useEffect(() => {
     // El enlace ya se cargó: se limpia el hash para que recargar no pise cambios posteriores
@@ -103,7 +103,7 @@ export function useDraftApp() {
     window.addEventListener('hashchange', onHash);
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
-  useEffect(() => { store.save('mode', mode); store.save('mapId', mapId); store.save('formatId', formatId); store.save('weights', weights); store.save('blindHide', blindHide); store.save('ownership', ownership); store.save('mySlot', mySlot); store.save('action', action); store.save('timerOn', timerOn); }, [mode, mapId, formatId, weights, blindHide, ownership, mySlot, action, timerOn]);
+  useEffect(() => { store.save('mode', mode); store.save('mapId', mapId); store.save('formatId', formatId); store.save('weights', weights); store.save('blindHide', blindHide); store.save('ownership', ownership); store.save('mySlot', mySlot); store.save('action', action); store.save('timerOn', timerOn); store.save('voiceFeedback', voiceFeedback); }, [mode, mapId, formatId, weights, blindHide, ownership, mySlot, action, timerOn, voiceFeedback]);
   useEffect(() => { store.save('favorites', favorites); store.save('history', history); store.save('series', series); }, [favorites, history, series]);
   useEffect(() => { store.save('draft', draft); }, [draft]);
 
@@ -141,22 +141,9 @@ export function useDraftApp() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draft]);
 
-  // Estadísticas reales por mapa (BrawlAPI). A 22-oct-2026 la API devuelve listas vacías: se informa y se usa la estimación.
-  useEffect(() => {
-    if (!map.cdnId) return;
-    let alive = true;
-    setRealStatus('loading');
-    fetch(`https://api.brawlapi.com/v1/maps/${map.cdnId}`)
-      .then((r) => r.json())
-      .then((d: { stats?: { brawler: number; winRate: number; useRate: number }[] }) => {
-        if (!alive) return;
-        const out: Record<string, RealStat> = {};
-        for (const s of d.stats ?? []) { const key = apiIdToKey.get(s.brawler); if (key) out[key] = { winRate: s.winRate, useRate: s.useRate }; }
-        setRealStats(out); setRealStatus(Object.keys(out).length ? 'ok' : 'empty');
-      })
-      .catch(() => { if (alive) { setRealStats({}); setRealStatus('error'); } });
-    return () => { alive = false; };
-  }, [map.cdnId]);
+  // Meta Ranked real del mapa actual (brawlbetter.com, generado con `npm run meta:update`)
+  const realMap = REAL_META.maps[map.id] ?? null;
+  const realStats = realMap?.brawlers ?? {};
 
   const recs = useMemo(() => scoreAll({ mapId: map.id, allies, enemies, weights, banned, picked, ownership }), [map.id, allies, enemies, weights, banned, picked, ownership]);
   const threats = useMemo(() => threatsTo(allies, enemies), [allies, enemies]);
@@ -354,6 +341,48 @@ export function useDraftApp() {
     else doBan(format.freeOrder ? (action === 'banRed' ? 'red' : 'blue') : (exp.kind === 'ban' ? exp.team : 'blue'), sg.id);
   }
 
+  // --- Voz: «banea Piper», «pick rojo Mortis», «nosotros El Primo», «deshacer», «el sugerido» ---
+  const voiceRoster = useMemo(() => ALL.map((b) => ({ id: b.id, name: b.name })), [ALL]);
+  function handleVoice(alternatives: string[]) {
+    const said = alternatives[0] ?? '';
+    // Usa la primera alternativa del reconocedor que se entienda
+    const cmd = alternatives.map((t) => parseVoice(t, voiceRoster)).find((c) => c.type !== 'none') ?? parseVoice(said, voiceRoster);
+    const report = (result: string, ok: boolean, say?: string) => {
+      setLastVoice({ heard: said, result, ok });
+      if (voiceFeedback && say) speak(say);
+    };
+    if (cmd.type === 'none') { report(cmd.reason, false, 'No te he entendido'); return; }
+    if (cmd.type === 'undo') { doUndo(); report('↩ Deshecho', true, 'Deshecho'); return; }
+    if (cmd.type === 'redo') { doRedo(); report('↪ Rehecho', true, 'Rehecho'); return; }
+    if (cmd.type === 'suggest') {
+      const sg = suggestion();
+      if (!sg) { report('No hay sugerencia para este paso.', false, 'No hay sugerencia'); return; }
+      applySuggestion();
+      report(`⏎ ${brawlerById(sg.id)?.name} (${sg.label})`, true, `${brawlerById(sg.id)?.name}, ${sg.label}`);
+      return;
+    }
+    const e = expectedAction(draft);
+    const actTeam: Team = action.endsWith('Blue') ? 'blue' : 'red';
+    // Lo que no se dice se completa con el paso actual (o con la acción seleccionada en los bans simultáneos)
+    const kind = cmd.kind ?? (cmd.team ? (e.kind === 'pick' || e.kind === 'done' ? 'pick' : 'ban') : null);
+    const name = brawlerById(cmd.brawlerId)?.name ?? cmd.brawlerId;
+    let ok: boolean;
+    let label: string;
+    if (!kind) {
+      ok = !!applyAction(cmd.brawlerId);
+      label = action.startsWith('pick') ? `pick ${actTeam === 'blue' ? 'azul' : 'rojo'}` : action.startsWith('ban') ? `ban ${actTeam === 'blue' ? 'azul' : 'rojo'}` : 'ban global';
+    } else if (kind === 'pick') {
+      const team = cmd.team ?? (e.kind === 'pick' ? e.team : actTeam);
+      ok = doPick(team, cmd.brawlerId);
+      label = `pick ${team === 'blue' ? 'azul' : 'rojo'}`;
+    } else {
+      const team = cmd.team ?? (e.kind === 'globalban' ? e.team : format.freeOrder && action.startsWith('ban') ? actTeam : e.kind === 'ban' ? e.team : actTeam);
+      ok = e.kind === 'globalban' ? doGlobalBan(team, cmd.brawlerId) : doBan(team, cmd.brawlerId);
+      label = `${e.kind === 'globalban' ? 'ban global' : 'ban'} ${team === 'blue' ? 'azul' : 'rojo'}`;
+    }
+    report(ok ? `✅ ${name} → ${label}` : `❌ ${name}: no se pudo (${label})`, ok, ok ? `${name}, ${label}` : `No se puede, ${name}`);
+  }
+
   const unavailable = (id: string) => (action === 'banBlue' || action === 'banRed') && banPhase
     ? banBlocked(draft, action === 'banBlue' ? 'blue' : 'red', id)
     : banned.includes(id) || picked.includes(id);
@@ -363,14 +392,15 @@ export function useDraftApp() {
   return {
     ALL, mode, mapId, map, formatId, format, draft, setDraft, exp, weights, setWeights, compare, setCompare,
     favorites, setFavorites, history, series, msg, setMsg, blindHide, setBlindHide, mySlot, setMySlot,
-    ownership, action, setAction, timerOn, setTimerOn, setupOpen, setSetupOpen, realStats, realStatus,
+    ownership, action, setAction, timerOn, setTimerOn, setupOpen, setSetupOpen, realStats, realMap,
     globalBanned, banned, picked, allies, enemies, setBansDone, setBansTotal, banPhase, picksLocked, done, maskRival, doubleBans,
     recs, threats, vd, avoid, suggestedBans,
     stepSeconds, secondsLeft, timerActive, restartTimer,
     wins, losses, seriesOver, gameRecorded, recordResult, nextGame, newSeries,
     changeMode, changeMap, changeFormat, doPick, doBan, doGlobalBan, applyAction, banSuggested, doUndo, doRedo, removePick,
     setFirstPicker, reset, loadEntry, cycleOwnership, setOwn, ownCount, resetOwnership, exportSummary, shareDraft,
-    unavailable, pickChipLocked, flipCoin, suggestion, applySuggestion
+    unavailable, pickChipLocked, flipCoin, suggestion, applySuggestion,
+    handleVoice, lastVoice, voiceFeedback, setVoiceFeedback
   };
 }
 

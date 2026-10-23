@@ -3,13 +3,14 @@ import { WEIGHT_LABELS, useApp } from '../app/useDraftApp';
 import { DEFAULT_WEIGHTS, brawlerById, countersVs, matchupScore, metaLabel } from '../engine/scoring';
 import type { Recommendation, Weights } from '../types';
 import { Bar, BrawlerImg, scoreClass, scoreColor } from './ui';
+import { REAL_META } from '../engine/realMeta';
 
 const PARTS: [keyof Recommendation['parts'], string][] = [['mapMode', 'Mapa'], ['matchup', 'Matchup'], ['synergy', 'Sinergia'], ['competitive', 'Meta']];
 
 function RealWR({ id }: { id: string }) {
-  const { realStats } = useApp();
+  const { realStats, map } = useApp();
   const st = realStats[id];
-  return st ? <span className="dd-real" title="Winrate real en este mapa (BrawlAPI)">WR {st.winRate.toFixed(1)}%</span> : null;
+  return st ? <span className={`dd-real ${st.reliability}`} title={`Ranked real en ${map.name}: ${Math.round(st.wr * 100)}% de victorias en ${st.games} partidas, aparece en el ${Math.round(st.pick * 100)}% (brawlbetter.com)`}>{Math.round(st.wr * 100)}% · {st.games}p</span> : null;
 }
 
 export function BestPick() {
@@ -80,7 +81,7 @@ export function Threats() {
 export function Recommendations() {
   const a = useApp();
   const [expanded, setExpanded] = useState<string | null>(null);
-  const realNote = a.realStatus === 'ok' ? 'con winrates reales de BrawlAPI' : a.realStatus === 'loading' ? 'buscando datos reales…' : 'BrawlAPI no publica stats de este mapa ahora: estimación propia';
+  const realNote = a.realMap ? `meta Ranked real de ${a.map.name}: ${a.realMap.battles} partidas de jugadores top (${REAL_META.windowDays} días, ${REAL_META.updatedAt})` : 'sin datos Ranked de este mapa: estimación propia';
   return (
     <div className="dd-panel dd-recs">
       <h3 className="dd-h3">Recomendaciones</h3>
