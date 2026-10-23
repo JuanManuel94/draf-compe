@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Brawl Draft Pro
+Comment=Iniciar Brawl Draft Pro y abrirlo en el navegador
+Exec=/home/jader_enrique_dominguez_sossa/Proyectos/JUAN-DRAFT/draf-compe/lanzar-brawl-draft.sh
+Icon=web-browser
+Terminal=true
+Categories=Game;Utility;
+StartupNotify=true
