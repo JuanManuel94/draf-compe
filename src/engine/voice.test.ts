@@ -24,6 +24,25 @@ describe('parseVoice', () => {
     expect(apply('cheli').brawlerId).toBe('shelly');
   });
 
+  it('reconoce a Shade como lo transcribe el reconocedor en español', () => {
+    for (const t of ['Shade', 'banea Shade', 'sheid', 'Shayd', 'cheid', 'shed', 'Chait', 'shady']) {
+      expect(apply(t).brawlerId, t).toBe('shade');
+    }
+  });
+
+  it('la "ch" y la "sh" no se convierten en "k" (Shelly, Chester, Chuck, Charlie)', () => {
+    expect(apply('Shelly').brawlerId).toBe('shelly');
+    expect(apply('Chester').brawlerId).toBe('chester');
+    expect(apply('pick Chuck').brawlerId).toBe('chuck');
+    expect(apply('Charlie').brawlerId).toBe('charlie');
+  });
+
+  it('cada brawler se reconoce al decir su propio nombre', () => {
+    const wrong = roster.filter((b) => { const r = parseVoice(b.name, roster); return r.type !== 'apply' || r.brawlerId !== b.id; })
+      .map((b) => { const r = parseVoice(b.name, roster); return `${b.name}→${r.type === 'apply' ? r.brawlerId : r.type}`; });
+    expect(wrong).toEqual([]);
+  });
+
   it('ignora tildes y mayúsculas, y resuelve nombres de varias palabras', () => {
     expect(apply('vamos con EL PRIMO').brawlerId).toBe('el-primo');
     expect(apply('león').brawlerId).toBe('leon');

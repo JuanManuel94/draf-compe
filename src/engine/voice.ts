@@ -15,12 +15,14 @@ const strip = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerC
 export function phonetic(s: string): string {
   return strip(s)
     .replace(/[^a-z0-9 ]/g, ' ')
-    .replace(/ph/g, 'f').replace(/sh/g, 'ch').replace(/ck/g, 'k').replace(/qu/g, 'k')
+    // "sh"/"sch" suenan como la "ch" española; se protege la "ch" (C) para que la regla c→k no la convierta en "k"
+    .replace(/ph/g, 'f').replace(/s?ch|sh/g, 'C').replace(/ck/g, 'k').replace(/qu/g, 'k')
     .replace(/c(?=[eiy])/g, 's').replace(/c/g, 'k').replace(/z/g, 's').replace(/x/g, 'ks')
     .replace(/ee/g, 'i').replace(/oo/g, 'u').replace(/ea/g, 'i')
     .replace(/y/g, 'i').replace(/w/g, 'u').replace(/v/g, 'b').replace(/j/g, 'y').replace(/g(?=[ei])/g, 'y')
     .replace(/h/g, '')
-    .replace(/([a-z])\1+/g, '$1')
+    .replace(/([a-zC])\1+/g, '$1')
+    .replace(/C/g, 'ch')
     .replace(/\s+/g, ' ').trim();
 }
 
@@ -42,7 +44,7 @@ const ALIASES: Record<string, string[]> = {
   leon: ['leon', 'lion'],
   rico: ['rico', 'riko'],
   amber: ['amber', 'ember'],
-  shade: ['cheid', 'sheid', 'cheit'],
+  shade: ['cheid', 'sheid', 'cheit', 'shayd', 'sheyd', 'chaid', 'shaid', 'chait', 'shed', 'ched', 'shady', 'seid', 'said', 'yeid', 'jade'],
   wendy: ['wendi', 'uendi', 'guendi'],
   'larry-lawrie': ['lari', 'larry y lawrie', 'lari y lori']
 };
