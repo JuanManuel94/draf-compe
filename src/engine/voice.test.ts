@@ -34,6 +34,7 @@ describe('parseVoice', () => {
     ['jae-yong', ['Jae Yong', 'jaeyong', 'jay young', 'jei yong', 'yei yon', 'yeiyong', 'jeiyon', 'jai yong']],
     ['fang', ['Fang', 'fan', 'fank', 'feng', 'fangu']],
     ['pam', ['Pam', 'pan', 'paam']],
+    ['pearl', ['Pearl', 'perl', 'perla', 'peral', 'purl', 'perle']],
     ['griff', ['Griff', 'grif', 'grief', 'grifo']],
     ['shade', ['Shade', 'shei', 'chei', 'sheit', 'cheide']]
   ])('reconoce variantes de %s conservando la acción y el equipo', (id, variants) => {

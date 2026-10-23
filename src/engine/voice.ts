@@ -47,6 +47,7 @@ const ALIASES: Record<string, string[]> = {
   'jae-yong': ['jaeyong', 'jay yong', 'jay young', 'jei yong', 'yei yong', 'yei yon', 'yei young', 'yeiyong', 'yeiyon', 'jeiyon', 'yeyong', 'jai yong', 'jai yon', 'jei yon'],
   fang: ['fan', 'fank', 'feng', 'fangu'],
   pam: ['pan', 'paam'],
+  pearl: ['perl', 'perla', 'peral', 'purl', 'perle'],
   griff: ['grif', 'grief', 'grifo'],
   shade: ['cheid', 'sheid', 'cheit', 'shayd', 'sheyd', 'chaid', 'shaid', 'chait', 'shed', 'ched', 'shady', 'seid', 'said', 'yeid', 'jade', 'shei', 'chei', 'sheit', 'cheide'],
   wendy: ['wendi', 'uendi', 'guendi'],
