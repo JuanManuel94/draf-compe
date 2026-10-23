@@ -7,6 +7,7 @@ import type { DraftFormat, DraftState, GameMode, Team } from '../types';
 export function initialDraft(mode: GameMode, mapId: string, formatId = 'live'): DraftState {
   const strict = !getFormat(formatId).freeOrder;
   return {
+    id: `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
     mode, mapId, formatId,
     strict, freeMode: false,
     coinWinner: null,
@@ -209,6 +210,15 @@ export function redo(s: DraftState): DraftState {
   next.history.push(act);
   rebuildFromHistory(next);
   return next;
+}
+
+// Reconstruye un draft completo desde su historial (historial guardado o enlace compartido).
+export function restoreDraft(mode: GameMode, mapId: string, formatId: string, coinWinner: Team | null, history: DraftState['history']): DraftState {
+  const s = initialDraft(mode, mapId, formatId);
+  s.coinWinner = coinWinner;
+  s.history = history.map((h) => ({ ...h }));
+  rebuildFromHistory(s);
+  return s;
 }
 
 function rebuildFromHistory(s: DraftState) {

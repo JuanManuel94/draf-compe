@@ -3,9 +3,12 @@ import type { GameMap } from '../types';
 // ROTACIÓN RANKED actual (lista del usuario, oct-2026): 23 mapas.
 // Atrapagemas (4) · Zona (5) · Noqueo (4) · Atraco (4) · Recompensa (3) · Balón (3).
 // Fotos: BrawlAPI/Brawlify (comunidad, © Supercell). Terreno = ESTIMACIÓN propia, no oficial.
+// Comprobado contra BrawlAPI (22-oct-2026): estos dos mapas figuran como desactivados.
+const API_DISABLED = [15000651, 15000350]; // Al Límite (Over The Top), Viaje Rápido (Quick Travel)
 const M = (id: string, name: string, mode: GameMap['mode'], description: string, walls: number, bushes: number, openness: number, controlZones: number, rangeBias: GameMap['rangeBias'], image: string, cdnId: number): GameMap => ({
-  id, name, mode, description, walls, bushes, openness, controlZones, rangeBias, image,
-  photo: `https://cdn.brawlify.com/maps/regular/${cdnId}.png`
+  id, name, mode, description, walls, bushes, openness, controlZones, rangeBias, image, cdnId,
+  photo: `https://cdn.brawlify.com/maps/regular/${cdnId}.png`,
+  apiDisabled: API_DISABLED.includes(cdnId)
 });
 
 export const MAPS: GameMap[] = [

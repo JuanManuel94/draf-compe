@@ -43,6 +43,21 @@ export interface GameMap {
   rangeBias: 'Corta' | 'Mixta' | 'Larga';
   image: string; // emoji / gradiente provisional
   photo?: string; // foto real del mapa (CDN comunidad, © Supercell)
+  cdnId?: number; // id del mapa en BrawlAPI/Brawlify
+  apiDisabled?: boolean; // BrawlAPI lo marca desactivado (oct-2026): posible salida de rotación
+}
+
+// Serie al mejor de 3 (Mítico+) y registro de drafts jugados
+export type GameResult = 'win' | 'loss';
+export interface HistoryEntry {
+  id: string;
+  at: number;
+  mapId: string;
+  formatId: string;
+  coinWinner: Team | null;
+  history: DraftAction[];
+  result?: GameResult;
+  draftId?: string;
 }
 
 export type MatchupRating = 'hardCounter' | 'favorable' | 'neutral' | 'unfavorable' | 'hardCountered';
@@ -96,6 +111,7 @@ export interface DraftAction {
 }
 
 export interface DraftState {
+  id?: string; // identifica cada partida (dos drafts idénticos de una serie siguen siendo partidas distintas)
   mode: GameMode;
   mapId: string;
   formatId: string;
