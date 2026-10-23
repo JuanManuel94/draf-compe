@@ -30,6 +30,20 @@ describe('parseVoice', () => {
     }
   });
 
+  it.each([
+    ['jae-yong', ['Jae Yong', 'jaeyong', 'jay young', 'jei yong', 'yei yon', 'yeiyong', 'jeiyon', 'jai yong']],
+    ['fang', ['Fang', 'fan', 'fank', 'feng', 'fangu']],
+    ['pam', ['Pam', 'pan', 'paam']],
+    ['griff', ['Griff', 'grif', 'grief', 'grifo']],
+    ['shade', ['Shade', 'shei', 'chei', 'sheit', 'cheide']]
+  ])('reconoce variantes de %s conservando la acción y el equipo', (id, variants) => {
+    for (const variant of variants) {
+      expect(apply(variant).brawlerId, variant).toBe(id);
+      expect(apply(`pick rojo ${variant}`), variant).toMatchObject({ brawlerId: id, kind: 'pick', team: 'red' });
+      expect(apply(`nosotros banea ${variant}`), variant).toMatchObject({ brawlerId: id, kind: 'ban', team: 'blue' });
+    }
+  });
+
   it('la "ch" y la "sh" no se convierten en "k" (Shelly, Chester, Chuck, Charlie)', () => {
     expect(apply('Shelly').brawlerId).toBe('shelly');
     expect(apply('Chester').brawlerId).toBe('chester');
