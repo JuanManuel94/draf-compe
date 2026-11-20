@@ -466,3 +466,17 @@ export function suggestBans(mapId: string, count = 3, alreadyBanned: string[] = 
     .sort((a, b) => b.score - a.score)
     .slice(0, count);
 }
+
+// Lo que probablemente pickea el RIVAL ahora: el mejor pick desde su lado (su equipo como aliados,
+// el nuestro como enemigos) mezclado con lo que más se juega en Ranked en este mapa
+// (la mayoría de jugadores elige lo popular, no lo óptimo).
+export function predictRivalPicks(mapId: string, rivalPicks: string[], ourPicks: string[], banned: string[], picked: string[], n = 8): { brawlerId: string; score: number }[] {
+  return scoreAll({ mapId, allies: rivalPicks, enemies: ourPicks, banned, picked })
+    .map((r) => {
+      const real = realOf(mapId, r.brawlerId);
+      const presence = real ? Math.min(100, real.pick * 250) : 0;
+      return { brawlerId: r.brawlerId, score: Math.round(hasRealMap(mapId) ? r.score * 0.6 + presence * 0.4 : r.score) };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, n);
+}

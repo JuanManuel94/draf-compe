@@ -52,7 +52,60 @@ const ALIASES: Record<string, string[]> = {
   griff: ['grif', 'grief', 'grifo'],
   shade: ['cheid', 'sheid', 'cheit', 'shayd', 'sheyd', 'chaid', 'shaid', 'chait', 'shed', 'ched', 'shady', 'seid', 'said', 'yeid', 'jade', 'shei', 'chei', 'sheit', 'cheide'],
   wendy: ['wendi', 'uendi', 'guendi'],
-  'larry-lawrie': ['lari', 'larry y lawrie', 'lari y lori']
+  'larry-lawrie': ['lari', 'larry y lawrie', 'lari y lori'],
+  // Nombres cortos o en inglés que el reconocedor en español escribe "como suenan"
+  colt: ['col', 'kolt', 'colt'],
+  bull: ['bul', 'bol', 'bull'],
+  bo: ['bou', 'bow'],
+  lou: ['lu', 'lou', 'low'],
+  stu: ['estu', 'stu', 'estiu'],
+  moe: ['mo', 'mou', 'moe'],
+  eve: ['iv', 'ib', 'eve'],
+  ash: ['ach', 'ash', 'ashe'],
+  kit: ['kit', 'quit'],
+  meg: ['meg', 'meeg'],
+  sam: ['sam', 'sem'],
+  gus: ['gus', 'gas'],
+  emz: ['ems', 'emes', 'ems', 'emz', 'enz'],
+  belle: ['bel', 'bell', 'bela'],
+  brock: ['brok', 'broc', 'brock'],
+  buzz: ['bas', 'bus', 'buzz', 'bos'],
+  chuck: ['chak', 'chuk', 'chuck'],
+  hank: ['jank', 'hank', 'jenk'],
+  janet: ['yanet', 'janet', 'yaneth'],
+  kenji: ['kenyi', 'kenji', 'kenchi'],
+  squeak: ['escuik', 'squik', 'escuic'],
+  colette: ['colet', 'colette', 'kolet'],
+  melodie: ['melodi', 'melody', 'melodia'],
+  willow: ['uilou', 'wilou', 'guilou', 'willow'],
+  maisie: ['meisi', 'meisy', 'maisi'],
+  charlie: ['charli', 'charly', 'sharli'],
+  angelo: ['anyelo', 'angelo', 'anjelo'],
+  clancy: ['clansi', 'clancy', 'klansi'],
+  berry: ['beri', 'berry', 'barry'],
+  lily: ['lili', 'lily', 'lilly'],
+  juju: ['yuyu', 'juju', 'chuchu'],
+  shelly: ['cheli', 'sheli', 'shelly', 'chely'],
+  barley: ['barli', 'barley'],
+  darryl: ['daril', 'darril', 'dariel'],
+  penny: ['peni', 'penny', 'peny'],
+  bonnie: ['boni', 'bonnie', 'bony'],
+  ruffs: ['rafs', 'rufs', 'rafts', 'ruffs'],
+  buster: ['baster', 'buster', 'bastar'],
+  gray: ['grei', 'gray', 'grey'],
+  doug: ['dag', 'doug', 'dog'],
+  ollie: ['oli', 'olly', 'ollie'],
+  meeple: ['mipel', 'mipol', 'meeple'],
+  mico: ['miko', 'mico'],
+  'r-t': ['erre te', 'art', 'ar ti', 'rt'],
+  edgar: ['edgar', 'edgard'],
+  mortis: ['mortis', 'mortiz'],
+  tara: ['tara', 'tarah'],
+  nita: ['nita', 'nitta'],
+  frank: ['frank', 'franc'],
+  otis: ['otis', 'otiz'],
+  sandy: ['sandi', 'sandy'],
+  tick: ['tik', 'tic', 'tick']
 };
 
 const ACTIONS: { kind: 'pick' | 'ban'; words: string[] }[] = [
@@ -118,4 +171,23 @@ export function parseVoice(transcript: string, roster: VoiceBrawler[]): VoiceCom
   if (m) return { type: 'apply', brawlerId: m.id, kind, team, heard: m.heard };
   if (SUGGEST.some((w) => plain.includes(w))) return { type: 'suggest' };
   return { type: 'none', reason: `No reconozco ningún brawler en «${transcript}».` };
+}
+
+// Varias órdenes en una frase: «Colt, Piper y Bull» o «rival Mortis y Tara» → una orden por brawler.
+// El equipo o la acción dichos al principio se aplican a todos los nombres de la frase.
+export function parseVoiceList(transcript: string, roster: VoiceBrawler[]): VoiceCommand[] {
+  const plain = strip(transcript);
+  // "Larry y Lawrie" es un solo brawler: no se parte por esa "y"
+  const protectedText = plain.replace(/lar+[iy]e?\s+y\s+law?r(i|ie|y)/g, 'larry_lawrie');
+  const parts = protectedText.split(/\s*,\s*|\s+(?:y|e|luego|despues|tambien)\s+/).map((p) => p.replace('larry_lawrie', 'larry y lawrie').trim()).filter(Boolean);
+  if (parts.length <= 1) return [parseVoice(transcript, roster)];
+  const first = parseVoice(parts[0], roster);
+  const out: VoiceCommand[] = [first];
+  const kind = first.type === 'apply' ? first.kind : null;
+  const team = first.type === 'apply' ? first.team : null;
+  for (const p of parts.slice(1)) {
+    const c = parseVoice(p, roster);
+    out.push(c.type === 'apply' ? { ...c, kind: c.kind ?? kind, team: c.team ?? team } : c);
+  }
+  return out.filter((c, i, arr) => c.type !== 'none' || arr.length === 1);
 }

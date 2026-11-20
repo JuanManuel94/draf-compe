@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ROSTER } from '../data/roster';
-import { parseVoice } from './voice';
+import { parseVoice, parseVoiceList } from './voice';
 
 const roster = ROSTER.map(([id, , name]) => ({ id, name }));
 const apply = (t: string) => {
@@ -78,5 +78,25 @@ describe('parseVoice', () => {
 
   it('no inventa un brawler con texto que no se parece a ninguno', () => {
     expect(parseVoice('hola qué tal', roster).type).toBe('none');
+  });
+});
+
+describe('parseVoiceList', () => {
+  const ids = (t: string) => parseVoiceList(t, roster).map((c) => (c.type === 'apply' ? c.brawlerId : c.type));
+  it('separa varios nombres en una frase', () => {
+    expect(ids('Colt, Piper y Bull')).toEqual(['colt', 'piper', 'bull']);
+    expect(ids('Mortis luego Tara')).toEqual(['mortis', 'tara']);
+  });
+  it('aplica el equipo dicho al principio a todos', () => {
+    const r = parseVoiceList('rival Mortis y Tara', roster);
+    expect(r).toMatchObject([{ brawlerId: 'mortis', team: 'red' }, { brawlerId: 'tara', team: 'red' }]);
+  });
+  it('no parte "Larry y Lawrie"', () => {
+    expect(ids('Larry y Lawrie')).toEqual(['larry-lawrie']);
+  });
+  it('entiende nombres cortos como suenan', () => {
+    expect(ids('lu')).toEqual(['lou']);
+    expect(ids('estu')).toEqual(['stu']);
+    expect(ids('yuyu')).toEqual(['juju']);
   });
 });

@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 // Web Speech API (Chrome, Edge, Safari). Firefox no la tiene y Brave la expone pero falla con "network".
 type SR = {
   lang: string; interimResults: boolean; continuous: boolean; maxAlternatives: number;
-  start(): void; abort(): void;
+  start(): void; stop(): void; abort(): void;
   onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null;
   onerror: ((e: { error: string }) => void) | null;
   onend: (() => void) | null;
@@ -56,8 +56,10 @@ export function useSpeech(onFinal: (alternatives: string[]) => void) {
     setError(''); setInterim(''); setListening(true);
     try { rec.start(); } catch { setListening(false); recRef.current = null; }
   }, [stop]);
+  // Termina de escuchar y entrega lo dicho (al soltar el botón de mantener pulsado)
+  const finish = useCallback(() => { try { recRef.current?.stop(); } catch { /* ya terminó */ } }, []);
   useEffect(() => () => recRef.current?.abort(), []);
-  return { supported, listening, interim, error, start, stop };
+  return { supported, listening, interim, error, start, stop, finish };
 }
 
 export function speak(text: string) {

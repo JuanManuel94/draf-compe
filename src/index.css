@@ -884,6 +884,15 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .qv-mapcard.sel { border-color: var(--dd-green); }
 .qv-mapcard-img { display: block; width: 100%; aspect-ratio: 1; border-radius: 6px; object-fit: cover; background: var(--dd-slot); }
 .qv-mapcard-mode { position: absolute; top: 2px; left: 2px; }
+/* Rival y voz */
+.qv-strip.rival { border: 1px solid rgba(231, 76, 60, .7); background: rgba(231, 76, 60, .1); }
+.qv-searchrow { display: flex; flex: none; gap: 6px; align-items: center; }
+.qv-searchrow .qv-search { flex: 1; min-width: 0; }
+.qv-mic { flex: none; display: grid; place-items: center; width: 46px; height: 38px; padding: 0; border: 2px solid rgba(255, 255, 255, .25); border-radius: 12px; background: linear-gradient(#8e44ad, #6c3483); font-size: 20px; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.qv-mic.on { border-color: #fff; background: linear-gradient(#e74c3c, #c0392b); box-shadow: 0 0 0 4px rgba(231, 76, 60, .35); animation: dd-blink 1s infinite; }
+.qv-voice { flex: none; padding: 4px 8px; border-radius: 8px; background: rgba(0, 0, 0, .35); font-size: 12px; line-height: 1.25; }
+.qv-voice.ok { background: rgba(46, 204, 113, .2); color: #b9f6ca; }
+.qv-voice.err { background: rgba(231, 76, 60, .2); color: #ffb3a7; }
 /* Columnas internas: en vertical se apilan; la lista ocupa el resto de la altura */
 .qv-info { display: flex; flex: none; flex-direction: column; gap: 6px; min-width: 0; }
 .qv-list { display: flex; flex: 1; flex-direction: column; gap: 6px; min-width: 0; min-height: 0; }
