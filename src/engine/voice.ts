@@ -19,7 +19,7 @@ export function phonetic(s: string): string {
     .replace(/ph/g, 'f').replace(/s?ch|sh/g, 'C').replace(/ck/g, 'k').replace(/qu/g, 'k')
     .replace(/c(?=[eiy])/g, 's').replace(/c/g, 'k').replace(/z/g, 's').replace(/x/g, 'ks')
     .replace(/ee/g, 'i').replace(/oo/g, 'u').replace(/ea/g, 'i')
-    .replace(/y/g, 'i').replace(/w/g, 'u').replace(/v/g, 'b').replace(/j/g, 'y').replace(/g(?=[ei])/g, 'y')
+    .replace(/y(?![aeiou])/g, 'i').replace(/w/g, 'u').replace(/v/g, 'b').replace(/j/g, 'y').replace(/g(?=[ei])/g, 'y')
     .replace(/h/g, '')
     .replace(/([a-zC])\1+/g, '$1')
     .replace(/C/g, 'ch')
@@ -36,13 +36,13 @@ const ALIASES: Record<string, string[]> = {
   jessie: ['yesi', 'yessi', 'chesi'],
   dynamike: ['dinamaik', 'dainamaik', 'dinamique'],
   surge: ['serch', 'sersh', 'soorch'],
-  sprout: ['espraut', 'sprout'],
+  sprout: ['espraut', 'sprout', 'sprat', 'esprat'],
   'el-primo': ['primo', 'el primo'],
   'mr-p': ['mister p', 'mister pi', 'senor p'],
   '8-bit': ['ocho bit', 'eight bit', 'eit bit', 'ocho bits'],
   max: ['macs', 'maks'],
   leon: ['leon', 'lion'],
-  gene: ['genio', 'yen', 'yeni', 'yene', 'lleni'],
+  gene: ['genio', 'yen', 'yeni', 'yene', 'lleni', 'yin', 'jean', 'gin', 'llin'],
   rico: ['rico', 'riko'],
   amber: ['amber', 'ember'],
   'jae-yong': ['jaeyong', 'jay yong', 'jay young', 'jei yong', 'yei yong', 'yei yon', 'yei young', 'yeiyong', 'yeiyon', 'jeiyon', 'yeyong', 'jai yong', 'jai yon', 'jei yon'],
@@ -58,11 +58,11 @@ const ALIASES: Record<string, string[]> = {
   bull: ['bul', 'bol', 'bull'],
   bo: ['bou', 'bow'],
   lou: ['lu', 'lou', 'low'],
-  stu: ['estu', 'stu', 'estiu'],
+  stu: ['estu', 'stu', 'estiu', 'stew', 'stiu', 'estew'],
   moe: ['mo', 'mou', 'moe'],
-  eve: ['iv', 'ib', 'eve'],
+  eve: ['iv', 'ib', 'eve', 'ive', 'iva'],
   ash: ['ach', 'ash', 'ashe'],
-  kit: ['kit', 'quit'],
+  kit: ['kit', 'quit', 'kid', 'kitt'],
   meg: ['meg', 'meeg'],
   sam: ['sam', 'sem'],
   gus: ['gus', 'gas'],
@@ -105,7 +105,13 @@ const ALIASES: Record<string, string[]> = {
   frank: ['frank', 'franc'],
   otis: ['otis', 'otiz'],
   sandy: ['sandi', 'sandy'],
-  tick: ['tik', 'tic', 'tick']
+  tick: ['tik', 'tic', 'tick'],
+  sirius: ['sirio', 'sirios', 'sirus'],
+  gigi: ['yiyi', 'jiji', 'chichi', 'gigi', 'yiyí'],
+  pierce: ['pirs', 'piers', 'pirce', 'pers'],
+  alli: ['allie', 'ali', 'aly', 'alli'],
+  grom: ['grum', 'grom', 'gròm'],
+  jacky: ['yaki', 'jaki', 'yaky', 'jackie', 'yaqui']
 };
 
 const ACTIONS: { kind: 'pick' | 'ban'; words: string[] }[] = [
