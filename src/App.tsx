@@ -10,6 +10,7 @@ import { FlowBar, MapStep } from './components/Flow';
 import { PhonePanel } from './components/PhonePanel';
 import { STANDALONE } from './app/env';
 import { Pool } from './components/Pool';
+import { QuickView, useQuickView } from './components/QuickView';
 import { TurnPanel } from './components/TurnPanel';
 import type { VoiceHandle } from './components/VoiceButton';
 
@@ -20,6 +21,7 @@ export default function App() {
   const [showPhone, setShowPhone] = useState(false);
   const searchRef = useRef<HTMLInputElement>(null);
   const voiceRef = useRef<VoiceHandle>(null);
+  const qv = useQuickView();
 
   // Atajos: B/R primer pick · V voz · Enter sugerencia · / buscar · Ctrl+Z / Ctrl+Y · Esc cerrar
   useEffect(() => {
@@ -44,11 +46,20 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [app, showCollection, showPhone]);
 
+  // Ventana flotante / pantalla pequeña: vista rápida de una sola pantalla
+  if (qv.quick) {
+    return (
+      <AppContext.Provider value={app}>
+        <QuickView onFull={() => qv.setPref(qv.small ? 'off' : 'auto')} />
+      </AppContext.Provider>
+    );
+  }
+
   return (
     <AppContext.Provider value={app}>
       <div className="dd-app">
         <div className="dd-container">
-          <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} openCollection={() => setShowCollection(true)} openPhone={STANDALONE ? undefined : () => setShowPhone(true)} />
+          <Header openQuick={() => qv.setPref(qv.small ? 'auto' : 'on')} menuOpen={menuOpen} setMenuOpen={setMenuOpen} openCollection={() => setShowCollection(true)} openPhone={STANDALONE ? undefined : () => setShowPhone(true)} />
           <FlowBar />
           {app.flowStep === 'map' ? <MapStep /> : (
             <main className="dd-main">

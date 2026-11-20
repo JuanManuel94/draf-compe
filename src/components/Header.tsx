@@ -2,7 +2,7 @@ import { useApp } from '../app/useDraftApp';
 import { POOL_INFO } from '../data/maps';
 import { DATA_SOURCE } from '../engine/scoring';
 
-export function Header({ menuOpen, setMenuOpen, openCollection, openPhone }: { menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void; openPhone?: () => void }) {
+export function Header({ menuOpen, setMenuOpen, openCollection, openPhone, openQuick }: { openQuick: () => void; menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void; openPhone?: () => void }) {
   const a = useApp();
   const pending = a.ownCount('no') + a.ownCount('low');
   const close = () => setMenuOpen(false);
@@ -29,6 +29,7 @@ export function Header({ menuOpen, setMenuOpen, openCollection, openPhone }: { m
           <button className="dd-menu-close" onClick={close} aria-label="Cerrar menú">✕</button>
         </div>
         <nav className="dd-menu-nav">
+          <button onClick={() => { openQuick(); close(); }}>⚡ Vista rápida (ventana flotante)</button>
           <button onClick={() => { openCollection(); close(); }}>🎒 Mi colección{pending > 0 ? ` (${pending})` : ''}</button>
           {openPhone && <button onClick={() => { openPhone(); close(); }}>📱 Teléfono y detección automática</button>}
           <button onClick={() => { a.shareDraft(); close(); }}>🔗 Compartir enlace del draft</button>
