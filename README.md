@@ -8,6 +8,17 @@ Asistente de draft competitivo para Brawl Stars con el formato oficial actual: *
 
 **Fuentes y honestidad:** catálogo, rarezas, clases, mapas e imágenes = BrawlAPI/Brawlify (comunidad; imágenes © Supercell). Ratings, terreno, matchups y scores = estimación propia, nunca oficial. No existe integración oficial con el juego ni lectura automática de partidas.
 
+## App en el teléfono (sin PC)
+
+**https://juanmanuel94.github.io/draf-compe/**
+
+1. Ábrelo en Chrome (Android) o Safari (iPhone).
+2. Menú ⋮ → **Instalar aplicación** / **Añadir a pantalla de inicio** (en iPhone: Compartir → Añadir a pantalla de inicio).
+3. Aparece **Draft Pro** con su icono. Funciona sin conexión y se actualiza sola.
+
+Todo el motor (meta Ranked, counters, mejor pick y bans) va dentro del teléfono. Cada push a `main`
+la vuelve a publicar con GitHub Actions (`.github/workflows/pages.yml`).
+
 ## Qué incluye
 - Pantalla de draft interactiva (azul/rojo/bans, turnos, estricto/libre/manual).
 - Motor de recomendación 0–100 (`src/engine/scoring.ts`): 30% mapa/modo, 30% matchups, 20% sinergia, 10% competitivo, 10% flex. Pesos ajustables.
