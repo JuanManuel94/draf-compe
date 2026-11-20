@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState } from 
 import { MAPS } from '../data/maps';
 import { FORMATS } from '../data/meta';
 import { REAL_META } from '../engine/realMeta';
-import { scoreAll, suggestBans, DEFAULT_WEIGHTS, threatsTo, verdict, getAllBrawlers, brawlerById } from '../engine/scoring';
+import { scoreAll, suggestBans, DEFAULT_WEIGHTS, threatsTo, verdict, getAllBrawlers, brawlerById, countersOnMap } from '../engine/scoring';
+import type { LiveBrawler, LiveSnapshot } from './live';
 import { initialDraft, expectedAction, applyPick, applyBan, applyGlobalBan, banBlocked, flipCoin, undo, redo, getFormat, bansComplete, restoreDraft } from '../engine/draftMachine';
 import { store } from '../engine/storage';
 import { parseVoice } from '../engine/voice';
@@ -145,9 +146,13 @@ export function useDraftApp() {
   const realMap = REAL_META.maps[map.id] ?? null;
   const realStats = realMap?.brawlers ?? {};
 
-  const recs = useMemo(() => scoreAll({ mapId: map.id, allies, enemies, weights, banned, picked, ownership }), [map.id, allies, enemies, weights, banned, picked, ownership]);
-  const threats = useMemo(() => threatsTo(allies, enemies), [allies, enemies]);
-  const vd = useMemo(() => (done ? verdict(map.id, allies, enemies) : null), [done, map.id, allies, enemies]);
+  // Dependen del draft (no de los arrays derivados, que son nuevos en cada render): así no se
+  // recalculan 4 veces por segundo con el temporizador
+  /* eslint-disable react-hooks/exhaustive-deps */
+  const recs = useMemo(() => scoreAll({ mapId: map.id, allies, enemies, weights, banned, picked, ownership }), [map.id, draft, weights, ownership]);
+  const threats = useMemo(() => threatsTo(allies, enemies), [draft]);
+  const vd = useMemo(() => (done ? verdict(map.id, allies, enemies) : null), [done, map.id, draft]);
+  /* eslint-enable react-hooks/exhaustive-deps */
   const avoid = useMemo(() => [...recs].slice(-3).reverse(), [recs]);
   const suggestedBans = (count: number) => suggestBans(map.id, count, banned);
 
@@ -178,6 +183,63 @@ export function useDraftApp() {
   }, [timerActive]);
   const secondsLeft = Math.max(0, stepSeconds - (now - stepStart) / 1000);
   const restartTimer = () => { setStepStart(Date.now()); setNow(Date.now()); };
+
+  // --- Teléfono: publica el draft en el servidor local para la vista /?live ---
+  const [autoDetect, setAutoDetect] = useState(false);
+  const [phoneViewers, setPhoneViewers] = useState(0);
+  const liveSource = useMemo(() => Math.random().toString(36).slice(2, 10), []);
+  // Cuándo cambió de verdad el draft en esta pestaña (no cuenta abrirla): decide qué pestaña manda
+  const [changedAt, setChangedAt] = useState(0);
+  const draftSig = `${map.id}|${draft.id}|${draft.coinWinner}|${draft.history.length}|${draft.history.map((h) => h.brawlerId).join(',')}`;
+  const lastSig = useRef(draftSig);
+  useEffect(() => { if (lastSig.current !== draftSig) { lastSig.current = draftSig; setChangedAt(Date.now()); } }, [draftSig]);
+  const liveSnapshot = useMemo<LiveSnapshot>(() => {
+    const lb = (id: string | null): LiveBrawler | null => { const b = brawlerById(id); return b ? { id: b.id, name: b.name, img: b.image } : null; };
+    const list = (ids: string[]) => ids.map(lb).filter(Boolean) as LiveBrawler[];
+    const ourTurn = exp.kind === 'pick' && exp.team === 'blue';
+    const myTurn = ourTurn && mySlot !== null && allies.length === mySlot;
+    const step = exp.kind === 'done' ? 'Draft terminado' : exp.kind === 'coin' ? 'Esperando sorteo'
+      : exp.kind === 'pick' ? (exp.team === 'blue' ? (myTurn ? '¡TE TOCA PICKEAR!' : 'Pickea tu equipo') : 'Pickean ellos')
+      : `Fase de bans (${setBansDone}/${setBansTotal})`;
+    const excluded = [...banned, ...picked, ...Object.entries(ownership).filter(([, s]) => s === 'no').map(([id]) => id)];
+    return {
+      mapName: map.name, mode: map.mode, mapPhoto: map.photo, step, ourTurn, myTurn,
+      stepStart, stepSeconds, timerOn: timerActive,
+      bansBlue: list(draft.bansBlue), bansRed: list(draft.bansRed),
+      picksBlue: draft.picksBlue.map(lb), picksRed: [...draft.picksRed].reverse().map(lb),
+      best: done ? [] : recs.slice(0, 3).map((r) => ({ ...lb(r.brawlerId)!, score: r.score, why: r.explanation })),
+      bans: banPhase ? suggestBans(map.id, 3, banned).map((s) => ({ ...lb(s.brawlerId)!, why: s.reason })) : [],
+      counters: done ? [] : enemies.map((e) => ({ enemy: lb(e)!, options: countersOnMap(map.id, e, excluded, 3).map((c) => ({ ...lb(c.brawlerId)!, matchup: c.matchup, map: c.map })) })),
+      threats: threats.slice(0, 2).map((t) => `${brawlerById(t.enemy)?.name} counterea a tu ${brawlerById(t.ally)?.name}`),
+      verdict: vd ? { winChance: vd.winChance, text: vd.edge === 'blue' ? 'Ventaja nuestra' : vd.edge === 'red' ? 'Ventaja rival' : 'Draft parejo', tip: vd.tip } : null,
+      autoDetect, source: liveSource, changedAt
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draft, map.id, recs, threats, vd, mySlot, stepStart, stepSeconds, timerActive, ownership, autoDetect, changedAt]);
+  // Solo se envía cuando el contenido cambia de verdad (y, si no hay servidor, se reintenta cada 5 s sin ruido)
+  const liveJson = JSON.stringify(liveSnapshot);
+  const [liveRetry, setLiveRetry] = useState(0);
+  useEffect(() => {
+    let retry: ReturnType<typeof setTimeout> | undefined;
+    const t = setTimeout(() => {
+      fetch('/api/live', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: liveJson })
+        .then((r) => (r.ok ? r.json() : Promise.reject(r.status)))
+        .then((j: { viewers?: number }) => setPhoneViewers(j.viewers ?? 0))
+        .catch(() => { setPhoneViewers(0); retry = setTimeout(() => setLiveRetry((n) => n + 1), 5000); });
+    }, 150);
+    return () => { clearTimeout(t); if (retry) clearTimeout(retry); };
+  }, [liveJson, liveRetry]);
+  // Cuántos teléfonos siguen el draft (se actualiza aunque el draft no cambie)
+  useEffect(() => {
+    const iv = setInterval(() => {
+      fetch('/api/live/address').then((r) => r.json()).then((j: { viewers?: number; hasLive?: boolean }) => {
+        setPhoneViewers(j.viewers ?? 0);
+        // El servidor se reinició y perdió el draft: se le vuelve a enviar
+        if (j.hasLive === false) setLiveRetry((n) => n + 1);
+      }).catch(() => {});
+    }, 5000);
+    return () => clearInterval(iv);
+  }, []);
 
   // --- Acciones ---
   const confirmIf = (cond: boolean, text: string) => !cond || window.confirm(text);
@@ -400,7 +462,8 @@ export function useDraftApp() {
     changeMode, changeMap, changeFormat, doPick, doBan, doGlobalBan, applyAction, banSuggested, doUndo, doRedo, removePick,
     setFirstPicker, reset, loadEntry, cycleOwnership, setOwn, ownCount, resetOwnership, exportSummary, shareDraft,
     unavailable, pickChipLocked, flipCoin, suggestion, applySuggestion,
-    handleVoice, lastVoice, voiceFeedback, setVoiceFeedback
+    handleVoice, lastVoice, voiceFeedback, setVoiceFeedback,
+    autoDetect, setAutoDetect, phoneViewers
   };
 }
 

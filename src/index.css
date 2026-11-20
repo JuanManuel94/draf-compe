@@ -560,3 +560,88 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 @keyframes dd-mic { 0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, .6); } 50% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); } }
 .dd-real.early { opacity: .7; }
 .dd-score-real { position: absolute; top: 2px; left: 2px; padding: 0 3px; border-radius: 6px; background: rgba(52, 152, 219, .85); font-size: 10px; line-height: 14px; }
+
+/* --- Predicción de victoria y líneas --- */
+.dd-win { display: flex; align-items: center; gap: 8px; margin: 10px 0 4px; font-weight: 800; }
+.dd-win-bar { flex: 1; height: 10px; overflow: hidden; border-radius: 99px; background: rgba(231, 76, 60, .7); }
+.dd-win-bar > div { height: 100%; background: var(--dd-blue); transition: width .4s; }
+.dd-lanes { display: grid; gap: 6px; margin: 8px 0; }
+.dd-lane { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 10px; background: var(--dd-soft); font-size: .8rem; }
+.dd-lane.good { background: rgba(46, 204, 113, .12); }
+.dd-lane.bad { background: rgba(231, 76, 60, .14); }
+.dd-lane-name { color: var(--dd-muted); }
+.dd-lane-score { font-weight: 700; }
+
+/* --- Counters que también rinden en el mapa --- */
+.dd-mc-row { margin-top: 10px; }
+.dd-mc-enemy { margin-bottom: 6px; font-size: .85rem; }
+.dd-mc-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+.dd-mc-chip { display: flex; align-items: center; gap: 8px; padding: 6px; border: 1px solid var(--dd-soft-border); border-radius: 12px; background: var(--dd-soft); font-size: .8rem; text-align: left; }
+.dd-mc-chip:hover { border-color: rgba(46, 204, 113, .7); background: rgba(46, 204, 113, .1); }
+.dd-mc-chip small { display: block; color: var(--dd-muted); font-size: .7rem; }
+.dd-mc-img { width: 34px; height: 34px; flex-shrink: 0; overflow: hidden; border-radius: 8px; background: var(--dd-slot); }
+.dd-mc-img img { width: 100%; height: 100%; object-fit: cover; }
+.dd-pick-captain { margin-left: 4px; font-size: .8rem; }
+
+/* ===== Vista del teléfono (/?live) ===== */
+.lv-app { min-height: 100vh; padding: 10px 12px 24px; background: var(--dd-bg); color: #fff; font-size: 14px; }
+.lv-wait { display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; text-align: center; }
+.lv-hot { box-shadow: inset 0 0 0 4px var(--dd-yellow); }
+.lv-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.lv-muted { color: var(--dd-muted); }
+.lv-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--dd-red); }
+.lv-dot.on { background: var(--dd-green); }
+.lv-step { display: flex; align-items: center; gap: 8px; margin: 8px 0; padding: 8px 10px; border-radius: 12px; background: var(--dd-panel); font-weight: 800; }
+.lv-step > span:first-child { flex: 1; }
+.lv-timer { padding: 2px 8px; border-radius: 99px; background: rgba(255, 255, 255, .12); font-variant-numeric: tabular-nums; }
+.lv-timer.low { background: var(--dd-red); }
+.lv-chip { padding: 2px 6px; border-radius: 99px; background: rgba(46, 204, 113, .25); font-size: 11px; }
+.lv-teams { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.lv-team { padding: 8px; border-radius: 12px; }
+.lv-team.blue { background: rgba(52, 152, 219, .18); }
+.lv-team.red { background: rgba(231, 76, 60, .18); }
+.lv-label { margin-bottom: 6px; font-size: 12px; font-weight: 800; text-transform: uppercase; }
+.lv-row { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.lv-bans { margin-top: 6px; opacity: .75; }
+.lv-face { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; overflow: hidden; border-radius: 8px; background: var(--dd-slot); }
+.lv-face img { width: 100%; height: 100%; object-fit: cover; }
+.lv-initial, .lv-empty { color: var(--dd-muted); font-size: 11px; }
+.lv-card { margin-top: 10px; padding: 10px; border: 1px solid var(--dd-soft-border); border-radius: 14px; background: var(--dd-soft); }
+.lv-card h2 { margin: 0 0 8px; font-size: 14px; }
+.lv-focus { border-color: var(--dd-yellow); }
+.lv-item { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+.lv-item small { display: block; color: var(--dd-muted); font-size: 11px; line-height: 1.3; }
+.lv-item.top b { font-size: 16px; }
+.lv-score { color: var(--dd-green); }
+.lv-counter { padding: 6px 0; border-top: 1px solid var(--dd-soft-border); }
+.lv-counter:first-of-type { border-top: 0; }
+.lv-vs { display: block; margin-bottom: 4px; }
+.lv-opt { display: inline-flex; align-items: center; gap: 4px; margin-right: 6px; }
+.lv-opt small { font-size: 10px; line-height: 1.2; }
+.lv-threat { background: rgba(231, 76, 60, .14); }
+.lv-threat p { margin: 2px 0; }
+.lv-win { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; font-weight: 800; }
+.lv-win .blue { color: var(--dd-blue); } .lv-win .red { color: var(--dd-red); }
+.lv-win-bar { flex: 1; height: 8px; overflow: hidden; border-radius: 99px; background: rgba(231, 76, 60, .7); }
+.lv-win-bar > div { height: 100%; background: var(--dd-blue); }
+
+/* --- Panel 📱 teléfono y detección automática --- */
+.dd-phone { max-width: 980px; }
+.dd-phone-body { display: grid; gap: 12px; max-height: calc(100vh - 140px); overflow-y: auto; padding: 4px; }
+.dd-phone-link { display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; }
+.dd-phone-link img { border-radius: 10px; background: #fff; }
+.dd-phone-link > div { flex: 1; min-width: 220px; }
+.dd-phone-url { padding: 8px 10px; border-radius: 10px; background: var(--dd-slot); font-family: ui-monospace, monospace; word-break: break-all; }
+.dd-steps { margin: 6px 0 10px; padding-left: 20px; font-size: .85rem; line-height: 1.45; }
+.dd-det-bar { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; }
+.dd-det-stage { position: relative; overflow: hidden; border-radius: 12px; background: #000; cursor: crosshair; touch-action: none; user-select: none; }
+.dd-det-stage video { display: block; width: 100%; height: auto; pointer-events: none; }
+.dd-zone { position: absolute; border: 2px solid var(--dd-blue); border-radius: 6px; pointer-events: none; }
+.dd-zone.red { border-color: var(--dd-red); }
+.dd-zone.hit { box-shadow: 0 0 0 2px var(--dd-green); }
+.dd-zone.drawing { border-style: dashed; border-color: var(--dd-yellow); }
+.dd-zone span { position: absolute; top: -18px; left: 0; padding: 0 4px; border-radius: 4px; background: rgba(0, 0, 0, .75); font-size: 10px; white-space: nowrap; }
+.dd-det-recent { margin-top: 10px; font-size: .85rem; }
+.dd-det-item { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--dd-soft-border); }
+.dd-det-fix { display: grid; gap: 8px; margin-top: 10px; padding: 10px; border-radius: 12px; background: var(--dd-soft); }
+.dd-det-fix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; }

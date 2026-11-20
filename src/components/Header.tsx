@@ -2,7 +2,7 @@ import { useApp } from '../app/useDraftApp';
 import { POOL_INFO } from '../data/maps';
 import { DATA_SOURCE } from '../engine/scoring';
 
-export function Header({ menuOpen, setMenuOpen, openCollection }: { menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void }) {
+export function Header({ menuOpen, setMenuOpen, openCollection, openPhone }: { menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void; openPhone: () => void }) {
   const a = useApp();
   const pending = a.ownCount('no') + a.ownCount('low');
   const close = () => setMenuOpen(false);
@@ -17,6 +17,7 @@ export function Header({ menuOpen, setMenuOpen, openCollection }: { menuOpen: bo
         <div className="dd-nav-right">
           {a.format.blindBans && <label className="dd-pill" title="Ocultar bans rivales"><input type="checkbox" checked={a.blindHide} onChange={(e) => a.setBlindHide(e.target.checked)} /> Ocultar bans</label>}
           <button className="dd-round yellow" title="Mi colección" aria-label={`Mi colección${pending ? `, ${pending} brawlers marcados` : ''}`} onClick={openCollection}>🎒{pending > 0 && <span className="dd-badge">{pending}</span>}</button>
+          <button className="dd-round purple" title="Conectar el teléfono y detección automática" aria-label={`Conectar el teléfono${a.autoDetect ? ', detección automática activa' : ''}${a.phoneViewers ? `, ${a.phoneViewers} conectado(s)` : ''}`} onClick={openPhone}>📱{(a.autoDetect || a.phoneViewers > 0) && <span className="dd-badge">{a.autoDetect ? '●' : a.phoneViewers}</span>}</button>
           <button className="dd-round purple" title="Compartir enlace del draft" aria-label="Compartir enlace del draft" onClick={a.shareDraft}>🔗</button>
         </div>
       </header>
@@ -29,6 +30,7 @@ export function Header({ menuOpen, setMenuOpen, openCollection }: { menuOpen: bo
         </div>
         <nav className="dd-menu-nav">
           <button onClick={() => { openCollection(); close(); }}>🎒 Mi colección{pending > 0 ? ` (${pending})` : ''}</button>
+          <button onClick={() => { openPhone(); close(); }}>📱 Teléfono y detección automática</button>
           <button onClick={() => { a.shareDraft(); close(); }}>🔗 Compartir enlace del draft</button>
           <button onClick={() => { a.exportSummary(); close(); }}>📋 Copiar resumen en texto</button>
           <button onClick={a.doUndo}>↩ Deshacer <kbd>Ctrl+Z</kbd></button>

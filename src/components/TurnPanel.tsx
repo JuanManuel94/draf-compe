@@ -168,8 +168,9 @@ export const TurnPanel = forwardRef<HTMLInputElement, { voiceRef?: React.Ref<Voi
             {(['FP', 'MID', 'LAST'] as const).map((j, idx) => (
               <button key={j} onClick={() => a.setMySlot(a.mySlot === idx ? null : idx)} aria-pressed={a.mySlot === idx} className={`dd-chip small ${a.mySlot === idx ? 'active' : ''}`}>{j}</button>
             ))}
-            {a.mySlot !== null && <span className="dd-c-yellow">🧍 Eres el {(['FP', 'MID', 'LAST'] as const)[a.mySlot]}{myTurn && a.recs[0] ? ` — ¡TE TOCA A TI! Elige ${brawlerById(a.recs[0].brawlerId)?.name} (${a.recs[0].score})` : myTurn ? ' — ¡TE TOCA A TI!' : ''}</span>}
+            {a.mySlot !== null && <span className="dd-c-yellow">🧍 Eres el {(['FP', 'MID', 'LAST'] as const)[a.mySlot]}{a.mySlot === 2 ? ' 👑 (capitán)' : ''}{myTurn && a.recs[0] ? ` — ¡TE TOCA A TI! Elige ${brawlerById(a.recs[0].brawlerId)?.name} (${a.recs[0].score})` : myTurn ? ' — ¡TE TOCA A TI!' : ''}</span>}
           </div>
+          <p className="dd-muted small">👑 El capitán (el de más Elo) pickea último. 🔁 Si en el juego aceptas un <b>intercambio de orden</b>, toca aquí tu nuevo turno y la app te avisará cuando te toque.</p>
         </div>
       )}
     </div>

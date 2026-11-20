@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { WEIGHT_LABELS, useApp } from '../app/useDraftApp';
-import { DEFAULT_WEIGHTS, brawlerById, countersVs, matchupScore, metaLabel } from '../engine/scoring';
+import { DEFAULT_WEIGHTS, MAP_OK, brawlerById, countersOnMap, countersVs, matchupScore, metaLabel } from '../engine/scoring';
 import type { Recommendation, Weights } from '../types';
 import { Bar, BrawlerImg, scoreClass, scoreColor } from './ui';
 import { REAL_META } from '../engine/realMeta';
@@ -24,7 +24,25 @@ export function BestPick() {
           <div className="blue"><div className="dd-c-blue">NOSOTROS {vd.blue.grade}</div><div>Mapa {vd.blue.map} · Duelos {vd.blue.counter}</div></div>
           <div className="red"><div className="dd-c-red">ELLOS {vd.red.grade}</div><div>Mapa {vd.red.map} · Duelos {vd.red.counter}</div></div>
         </div>
+        <div className="dd-win" aria-label={`Probabilidad estimada de victoria: ${vd.winChance}%`}>
+          <span className="dd-c-blue">{vd.winChance}%</span>
+          <div className="dd-win-bar"><div style={{ width: `${vd.winChance}%` }} /></div>
+          <span className="dd-c-red">{100 - vd.winChance}%</span>
+        </div>
+        <p className="dd-muted small dd-center">Predicción de victoria solo por el draft (estimación, acotada a 20–80 %: la partida la decide la ejecución).</p>
         <p className="dd-strong">{vd.edge === 'blue' ? '✅ Ventaja nuestra: ejecuta tu plan.' : vd.edge === 'red' ? '⚠️ Ventaja rival: juega perfecto y evita sus counters.' : '➖ Draft parejo: lo decide la ejecución.'}</p>
+        {vd.lanes.length > 0 && (
+          <div className="dd-lanes">
+            {vd.lanes.map((l) => (
+              <div key={l.name} className={`dd-lane ${l.score >= 60 ? 'good' : l.score <= 40 ? 'bad' : ''}`} title={l.note}>
+                <span className="dd-lane-name">{l.name}</span>
+                <span><b className="dd-c-blue">{brawlerById(l.blue)?.name}</b> vs <b className="dd-c-red">{brawlerById(l.red)?.name}</b></span>
+                <span className="dd-lane-score">{l.score >= 60 ? '✅' : l.score <= 40 ? '⚠️' : '➖'} {l.score}</span>
+              </div>
+            ))}
+          </div>
+        )}
+        {vd.roleWarnings.map((w) => <p key={w} className="dd-muted">⚠️ {w}</p>)}
         <p>💡 {vd.tip}</p>
       </div>
     );
@@ -71,6 +89,38 @@ export function Threats() {
             <div className="dd-muted">{t.note}</div>
             {rb && resp && !a.done && <button className="dd-link" onClick={() => a.doPick('blue', resp.brawlerId)}>↩ Responde con {rb.name} ({resp.score}) — tócalo para pickearlo</button>}
             {a.done && <div className="dd-muted">🔒 Draft cerrado: ya no puedes responder. Evita ese duelo en partida.</div>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+// Counters de cada rival que ADEMÁS rinden en el mapa actual (las dos condiciones a la vez)
+export function MapCounters() {
+  const a = useApp();
+  if (a.enemies.length === 0 || a.done) return null;
+  const excluded = [...a.banned, ...a.picked, ...Object.entries(a.ownership).filter(([, s]) => s === 'no').map(([id]) => id)];
+  return (
+    <div className="dd-panel dd-mapcounters">
+      <h3 className="dd-h3">🎯 Counters que también van bien en {a.map.name}</h3>
+      <p className="dd-subtitle">Solo aparecen si ganan el duelo (≥ 65) <b>y</b> rinden en el mapa (≥ {MAP_OK}).</p>
+      {a.enemies.map((e) => {
+        const list = countersOnMap(a.map.id, e, excluded, 3);
+        return (
+          <div key={e} className="dd-mc-row">
+            <div className="dd-mc-enemy">vs <b className="dd-c-red">{brawlerById(e)?.name}</b></div>
+            {list.length === 0
+              ? <div className="dd-muted small">Ningún counter disponible rinde bien en este mapa: prioriza tu mejor pick de mapa.</div>
+              : <div className="dd-mc-list">{list.map((c) => {
+                const b = brawlerById(c.brawlerId)!;
+                return (
+                  <button key={c.brawlerId} className="dd-mc-chip" title={c.note} onClick={() => a.doPick('blue', c.brawlerId)}>
+                    <span className="dd-mc-img"><BrawlerImg b={b} size="w-full h-full" /></span>
+                    <span><b>{b.name}</b><small>duelo {c.matchup} · mapa {c.map}</small></span>
+                  </button>
+                );
+              })}</div>}
           </div>
         );
       })}

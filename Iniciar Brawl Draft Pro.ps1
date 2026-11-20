@@ -36,7 +36,7 @@ try {
 
   if (-not (Test-LocalUrl $frontendUrl)) {
     Write-Host 'Iniciando aplicación…'
-    Start-Process -FilePath $env:ComSpec -ArgumentList '/c', 'npm run dev -- --host 127.0.0.1' -WorkingDirectory $projectDir -WindowStyle Minimized
+    Start-Process -FilePath $env:ComSpec -ArgumentList '/c', 'npm run dev' -WorkingDirectory $projectDir -WindowStyle Minimized
   } else {
     Write-Host 'La aplicación ya está funcionando.'
   }

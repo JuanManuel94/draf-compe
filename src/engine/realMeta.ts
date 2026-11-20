@@ -21,7 +21,8 @@ export function shrunkWinRate(r: RealBrawlerStats): number {
 
 // Puntuación 0-100 en el mapa (50 = 50% de victorias; cada punto de winrate ≈ 3 puntos) y cuánto fiarse (0-0.85)
 export function realMapScore(r: RealBrawlerStats): { score: number; weight: number } {
-  return { score: clamp(50 + (shrunkWinRate(r) - 0.5) * 300), weight: Math.min(0.85, r.games / (r.games + 80)) };
+  // Con ~150 partidas el dato real ya pesa ~80 %: la estimación propia solo rellena lo que no se mide
+  return { score: clamp(50 + (shrunkWinRate(r) - 0.5) * 300), weight: Math.min(0.9, r.games / (r.games + 40)) };
 }
 
 // Meta global del brawler: winrate y presencia medios en todos los mapas medidos (ponderado por partidas)

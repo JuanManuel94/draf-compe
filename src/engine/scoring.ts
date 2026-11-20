@@ -4,10 +4,11 @@ import { MATCHUPS, STATS } from '../data/meta';
 import { ROSTER, brawlerImg } from '../data/roster';
 import { RESEARCHED_MATCHUPS, MAP_BOOST, RESEARCHED, metaOf } from '../data/counters';
 import { REAL_META, blindSafety, hasRealMap, realCompetitive, realLabel, realMapScore, realOf } from './realMeta';
+import { COUNTERS_DATA, COVERED, liveMatchup, roundAround50, weakToRole } from './liveCounters';
 import type { Brawler, GameMap, GameMode, MatchupRating, Ownership, Recommendation, Role, Weights } from '../types';
 
 export const DEFAULT_WEIGHTS: Weights = { mapMode: 0.3, matchup: 0.3, synergy: 0.2, competitive: 0.1, flex: 0.1 };
-export const DATA_SOURCE = `BrawlAPI/Brawlify (catálogo e imágenes © Supercell) + meta Ranked real de ${REAL_META.source.split(' ')[0]} (${REAL_META.updatedAt}) + fichas propias de estimación`;
+export const DATA_SOURCE = `BrawlAPI/Brawlify (catálogo e imágenes © Supercell) + meta Ranked real de ${REAL_META.source.split(' ')[0]} (${REAL_META.updatedAt}) + counters de ${COUNTERS_DATA.source.split('/')[0]} (${COUNTERS_DATA.updatedAt}) + fichas propias de estimación`;
 export { metaOf };
 
 // ---------- Roster extendido: 24 fichas detalladas + resto estimado por clase ----------
@@ -85,25 +86,82 @@ const RATING_SCORE: Record<MatchupRating, number> = {
   hardCounter: 100, favorable: 75, neutral: 50, unfavorable: 25, hardCountered: 0
 };
 
-export function matchupScore(attackerId: string, defenderId: string): { score: number; note: string; confidence: string; mapDependent: boolean } {
-  // 1º datos investigados (brawlcalculator jul-2026), 2º fichas propias, 3º estimación por clases
+type MatchupResult = { score: number; note: string; confidence: string; mapDependent: boolean };
+type RawMatchup = MatchupResult & { level: number }; // level: 0 = fuente más fiable
+
+// Lo que dice cada fuente sobre "atacante contra defensor", sin mirar la dirección contraria
+function rawMatchup(attackerId: string, defenderId: string): RawMatchup {
+  // 0º counters descargados de TODOS los brawlers (brawlcalculator, se actualiza con npm run counters:update)
+  const live = liveMatchup(attackerId, defenderId);
+  if (live) return { score: live.score, note: live.note, confidence: live.confidence, mapDependent: true, level: 0 };
+  // 1º datos investigados a mano (jul-2026), 2º fichas propias, 3º debilidad por clase, 4º estimación por clases
   const r = RESEARCHED_MATCHUPS.find((x) => x.attacker === attackerId && x.defender === defenderId);
-  if (r) return { score: RATING_SCORE[r.rating], note: r.note + ' (investigado).', confidence: r.confidence, mapDependent: !!r.mapDependent };
+  if (r) return { score: RATING_SCORE[r.rating], note: r.note + ' (investigado).', confidence: r.confidence, mapDependent: !!r.mapDependent, level: 1 };
   const m = MATCHUPS.find((x) => x.attacker === attackerId && x.defender === defenderId);
-  if (m) return { score: RATING_SCORE[m.rating], note: m.note, confidence: m.confidence, mapDependent: !!m.mapDependent };
+  if (m) return { score: RATING_SCORE[m.rating], note: m.note, confidence: m.confidence, mapDependent: !!m.mapDependent, level: 2 };
   const a = brawlerById(attackerId);
-  if (a?.counters.includes(defenderId)) return { score: 75, note: 'Ventaja declarada en ficha (estimación).', confidence: 'baja', mapDependent: true };
-  if (a?.weakAgainst.includes(defenderId)) return { score: 25, note: 'Desventaja declarada en ficha (estimación).', confidence: 'baja', mapDependent: true };
+  if (a?.counters.includes(defenderId)) return { score: 75, note: 'Ventaja declarada en ficha (estimación).', confidence: 'baja', mapDependent: true, level: 2 };
+  if (a?.weakAgainst.includes(defenderId)) return { score: 25, note: 'Desventaja declarada en ficha (estimación).', confidence: 'baja', mapDependent: true, level: 2 };
+  const d = brawlerById(defenderId);
+  if (a && weakToRole(defenderId, a.roles)) return { score: 68, note: `${d?.name ?? 'El rival'} sufre contra los ${a.roles[0].toLowerCase()} (debilidad de clase).`, confidence: 'media', mapDependent: true, level: 3 };
+  if (a && d && weakToRole(attackerId, d.roles)) return { score: 32, note: `${a.name} sufre contra los ${d.roles[0].toLowerCase()} (debilidad de clase).`, confidence: 'media', mapDependent: true, level: 3 };
   const rating = CLASS_MATRIX[roleOf(attackerId)]?.[roleOf(defenderId)] ?? 'neutral';
   const label: Record<MatchupRating, string> = {
     hardCounter: 'su clase suele cazar a la del rival', favorable: 'su clase tiene ventaja genérica',
     neutral: 'sin ventaja clara por clase', unfavorable: 'su clase suele sufrir contra la del rival',
     hardCountered: 'su clase es cazada por la del rival'
   };
-  return { score: RATING_SCORE[rating], note: `Estimación por clases: ${label[rating]}.`, confidence: 'baja', mapDependent: true };
+  return { score: RATING_SCORE[rating], note: `Estimación por clases: ${label[rating]}.`, confidence: 'baja', mapDependent: true, level: 4 };
 }
 
-function mapModeScore(b: Brawler, map: GameMap): number {
+// Duelo coherente en las dos direcciones: siempre matchupScore(a, d) + matchupScore(d, a) = 100.
+// Manda la fuente más fiable de las dos; si son igual de fiables, se promedian.
+const MATCHUP_CACHE = new Map<string, MatchupResult>();
+export function matchupScore(attackerId: string, defenderId: string): MatchupResult {
+  const key = `${attackerId}|${defenderId}`;
+  const hit = MATCHUP_CACHE.get(key);
+  if (hit) return hit;
+  const f = rawMatchup(attackerId, defenderId);
+  const b = rawMatchup(defenderId, attackerId);
+  let out: MatchupResult;
+  if (f.level < b.level) out = f;
+  else if (b.level < f.level) out = { score: 100 - b.score, note: `Lo sufre: ${b.note}`, confidence: b.confidence, mapDependent: b.mapDependent };
+  else if (f.level === 0) out = f; // los counters descargados ya juntan las dos direcciones
+  else out = { score: roundAround50((f.score + 100 - b.score) / 2), note: f.score >= 50 ? f.note : `Lo sufre: ${b.note}`, confidence: f.confidence, mapDependent: f.mapDependent || b.mapDependent };
+  MATCHUP_CACHE.set(key, out);
+  return out;
+}
+
+// --- Counter VÁLIDO = gana el duelo Y rinde en el mapa ---
+// Un counter que va mal en el mapa casi no aporta: su ventaja sobre 50 se recorta según el mapa.
+export const MAP_OK = 55; // nota de mapa mínima para considerar que "va bien en el mapa"
+export function mapGate(mapScore: number): number {
+  if (mapScore >= 62) return 1;
+  if (mapScore >= MAP_OK) return 0.75 + ((mapScore - MAP_OK) / (62 - MAP_OK)) * 0.25;
+  if (mapScore >= 45) return 0.3 + ((mapScore - 45) / (MAP_OK - 45)) * 0.45;
+  return 0.2;
+}
+export function gatedMatchup(matchup: number, mapScore: number): number {
+  return matchup > 50 ? 50 + (matchup - 50) * mapGate(mapScore) : matchup;
+}
+
+export interface MapCounter { brawlerId: string; matchup: number; map: number; combined: number; note: string }
+// Mejores counters de un rival EN ESTE MAPA: tienen que ganar el duelo (>= 65) y rendir en el mapa (>= MAP_OK).
+export function countersOnMap(mapId: string, enemyId: string, excluded: string[] = [], n = 3): MapCounter[] {
+  const map = MAPS.find((m) => m.id === mapId) ?? MAPS[0];
+  const ex = new Set([...excluded, enemyId]);
+  return getAllBrawlers().filter((b) => !ex.has(b.id))
+    .map((b) => {
+      const m = matchupScore(b.id, enemyId);
+      const ms = mapModeScore(b, map);
+      return { brawlerId: b.id, matchup: m.score, map: ms, combined: Math.round(Math.sqrt(m.score * ms)), note: m.note };
+    })
+    .filter((c) => c.matchup >= 65 && c.map >= MAP_OK)
+    .sort((x, y) => y.combined - x.combined || y.matchup - x.matchup)
+    .slice(0, n);
+}
+
+export function mapModeScore(b: Brawler, map: GameMap): number {
   const est = estimatedMapScore(b, map);
   const r = realOf(map.id, b.id);
   // Mapa con datos Ranked pero este brawler no sale entre los destacados ni entre los que pierden:
@@ -136,14 +194,17 @@ function estimatedMapScore(b: Brawler, map: GameMap): number {
   return Math.max(0, Math.min(100, s));
 }
 
-function matchupPart(b: Brawler, enemies: string[]): { avg: number; multi: number; risk: number } {
-  if (enemies.length === 0) return { avg: 55, multi: 0, risk: 20 };
-  const scores = enemies.map((e) => matchupScore(b.id, e).score);
+function matchupPart(b: Brawler, enemies: string[], mapScore: number): { avg: number; multi: number; risk: number; rawMulti: number } {
+  if (enemies.length === 0) return { avg: 55, multi: 0, risk: 20, rawMulti: 0 };
+  const raw = enemies.map((e) => matchupScore(b.id, e).score);
+  // Cada duelo ganado solo cuenta entero si además rinde en el mapa
+  const scores = raw.map((s) => gatedMatchup(s, mapScore));
   const avg = scores.reduce((a, c) => a + c, 0) / scores.length;
-  const multi = scores.filter((s) => s >= 70).length;
+  const rawMulti = raw.filter((s) => s >= 70).length;
+  const multi = mapScore >= MAP_OK ? rawMulti : 0;
   const riskScores = enemies.map((e) => matchupScore(e, b.id).score);
   const risk = riskScores.reduce((a, c) => a + c, 0) / riskScores.length;
-  return { avg, multi, risk };
+  return { avg, multi, risk, rawMulti };
 }
 
 function synergyPart(b: Brawler, allies: string[], map: GameMap): number {
@@ -182,6 +243,12 @@ function competitivePart(brawlerId: string): number {
 }
 
 export function metaLabel(brawlerId: string): string | null {
+  // Primero el meta medido (Ranked real de todos los mapas); si no hay datos, la lista investigada de oct-2026
+  const real = realCompetitive(brawlerId);
+  if (real !== null) {
+    const t = real >= 72 ? 'Meta S' : real >= 60 ? 'Meta A' : real < 42 ? 'Flojo en meta' : 'Neutro';
+    return `${t} (Ranked real, ${REAL_META.updatedAt})`;
+  }
   const m = metaOf(brawlerId);
   if (!m.tier && !m.buffy) return null;
   const t = m.tier === 'S' ? 'Meta S' : m.tier === 'A' ? 'Meta A' : m.tier === 'W' ? 'Flojo en meta' : 'Neutro';
@@ -231,11 +298,9 @@ export function scoreAll(input: ScoreInput): Recommendation[] {
 
   const recs: Recommendation[] = all.filter((b) => !excluded.has(b.id)).map((b) => {
     const mapMode = mapModeScore(b, map);
-    const { avg, multi, risk } = matchupPart(b, enemySet);
-    // ACOPLE counter×mapa: un counter que va mal en el mapa pierde fuerza.
-    // Con rivales, el matchup rinde entre el 55% (mapa horrible) y el 100% (mapa ideal).
-    const mapFit = mapMode / 100;
-    const matchupAdj = enemySet.length > 0 ? avg * (0.55 + 0.45 * mapFit) : avg;
+    // ACOPLE counter×mapa: el duelo ganado solo cuenta entero si el brawler también rinde en el mapa
+    const { avg, multi, risk, rawMulti } = matchupPart(b, enemySet, mapMode);
+    const matchupAdj = avg;
     const synergy = synergyPart(b, allySet, map);
     const competitive = competitivePart(b.id);
     const flex = flexPart(b, map);
@@ -258,7 +323,7 @@ export function scoreAll(input: ScoreInput): Recommendation[] {
     const explanation = buildExplanation(b, map, enemySet, allySet, multi, parts, real ? realLabel(real) : null);
     const weaknesses = [...b.weaknesses];
     if (risk >= 65) weaknesses.push(`Alto riesgo de ser contrarrestado (${Math.round(risk)}/100) por el draft rival actual.`);
-    if (multi >= 1 && mapMode < 45 && enemySet.length > 0) weaknesses.push(`Counterea pero va MAL en ${map.name} (${Math.round(mapMode)}/100 en mapa): elige solo si no hay otro counter que vaya bien aquí.`);
+    if (rawMulti >= 1 && mapMode < MAP_OK && enemySet.length > 0) weaknesses.push(`Counterea pero NO rinde en ${map.name} (${Math.round(mapMode)}/100 en mapa): su counter casi no cuenta. Busca un counter que también vaya bien aquí.`);
     if (real?.verdict === 'strong-late') weaknesses.push(`Gana en ${map.name} pero es fácil de counterear: guárdalo para un pick tardío (datos Ranked).`);
     if (real?.verdict === 'avoid' || real?.verdict === 'overrated') weaknesses.push(`En ${map.name} pierde más de lo que gana: ${realLabel(real)}.`);
     if (isLow) weaknesses.push('Lo tienes a BAJO NIVEL: rinde por debajo de su potencial. Máxéalo o elige la alternativa.');
@@ -266,7 +331,7 @@ export function scoreAll(input: ScoreInput): Recommendation[] {
       .filter((x) => x.id !== b.id && !excluded.has(x.id) && x.roles.some((r) => b.roles.includes(r)))
       .sort((x, y) => (own[x.id] === 'low' ? 1 : 0) - (own[y.id] === 'low' ? 1 : 0))
       .slice(0, 3).map((x) => x.id);
-    const known = b.curated || RESEARCHED.has(b.id);
+    const known = b.curated || RESEARCHED.has(b.id) || COVERED.has(b.id);
     const confidence = (real && real.reliability === 'solid' ? 'alta' : real ? 'media' : !known ? 'baja' : enemySet.length >= 2 || b.favoredMaps.includes(map.id) || (MAP_BOOST[b.id] ?? []).includes(map.id) ? 'media' : 'baja') as Recommendation['confidence'];
     return { brawlerId: b.id, score, parts, explanation, weaknesses, alternatives, multiCounter: multi, counterRisk: Math.round(risk), confidence, safeBlind };
   });
@@ -307,11 +372,44 @@ export function threatsTo(allies: string[], enemies: string[]): { ally: string; 
 }
 
 // --- Veredicto final (draft cerrado: sin cambios posibles, solo plan de juego) ---
+export interface Lane { name: string; blue: string; red: string; score: number; note: string }
 export interface Verdict {
   blue: { map: number; counter: number; total: number; grade: string };
   red: { map: number; counter: number; total: number; grade: string };
   edge: 'blue' | 'red' | 'even';
   tip: string;
+  winChance: number; // % estimado de victoria del azul (20-80: el draft no decide solo la partida)
+  lanes: Lane[];
+  roleWarnings: string[];
+}
+
+// --- Líneas: cada equipo se ordena de más alcance a más agresivo y se enfrentan línea a línea ---
+const RANGE_ORDER: Record<Brawler['range'], number> = { Largo: 0, Medio: 1, Corto: 2 };
+const LANE_NAMES = ['Línea larga (control)', 'Línea media', 'Línea agresiva'];
+export function laneOrder(ids: string[]): string[] {
+  return [...ids].sort((x, y) => {
+    const bx = brawlerById(x); const by = brawlerById(y);
+    return (bx ? RANGE_ORDER[bx.range] : 1) - (by ? RANGE_ORDER[by.range] : 1);
+  });
+}
+export function lanes(allies: string[], enemies: string[]): Lane[] {
+  if (allies.length < 3 || enemies.length < 3) return [];
+  const b = laneOrder(allies); const r = laneOrder(enemies);
+  return b.map((id, i) => {
+    const m = matchupScore(id, r[i]);
+    return { name: LANE_NAMES[i], blue: id, red: r[i], score: m.score, note: m.note };
+  });
+}
+// Avisos de composición: roles repetidos o sin alcance largo/corto según el mapa
+export function roleWarnings(ids: string[], map: GameMap): string[] {
+  const out: string[] = [];
+  const roles = ids.map((id) => roleOf(id));
+  const counts = roles.reduce<Record<string, number>>((acc, r) => ({ ...acc, [r]: (acc[r] ?? 0) + 1 }), {});
+  for (const [role, n] of Object.entries(counts)) if (n >= 2) out.push(`${n} brawlers de ${role.toLowerCase()}: composición poco equilibrada.`);
+  const ranges = ids.map((id) => brawlerById(id)?.range);
+  if (ids.length >= 2 && map.rangeBias === 'Larga' && !ranges.includes('Largo')) out.push(`${map.name} es abierto y no hay nadie de rango largo.`);
+  if (ids.length >= 2 && map.rangeBias === 'Corta' && !ranges.includes('Corto')) out.push(`${map.name} es cerrado y no hay nadie que pelee de cerca.`);
+  return out;
 }
 function gradeOf(t: number): string {
   return t >= 75 ? 'S' : t >= 65 ? 'A' : t >= 55 ? 'B' : t >= 45 ? 'C' : 'D';
@@ -321,9 +419,10 @@ export function verdict(mapId: string, allies: string[], enemies: string[]): Ver
   const team = (picks: string[], foes: string[]) => {
     if (picks.length === 0) return { map: 0, counter: 0, total: 0, grade: '—' };
     const ms = picks.map((id) => { const b = brawlerById(id); return b ? mapModeScore(b, map) : 50; });
-    const cs = picks.map((id) => {
+    // Los duelos ganados solo cuentan enteros si el brawler rinde en el mapa
+    const cs = picks.map((id, i) => {
       if (foes.length === 0) return 55;
-      const ss = foes.map((f) => matchupScore(id, f).score);
+      const ss = foes.map((f) => gatedMatchup(matchupScore(id, f).score, ms[i]));
       return ss.reduce((a, c) => a + c, 0) / ss.length;
     });
     const mAvg = Math.round(ms.reduce((a, c) => a + c, 0) / ms.length);
@@ -338,7 +437,11 @@ export function verdict(mapId: string, allies: string[], enemies: string[]): Ver
   const tip = th
     ? `Peligro mayor: ${brawlerById(th.enemy)?.name} counterea a tu ${brawlerById(th.ally)?.name}. Evita ese duelo y juega alrededor de tus otros dos.`
     : 'Sin counters duros en contra: juega tu plan de mapa con disciplina.';
-  return { blue, red, edge, tip };
+  // Predicción: diferencia de nota de draft + composición → probabilidad logística, acotada a 20-80 %
+  const comp = (ids: string[]) => -roleWarnings(ids, map).length * 3;
+  const diff = (blue.total + comp(allies)) - (red.total + comp(enemies));
+  const winChance = Math.round(Math.max(20, Math.min(80, 100 / (1 + Math.exp(-diff / 7)))));
+  return { blue, red, edge, tip, winChance, lanes: lanes(allies, enemies), roleWarnings: roleWarnings(allies, map) };
 }
 
 export function suggestBans(mapId: string, count = 3, alreadyBanned: string[] = []): { brawlerId: string; reason: string; score: number }[] {

@@ -71,6 +71,7 @@ function TeamPanel({ team }: { team: Team }) {
             <div key={i} className="dd-pick-wrapper">
               <div className="dd-pick-info">
                 <span className="dd-pick-label">{SLOT_LABELS[team][i]}</span>
+                {i === 2 && <span className="dd-pick-captain" title="Capitán: el jugador con más Elo pickea el último de su equipo">👑</span>}
                 {team === 'blue' && a.mySlot === i && <span className="dd-pick-me">🧍 TÚ</span>}
                 <span className="dd-pick-name">{b ? b.name : a.picksLocked ? '🔒' : '—'}</span>
               </div>

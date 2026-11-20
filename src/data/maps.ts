@@ -1,6 +1,7 @@
 import type { GameMap } from '../types';
 
-// ROTACIÓN RANKED (comprobada el 22-oct-2026): 26 mapas = 4 por modo + Noqueo como modo destacado (6).
+// ROTACIÓN RANKED (comprobada el 20-nov-2026, tras el Ranked Refresh: los 26 siguen en rotación según
+// brawlbetter.com/ranked-maps): 26 mapas = 4 por modo + Noqueo como modo destacado (6).
 // Fuentes: brawlbetter.com/ranked-maps (mapas vistos en partidas Ranked de los últimos 7 días) y
 // Trophycoach (pool de la temporada 49, 4 por modo). Se incluyen los 24 en los que coinciden ambas
 // más Goldarm Gulch y Flowing Springs (Noqueo, con datos completos en partidas Ranked actuales).
@@ -49,4 +50,4 @@ export const MAPS: GameMap[] = [
   M('bb-triple-dribble', 'Triple Dribble', 'Balón Brawl', 'Tres carriles con muros centrales. Equilibrio total.', 3, 3, 3, 3, 'Mixta', '⚽', 15000025)
 ];
 
-export const POOL_INFO = 'Rotación Ranked actual · 26 mapas (comprobada 22-oct-2026)';
+export const POOL_INFO = 'Rotación Ranked actual · 26 mapas (comprobada 20-nov-2026)';
