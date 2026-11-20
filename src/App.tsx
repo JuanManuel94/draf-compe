@@ -8,6 +8,7 @@ import { Compare, Favorites, History } from './components/Extras';
 import { Header } from './components/Header';
 import { FlowBar, MapStep } from './components/Flow';
 import { PhonePanel } from './components/PhonePanel';
+import { STANDALONE } from './app/env';
 import { Pool } from './components/Pool';
 import { TurnPanel } from './components/TurnPanel';
 import type { VoiceHandle } from './components/VoiceButton';
@@ -47,7 +48,7 @@ export default function App() {
     <AppContext.Provider value={app}>
       <div className="dd-app">
         <div className="dd-container">
-          <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} openCollection={() => setShowCollection(true)} openPhone={() => setShowPhone(true)} />
+          <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} openCollection={() => setShowCollection(true)} openPhone={STANDALONE ? undefined : () => setShowPhone(true)} />
           <FlowBar />
           {app.flowStep === 'map' ? <MapStep /> : (
             <main className="dd-main">
@@ -82,7 +83,7 @@ export default function App() {
           </footer>
         </div>
         {showCollection && <CollectionModal onClose={() => setShowCollection(false)} />}
-        <PhonePanel open={showPhone} onClose={() => setShowPhone(false)} />
+        {!STANDALONE && <PhonePanel open={showPhone} onClose={() => setShowPhone(false)} />}
       </div>
     </AppContext.Provider>
   );

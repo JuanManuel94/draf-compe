@@ -730,3 +730,19 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .dd-flow-map { border-color: color-mix(in srgb, var(--mode, #fff) 55%, transparent); }
 .dd-map-caption { display: flex; align-items: center; justify-content: center; gap: 6px; }
 .lv-map { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* --- Teléfono: lo que se necesita durante el draft, primero ---
+   Bans: sugerencias de ban → tablero → brawlers. Picks: mejor pick → amenazas → tablero → brawlers.
+   El mapa ya sale en la barra de pasos, así que en el teléfono no se repite en grande. */
+@media (max-width: 900px) {
+  .dd-bansug, .dd-engine { order: 0; }
+  .dd-threats { order: 1; }
+  .dd-board { order: 2; }
+  .dd-pool { order: 3; }
+  .dd-mapcounters { order: 4; }
+  .dd-current { order: 5; }
+  .dd-recs { order: 6; }
+}
+@media (max-width: 640px) {
+  .dd-map-panel { display: none; }
+}

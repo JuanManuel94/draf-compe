@@ -199,7 +199,7 @@ export function BanSuggestions() {
   const simultaneous = a.format.freeOrder;
   const list = a.suggestedBans(simultaneous ? banCount + 3 : banCount);
   return (
-    <div className="dd-panel">
+    <div className="dd-panel dd-bansug">
       <div className="dd-panel-head">
         <h3 className="dd-h3">Baneos sugeridos</h3>
         <select value={banCount} onChange={(e) => setBanCount(Number(e.target.value))} className="dd-input dd-select-xs" aria-label="Número de baneos sugeridos">

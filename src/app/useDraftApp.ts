@@ -1,3 +1,4 @@
+import { STANDALONE } from './env';
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { MAPS } from '../data/maps';
 import { FORMATS } from '../data/meta';
@@ -236,6 +237,7 @@ export function useDraftApp() {
   const liveJson = JSON.stringify(liveSnapshot);
   const [liveRetry, setLiveRetry] = useState(0);
   useEffect(() => {
+    if (STANDALONE) return; // versión publicada: no hay servidor del PC
     let retry: ReturnType<typeof setTimeout> | undefined;
     const t = setTimeout(() => {
       fetch('/api/live', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: liveJson })
@@ -247,6 +249,7 @@ export function useDraftApp() {
   }, [liveJson, liveRetry]);
   // Cuántos teléfonos siguen el draft (se actualiza aunque el draft no cambie)
   useEffect(() => {
+    if (STANDALONE) return;
     const iv = setInterval(() => {
       fetch(`/api/live/address?source=${liveSource}`).then((r) => r.json()).then((j: { viewers?: number; hasLive?: boolean; owner?: string | null }) => {
         setPhoneViewers(j.viewers ?? 0);
