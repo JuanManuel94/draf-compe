@@ -6,10 +6,9 @@ import { Board } from './components/Board';
 import { CollectionModal } from './components/CollectionModal';
 import { Compare, Favorites, History } from './components/Extras';
 import { Header } from './components/Header';
-import { PhasePanel } from './components/PhasePanel';
+import { FlowBar, MapStep } from './components/Flow';
 import { PhonePanel } from './components/PhonePanel';
 import { Pool } from './components/Pool';
-import { SetupPanel } from './components/SetupPanel';
 import { TurnPanel } from './components/TurnPanel';
 import type { VoiceHandle } from './components/VoiceButton';
 
@@ -49,31 +48,35 @@ export default function App() {
       <div className="dd-app">
         <div className="dd-container">
           <Header menuOpen={menuOpen} setMenuOpen={setMenuOpen} openCollection={() => setShowCollection(true)} openPhone={() => setShowPhone(true)} />
-          <SetupPanel />
-          <PhasePanel />
-          <main className="dd-main">
-            <section className="dd-draft-col" aria-label="Draft">
-              <Board />
-              <Pool />
-              <div className="dd-mini-grid">
-                <Compare />
-                <Favorites />
-                <History />
-              </div>
-            </section>
-            <aside className="dd-suggest-col" aria-label="Asistente">
-              <TurnPanel ref={searchRef} voiceRef={voiceRef} />
-              <BestPick />
-              <Threats />
-              <MapCounters />
-              <Recommendations />
+          <FlowBar />
+          {app.flowStep === 'map' ? <MapStep /> : (
+            <main className="dd-main">
+              <section className="dd-draft-col" aria-label="Draft">
+                <Board />
+                {app.flowStep !== 'done' && <Pool />}
+              </section>
+              <aside className="dd-suggest-col" aria-label="Asistente">
+                {app.flowStep !== 'done' && <TurnPanel ref={searchRef} voiceRef={voiceRef} />}
+                {app.flowStep === 'bans' ? <BanSuggestions /> : <>
+                  <BestPick />
+                  <Threats />
+                  {app.flowStep === 'picks' && <><MapCounters /><Recommendations /></>}
+                </>}
+              </aside>
+            </main>
+          )}
+          <details className="dd-panel dd-tools">
+            <summary>🧰 Más herramientas <span className="dd-muted small">(comparar, favoritos, historial, evitar, pesos del motor)</span></summary>
+            <div className="dd-mini-grid">
+              <Compare />
+              <Favorites />
+              <History />
+            </div>
+            <div className="dd-two">
               <Avoid />
-              <div className="dd-two">
-                <BanSuggestions />
-                <WeightsPanel />
-              </div>
-            </aside>
-          </main>
+              <WeightsPanel />
+            </div>
+          </details>
           <footer className="dd-footer">
             Brawl Draft Pro · {POOL_INFO} · Formatos: Ranked Mítico+ (3 bans por equipo + picks 1-2-2-1, capitán último) y Torneo BSC stage (sorteo + 2 globales + 3 ciegos, rulebook v1.6) · Meta: brawlbetter.com · Counters: brawlcalculator.com (SpenLC) · Catálogo e imágenes: BrawlAPI/Brawlify (comunidad; imágenes © Supercell) · Ratings: estimación, no oficial.
           </footer>

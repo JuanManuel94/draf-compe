@@ -29,6 +29,17 @@ npm run build    # tsc + vite build
 - `GET /api/matchups` — enfrentamientos
 - `POST /api/recommend` — `{ mapId, allies, enemies, banned, picked, weights }` → recomendaciones ordenadas
 
+## Flujo guiado
+
+Cada draft sigue cuatro pasos y la pantalla solo muestra lo de ese paso:
+
+1. **Mapa**: los mapas de la rotación Ranked, por modo. Un toque y pasas a los bans (con la detección activa y la zona «Mapa» marcada, se reconoce solo después de elegirlo una vez).
+2. **Bans**: bans sugeridos de un toque; la detección los marca sola.
+3. **Picks**: quién elige primero (la detección lo deduce del primer pick), mejor pick, counters que también van bien en el mapa y amenazas.
+4. **Resultado**: veredicto y probabilidad de victoria. «Nuevo draft» vuelve al paso 1.
+
+Comparar, favoritos, historial y pesos del motor están en «🧰 Más herramientas».
+
 ## Uso en Mítico+ con el teléfono
 
 Pulsa **📱** en la cabecera:

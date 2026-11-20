@@ -34,26 +34,3 @@ export function Timer({ compact = false }: { compact?: boolean }) {
     </button>
   );
 }
-
-export function PhasePanel() {
-  const a = useApp();
-  const { turnText } = useTurnTexts();
-  const firstPicker = a.draft.coinWinner === 'red' ? 'Equipo Rojo' : a.draft.coinWinner === 'blue' || !a.format.coinFlip ? 'Equipo Azul' : 'por sortear 🪙';
-  const turnCls = a.exp.kind === 'done' ? 'done' : a.exp.kind === 'coin' ? 'coin' : a.exp.team === 'blue' ? 'blue' : 'red';
-  return (
-    <section className="dd-panel dd-phase-panel">
-      <h2>Mapa: {a.map.name}</h2>
-      <h2>First Pick: {firstPicker}</h2>
-      <div className="dd-series" aria-label="Serie al mejor de 3">
-        <span>Serie Bo3</span>
-        <b className="dd-c-blue">{a.wins}</b> – <b className="dd-c-red">{a.losses}</b>
-        <span className="dd-muted">{a.seriesOver ? (a.wins > a.losses ? '· ¡Serie ganada!' : '· Serie perdida') : `· Partida ${a.series.length + 1}`}</span>
-      </div>
-      <div className="dd-turn-row">
-        <div className={`dd-turn ${turnCls}`} role="status"><span className="dd-live-dot" />{turnText}</div>
-        <Timer />
-      </div>
-      {a.msg && <div className="dd-msg" role="alert">{a.msg}</div>}
-    </section>
-  );
-}

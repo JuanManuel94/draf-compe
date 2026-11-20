@@ -22,6 +22,6 @@ export interface LiveSnapshot {
   verdict: { winChance: number; text: string; tip: string } | null;
   autoDetect: boolean; // la detección automática está leyendo la pantalla
   source: string; // id de la pestaña del PC que publica
-  changedAt: number; // cuándo cambió su draft por última vez (0 = no ha cambiado desde que se abrió)
+  changedAt: number; // última vez que se abrió, tocó o cambió esa pestaña (manda la más reciente)
   at?: number;
 }

@@ -1,9 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import QRCode from 'qrcode';
 import { useApp } from '../app/useDraftApp';
+import { MAPS } from '../data/maps';
+import { REAL_META } from '../engine/realMeta';
 import { store } from '../engine/storage';
 import { classify, confident, describe, isEmpty, loadImage, ZONE_DEFS, type Descriptor, type Match, type Zone } from '../engine/vision';
 import { BrawlerImg, norm } from './ui';
+
+// Mapas de la rotación Ranked actual: candidatos para reconocer el mapa en pantalla
+const ROTATION = MAPS.filter((m) => REAL_META.maps[m.id]);
 
 // Panel 📱: (1) ver el draft en el teléfono por WiFi y (2) detectar bans/picks automáticamente
 // leyendo la pantalla del teléfono reflejada en el PC (scrcpy). Se mantiene montado aunque esté
@@ -119,12 +124,26 @@ function Detector() {
   const [recent, setRecent] = useState<Recent[]>([]);
   const [fixing, setFixing] = useState<Recent | null>(null);
   const [q, setQ] = useState('');
+  const [learnedMaps, setLearnedMaps] = useState<Learned>(() => store.load('detLearnedMaps', {}));
+  const [mapRefs, setMapRefs] = useState<Map<string, Descriptor> | null>(null);
+  const lastMapDesc = useRef<Descriptor | null>(null);
   const assigned = useRef<Record<string, string>>({});
   const stable = useRef<Record<string, { id: string; n: number }>>({});
 
   useEffect(() => { store.save('detZones', zones); }, [zones]);
   useEffect(() => { store.save('detEmpty', empty); }, [empty]);
   useEffect(() => { store.save('detLearned', learned); }, [learned]);
+  useEffect(() => { store.save('detLearnedMaps', learnedMaps); }, [learnedMaps]);
+  useEffect(() => { if (!running) lastMapDesc.current = null; }, [running]);
+  // Al elegir el mapa a mano con la detección en marcha, se guarda cómo se ve en pantalla:
+  // la próxima vez ese mapa se reconoce solo
+  const prevStep = useRef(a.flowStep);
+  useEffect(() => {
+    const was = prevStep.current;
+    prevStep.current = a.flowStep;
+    const d = lastMapDesc.current;
+    if (was === 'map' && a.flowStep !== 'map' && d) setLearnedMaps((l) => ({ ...l, [a.mapId]: [Array.from(d), ...(l[a.mapId] ?? [])].slice(0, 5) }));
+  }, [a.flowStep]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { a.setAutoDetect(running); }, [running]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function share() {
@@ -149,6 +168,20 @@ function Detector() {
     })();
     return () => { cancel = true; };
   }, [running, refs, a.ALL]);
+
+  // Huellas de las imágenes de los mapas en rotación (una vez, solo si se marcó la zona del mapa)
+  useEffect(() => {
+    if (!running || mapRefs || !zones.some((z) => z.kind === 'map')) return;
+    let cancel = false;
+    (async () => {
+      const m = new Map<string, Descriptor>();
+      await Promise.all(ROTATION.filter((x) => x.photo).map(async (x) => {
+        try { const img = await loadImage(x.photo!); m.set(x.id, describe(img, 0, 0, img.naturalWidth, img.naturalHeight)); } catch { /* sin imagen: solo muestras aprendidas */ }
+      }));
+      if (!cancel) setMapRefs(m);
+    })();
+    return () => { cancel = true; };
+  }, [running, mapRefs, zones]);
 
   const px = (z: Zone, v: HTMLVideoElement) => [z.x * v.videoWidth, z.y * v.videoHeight, z.w * v.videoWidth, z.h * v.videoHeight] as const;
 
@@ -175,6 +208,22 @@ function Detector() {
       let acted = false;
       for (const z of zones) {
         const desc = describe(v, ...px(z, v));
+        if (z.kind === 'map') {
+          lastMapDesc.current = desc;
+          if (app.flowStep !== 'map' || !mapRefs) continue;
+          const m = classify(desc, mapRefs, learnedMaps, new Set(ROTATION.map((x) => x.id)));
+          view[z.key] = m;
+          if (!confident(m)) { delete stable.current[z.key]; continue; }
+          const st = stable.current[z.key];
+          stable.current[z.key] = st && st.id === m!.id ? { id: m!.id, n: st.n + 1 } : { id: m!.id, n: 1 };
+          if (stable.current[z.key].n >= 3 && !acted) {
+            acted = true;
+            delete stable.current[z.key];
+            app.confirmMap(m!.id);
+            app.setMsg(`🗺️ Mapa detectado: ${MAPS.find((x) => x.id === m!.id)?.name}. Si no es, tócalo arriba para cambiarlo.`);
+          }
+          continue;
+        }
         if (isEmpty(desc, empty[z.key])) { view[z.key] = 'empty'; delete stable.current[z.key]; continue; }
         const known = assigned.current[z.key];
         if (known) { view[z.key] = { id: known, score: 1, second: 0 }; continue; }
@@ -190,7 +239,16 @@ function Detector() {
         // Aplica: bans cuando sea, picks solo cuando le toca a ese equipo (si no, espera)
         let ok = false;
         if (z.kind === 'ban') ok = app.doBan(z.team, m!.id);
-        else if (app.exp.kind === 'pick' && app.exp.team === z.team) ok = app.doPick(z.team, m!.id);
+        else if (app.exp.kind === 'pick') {
+          // Primer pick del rival sin haber dicho quién empieza: se deduce de la pantalla
+          if (app.picked.length === 0 && app.format.freeOrder && app.exp.team !== z.team) {
+            app.setFirstPicker(z.team);
+            app.setMsg(`🤖 Primer pick detectado del lado ${z.team === 'blue' ? 'azul (nosotros)' : 'rojo (ellos)'}.`);
+            acted = true;
+            continue;
+          }
+          if (app.exp.team === z.team) ok = app.doPick(z.team, m!.id);
+        }
         if (ok) {
           acted = true;
           assigned.current[z.key] = m!.id;
@@ -200,7 +258,7 @@ function Detector() {
       setLive(view);
     }, 700);
     return () => clearInterval(iv);
-  }, [running, refs, zones, empty, learned]);
+  }, [running, refs, zones, empty, learned, mapRefs, learnedMaps]);
 
   // Corrección: guarda la huella como muestra del brawler correcto y arregla el draft si fue lo último
   function correct(r: Recent, rightId: string) {
@@ -244,7 +302,8 @@ function Detector() {
         <li>Refleja el teléfono en el PC con <b>scrcpy</b> (gratis; activa la depuración USB en Android y conecta el cable o la WiFi).</li>
         <li>Pulsa <b>Compartir pantalla</b> y elige la ventana de scrcpy.</li>
         <li>Con la pantalla de draft abierta y <b>vacía</b>, marca cada hueco arrastrando un recuadro (se guarda para siempre) y pulsa <b>Fotografiar huecos vacíos</b>.</li>
-        <li>Pulsa <b>Iniciar detección</b>: bans y picks se marcan solos y el mejor pick se actualiza (también en el teléfono).</li>
+        <li>Opcional: marca también la zona <b>Mapa</b> (donde el juego muestra el mapa). La primera vez que elijas cada mapa lo aprende; después se elige solo.</li>
+        <li>Pulsa <b>Iniciar detección</b>: mapa, bans, quién elige primero y picks se marcan solos, y el mejor pick se actualiza (también en el teléfono).</li>
       </ol>
       <div className="dd-det-bar">
         {!stream ? <button className="dd-btn small blue" onClick={share}>🖥️ Compartir pantalla</button>
@@ -264,7 +323,7 @@ function Detector() {
         <video ref={videoRef} autoPlay muted playsInline />
         {zones.map((z) => {
           const st = live[z.key];
-          const lbl = st === 'empty' ? 'vacío' : st ? `${name(st.id)} ${Math.round(st.score * 100)}%` : '';
+          const lbl = st === 'empty' ? 'vacío' : st ? `${z.kind === 'map' ? MAPS.find((x) => x.id === st.id)?.name ?? st.id : name(st.id)} ${Math.round(st.score * 100)}%` : '';
           return (
             <div key={z.key} className={`dd-zone ${z.team} ${st && st !== 'empty' && confident(st) ? 'hit' : ''}`} style={{ left: `${z.x * 100}%`, top: `${z.y * 100}%`, width: `${z.w * 100}%`, height: `${z.h * 100}%` }}>
               <span>{ZONE_DEFS.find((d) => d.key === z.key)?.label}{lbl ? ` · ${lbl}` : ''}</span>

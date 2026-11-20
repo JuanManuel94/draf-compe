@@ -22,12 +22,16 @@ app.post('/api/recommend', (req, res) => res.json({ info: 'Motor completo en src
 // por Server-Sent Events (GET /api/live/stream). Todo va por tu WiFi: nada sale a internet.
 let live = null;
 const viewers = new Set();
+const lastSeen = new Map(); // pestaña del PC → última señal de vida
 app.get('/api/live', (_req, res) => res.json(live));
 app.post('/api/live', (req, res) => {
   // Si hay varias pestañas abiertas manda la que cambió el draft más recientemente:
   // una pestaña olvidada no puede pisar el draft que estás llevando en otra
   const body = req.body ?? {};
-  const accepted = !live || body.source === live.source || (body.changedAt ?? 0) > (live.changedAt ?? 0);
+  // …salvo que la pestaña que mandaba ya no dé señales (cerrada o recargada): entonces manda la nueva
+  const ownerGone = !!live && Date.now() - (lastSeen.get(live.source) ?? 0) > 15000;
+  const accepted = !live || ownerGone || body.source === live.source || (body.changedAt ?? 0) > (live.changedAt ?? 0);
+  if (body.source) lastSeen.set(body.source, Date.now());
   if (process.env.LIVE_DEBUG) console.log('[live]', new Date().toISOString().slice(11, 19), req.get('referer'), body.source, body.changedAt, body.step, accepted ? 'OK' : 'ignorado');
   if (!accepted) return res.json({ ok: true, accepted: false, viewers: viewers.size });
   live = { ...body, at: Date.now() };
@@ -47,12 +51,13 @@ app.get('/api/live/stream', (req, res) => {
 // Direcciones de este PC en la red local, para abrir la vista desde el teléfono
 // Los adaptadores virtuales (VirtualBox, VMware, Hyper-V/WSL) van al final: el teléfono no los alcanza
 const VIRTUAL = /virtual|vbox|vmware|vethernet|hyper-v|wsl|docker|loopback|tailscale|zerotier/i;
-app.get('/api/live/address', (_req, res) => {
+app.get('/api/live/address', (req, res) => {
+  if (typeof req.query.source === 'string') lastSeen.set(req.query.source, Date.now());
   const list = Object.entries(networkInterfaces()).flatMap(([name, nets]) =>
     (nets ?? []).filter((n) => n.family === 'IPv4' && !n.internal).map((n) => ({ name, ip: n.address })));
   const rank = (x) => (VIRTUAL.test(x.name) || x.ip.startsWith('192.168.56.') ? 2 : /wi-?fi|wlan|inal/i.test(x.name) ? 0 : 1);
   const ips = list.sort((a, b) => rank(a) - rank(b)).map((x) => x.ip);
-  res.json({ ips, viewers: viewers.size, hasLive: !!live });
+  res.json({ ips, viewers: viewers.size, hasLive: !!live, owner: live?.source ?? null });
 });
 
 // --- Conexión por cable USB (no depende de la WiFi) ---

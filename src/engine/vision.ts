@@ -77,11 +77,13 @@ export function loadImage(url: string): Promise<HTMLImageElement> {
 }
 
 // Zonas de la pantalla del draft que el usuario marca una vez (coordenadas 0-1 del vídeo)
-export type ZoneKind = 'ban' | 'pick';
+export type ZoneKind = 'ban' | 'pick' | 'map';
 export interface Zone { key: string; kind: ZoneKind; team: 'blue' | 'red'; slot: number; x: number; y: number; w: number; h: number }
 export const ZONE_DEFS: { key: string; kind: ZoneKind; team: 'blue' | 'red'; slot: number; label: string }[] = [
   ...[0, 1, 2].map((i) => ({ key: `ban-blue-${i}`, kind: 'ban' as const, team: 'blue' as const, slot: i, label: `Ban nuestro ${i + 1}` })),
   ...[0, 1, 2].map((i) => ({ key: `ban-red-${i}`, kind: 'ban' as const, team: 'red' as const, slot: i, label: `Ban rival ${i + 1}` })),
   ...['FP', 'MID', 'LAST'].map((n, i) => ({ key: `pick-blue-${i}`, kind: 'pick' as const, team: 'blue' as const, slot: i, label: `Pick nuestro ${n}` })),
-  ...['FP', 'MID', 'LAST'].map((n, i) => ({ key: `pick-red-${i}`, kind: 'pick' as const, team: 'red' as const, slot: i, label: `Pick rival ${n}` }))
+  ...['FP', 'MID', 'LAST'].map((n, i) => ({ key: `pick-red-${i}`, kind: 'pick' as const, team: 'red' as const, slot: i, label: `Pick rival ${n}` })),
+  // Opcional: imagen o nombre del mapa en la pantalla del draft. Aprende cada mapa la primera vez que lo eliges
+  { key: 'map', kind: 'map' as const, team: 'blue' as const, slot: 0, label: 'Mapa (opcional)' }
 ];

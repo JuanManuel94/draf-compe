@@ -84,6 +84,8 @@ export function useDraftApp() {
   const [voiceFeedback, setVoiceFeedback] = useState<boolean>(() => store.load('voiceFeedback', true));
   const [lastVoice, setLastVoice] = useState<{ heard: string; result: string; ok: boolean } | null>(null);
   const [setupOpen, setSetupOpen] = useState<boolean>(() => !shared && store.load('draft', null) === null);
+  // Flujo guiado: cada draft nuevo empieza eligiendo (o detectando) el mapa
+  const [mapOkFor, setMapOkFor] = useState<string>(() => (shared ? shared.id ?? '' : store.load('mapOkFor', '')));
 
   useEffect(() => {
     // El enlace ya se cargó: se limpia el hash para que recargar no pise cambios posteriores
@@ -107,6 +109,7 @@ export function useDraftApp() {
   useEffect(() => { store.save('mode', mode); store.save('mapId', mapId); store.save('formatId', formatId); store.save('weights', weights); store.save('blindHide', blindHide); store.save('ownership', ownership); store.save('mySlot', mySlot); store.save('action', action); store.save('timerOn', timerOn); store.save('voiceFeedback', voiceFeedback); }, [mode, mapId, formatId, weights, blindHide, ownership, mySlot, action, timerOn, voiceFeedback]);
   useEffect(() => { store.save('favorites', favorites); store.save('history', history); store.save('series', series); }, [favorites, history, series]);
   useEffect(() => { store.save('draft', draft); }, [draft]);
+  useEffect(() => { store.save('mapOkFor', mapOkFor); }, [mapOkFor]);
 
   const map = MAPS.find((m) => m.id === mapId) ?? MAPS.find((m) => m.mode === mode) ?? MAPS[0];
   const format = getFormat(formatId);
@@ -122,6 +125,9 @@ export function useDraftApp() {
   const picksLocked = !bansComplete(draft) && !draft.freeMode;
   const done = draft.phase === 'done';
   const maskRival = format.blindBans && blindHide;
+  const mapConfirmed = mapOkFor === (draft.id ?? '') || draft.history.length > 0;
+  // Paso del flujo: 1 mapa → 2 bans → 3 picks (el primer pick se decide al empezar) → 4 resultado
+  const flowStep: 'map' | 'bans' | 'picks' | 'done' = !mapConfirmed ? 'map' : exp.kind === 'done' ? 'done' : picksLocked ? 'bans' : 'picks';
   // Bans que ambos equipos repitieron (posible en Ranked: los bans son simultáneos)
   const doubleBans = draft.bansBlue.filter((b) => draft.bansRed.includes(b));
 
@@ -188,17 +194,25 @@ export function useDraftApp() {
   const [autoDetect, setAutoDetect] = useState(false);
   const [phoneViewers, setPhoneViewers] = useState(0);
   const liveSource = useMemo(() => Math.random().toString(36).slice(2, 10), []);
-  // Cuándo cambió de verdad el draft en esta pestaña (no cuenta abrirla): decide qué pestaña manda
-  const [changedAt, setChangedAt] = useState(0);
+  // Última vez que se usó esta pestaña (abrirla, tocarla, teclear o cambiar el draft): el teléfono
+  // sigue a la pestaña usada más recientemente, aunque haya otras abiertas
+  const [changedAt, setChangedAt] = useState(() => Date.now());
   const draftSig = `${map.id}|${draft.id}|${draft.coinWinner}|${draft.history.length}|${draft.history.map((h) => h.brawlerId).join(',')}`;
   const lastSig = useRef(draftSig);
   useEffect(() => { if (lastSig.current !== draftSig) { lastSig.current = draftSig; setChangedAt(Date.now()); } }, [draftSig]);
+  useEffect(() => {
+    let last = 0;
+    const touch = () => { const t = Date.now(); if (t - last > 3000) { last = t; setChangedAt(t); } };
+    window.addEventListener('pointerdown', touch);
+    window.addEventListener('keydown', touch);
+    return () => { window.removeEventListener('pointerdown', touch); window.removeEventListener('keydown', touch); };
+  }, []);
   const liveSnapshot = useMemo<LiveSnapshot>(() => {
     const lb = (id: string | null): LiveBrawler | null => { const b = brawlerById(id); return b ? { id: b.id, name: b.name, img: b.image } : null; };
     const list = (ids: string[]) => ids.map(lb).filter(Boolean) as LiveBrawler[];
     const ourTurn = exp.kind === 'pick' && exp.team === 'blue';
     const myTurn = ourTurn && mySlot !== null && allies.length === mySlot;
-    const step = exp.kind === 'done' ? 'Draft terminado' : exp.kind === 'coin' ? 'Esperando sorteo'
+    const step = flowStep === 'map' ? 'Eligiendo mapa…' : exp.kind === 'done' ? 'Draft terminado' : exp.kind === 'coin' ? 'Esperando sorteo'
       : exp.kind === 'pick' ? (exp.team === 'blue' ? (myTurn ? '¡TE TOCA PICKEAR!' : 'Pickea tu equipo') : 'Pickean ellos')
       : `Fase de bans (${setBansDone}/${setBansTotal})`;
     const excluded = [...banned, ...picked, ...Object.entries(ownership).filter(([, s]) => s === 'no').map(([id]) => id)];
@@ -215,7 +229,7 @@ export function useDraftApp() {
       autoDetect, source: liveSource, changedAt
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft, map.id, recs, threats, vd, mySlot, stepStart, stepSeconds, timerActive, ownership, autoDetect, changedAt]);
+  }, [draft, map.id, recs, threats, vd, mySlot, stepStart, stepSeconds, timerActive, ownership, autoDetect, changedAt, flowStep]);
   // Solo se envía cuando el contenido cambia de verdad (y, si no hay servidor, se reintenta cada 5 s sin ruido)
   const liveJson = JSON.stringify(liveSnapshot);
   const [liveRetry, setLiveRetry] = useState(0);
@@ -232,14 +246,15 @@ export function useDraftApp() {
   // Cuántos teléfonos siguen el draft (se actualiza aunque el draft no cambie)
   useEffect(() => {
     const iv = setInterval(() => {
-      fetch('/api/live/address').then((r) => r.json()).then((j: { viewers?: number; hasLive?: boolean }) => {
+      fetch(`/api/live/address?source=${liveSource}`).then((r) => r.json()).then((j: { viewers?: number; hasLive?: boolean; owner?: string | null }) => {
         setPhoneViewers(j.viewers ?? 0);
-        // El servidor se reinició y perdió el draft: se le vuelve a enviar
-        if (j.hasLive === false) setLiveRetry((n) => n + 1);
+        // El servidor perdió el draft o lo lleva otra pestaña que quizá ya no existe: se vuelve a enviar
+        // (si esa otra pestaña sigue viva, el servidor lo ignora)
+        if (j.hasLive === false || j.owner !== liveSource) setLiveRetry((n) => n + 1);
       }).catch(() => {});
     }, 5000);
     return () => clearInterval(iv);
-  }, []);
+  }, [liveSource]);
 
   // --- Acciones ---
   const confirmIf = (cond: boolean, text: string) => !cond || window.confirm(text);
@@ -255,6 +270,13 @@ export function useDraftApp() {
     setMode(mm.mode);
     setDraft((d) => ({ ...d, mapId: id, mode: mm.mode }));
   }
+  function confirmMap(id?: string) {
+    if (id) changeMap(id);
+    setMapOkFor(draft.id ?? '');
+    setSetupOpen(false);
+    setMsg('');
+  }
+  const editMap = () => setMapOkFor('');
   function changeFormat(id: string) {
     if (!confirmIf(draft.history.length > 0, 'Cambiar de formato empieza un draft nuevo y borra el actual. ¿Continuar?')) return false;
     setFormatId(id);
@@ -349,7 +371,7 @@ export function useDraftApp() {
   function nextGame() {
     reset(false);
     setSetupOpen(true);
-    setMsg(`▶ Partida ${series.length + 1} de la serie: elige el mapa y quién pickea primero.`);
+    setMsg(`▶ Partida ${series.length + 1} de la serie.`);
   }
   function newSeries() {
     if (!confirmIf(series.length > 0, '¿Empezar una serie nueva? Se borra el marcador actual.')) return;
@@ -459,6 +481,7 @@ export function useDraftApp() {
     recs, threats, vd, avoid, suggestedBans,
     stepSeconds, secondsLeft, timerActive, restartTimer,
     wins, losses, seriesOver, gameRecorded, recordResult, nextGame, newSeries,
+    mapConfirmed, flowStep, confirmMap, editMap,
     changeMode, changeMap, changeFormat, doPick, doBan, doGlobalBan, applyAction, banSuggested, doUndo, doRedo, removePick,
     setFirstPicker, reset, loadEntry, cycleOwnership, setOwn, ownCount, resetOwnership, exportSummary, shareDraft,
     unavailable, pickChipLocked, flipCoin, suggestion, applySuggestion,

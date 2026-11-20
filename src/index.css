@@ -422,6 +422,7 @@ input[type="checkbox"] { accent-color: var(--dd-yellow); }
   /* En móvil/tablet: lo que se usa en cada turno, seguido (tablero → turno/deshacer → mejor pick → brawlers) */
   .dd-main { display: flex; flex-direction: column; }
   .dd-draft-col, .dd-suggest-col { display: contents; }
+  .dd-suggest-col > * { order: 3; }
   .dd-board { order: 1; }
   .dd-current { order: 2; }
   .dd-engine { order: 3; }
@@ -648,3 +649,44 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .dd-usb { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dd-soft-border); }
 .dd-usb h4 { margin: 0 0 4px; font-weight: 800; }
 .dd-usb .dd-phone-link { margin-top: 10px; align-items: center; }
+
+/* --- Flujo guiado: Mapa → Bans → Picks → Resultado --- */
+.dd-flow { padding: 14px 18px; margin-bottom: 20px; }
+.dd-flow-steps { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.dd-flow-steps li { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 8px 6px; border-radius: 10px; background: rgba(0, 0, 0, .22); color: var(--dd-muted); font-weight: 700; font-size: .95rem; }
+.dd-flow-steps li.active { background: var(--dd-yellow); color: #231e3f; }
+.dd-flow-steps li.done { background: rgba(46, 204, 113, .22); color: #fff; }
+.dd-flow-n { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: rgba(0, 0, 0, .25); font-size: .8rem; }
+.dd-flow-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-top: 12px; }
+.dd-flow-row .dd-turn { margin-top: 0; }
+.dd-flow-map { display: flex; align-items: center; gap: 10px; padding: 4px 12px 4px 4px; border: 1px solid var(--dd-soft-border); border-radius: 12px; background: rgba(0, 0, 0, .25); text-align: left; }
+.dd-flow-map:disabled { cursor: default; opacity: 1; }
+.dd-flow-map span { display: flex; flex-direction: column; line-height: 1.15; }
+.dd-flow-map small { color: var(--dd-muted); }
+.dd-flow-map-img { width: 44px; height: 44px; border-radius: 8px; object-fit: cover; }
+.dd-flow-auto { padding: 4px 10px; border-radius: 12px; background: rgba(46, 204, 113, .25); font-size: .85rem; font-weight: 700; }
+.dd-flow-series { margin-left: auto; font-size: 1.1rem; }
+.dd-flow-first { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; margin-top: 12px; padding: 10px; border-radius: 12px; background: rgba(241, 196, 15, .12); font-weight: 700; }
+.dd-mapstep { margin-bottom: 20px; }
+.dd-mapstep-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.dd-mapstep-head .dd-h2 { margin: 0; text-align: left; }
+.dd-mapstep-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.dd-mapstep-tools .dd-input { width: auto; min-width: 180px; }
+.dd-mapstep-group .dd-h3 { margin: 14px 0 8px; font-size: 1.1rem; text-align: left; }
+.dd-mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.dd-mapcard { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 6px; border: 2px solid transparent; border-radius: 12px; background: rgba(0, 0, 0, .25); font-weight: 700; font-size: .85rem; text-align: center; transition: transform .12s, border-color .12s; }
+.dd-mapcard:hover { transform: translateY(-2px); border-color: var(--dd-yellow); }
+.dd-mapcard.selected { border-color: var(--dd-green); }
+.dd-mapcard-img { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; object-fit: cover; background: var(--dd-slot); font-size: 2rem; }
+.dd-tools { margin-bottom: 20px; padding: 14px 18px; }
+.dd-tools > summary { cursor: pointer; font-weight: 700; }
+.dd-tools[open] > summary { margin-bottom: 14px; }
+.dd-tools .dd-two { margin-top: 20px; }
+@media (max-width: 640px) {
+  .dd-flow-steps li { font-size: .78rem; padding: 6px 2px; gap: 4px; }
+  .dd-flow-series { margin-left: 0; }
+  .dd-mapgrid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
+  .dd-mapstep-tools .dd-input { min-width: 0; flex: 1; }
+}
+.dd-flow-first .dd-side { aspect-ratio: auto; flex-direction: row; gap: 6px; width: auto; height: auto; min-height: 0; padding: 6px 18px; font-size: .95rem; }
+.dd-flow-first .dd-side span { font-size: 1.1rem; }
