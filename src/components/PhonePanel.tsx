@@ -53,7 +53,49 @@ function PhoneLink({ open }: { open: boolean }) {
             </div>
           </div>
         )}
+      <UsbLink />
     </section>
+  );
+}
+
+// Plan B: por cable USB con `adb reverse` (no depende de la WiFi ni del router)
+const USB_ERRORS: Record<string, string> = {
+  noadb: 'No encuentro adb en este PC. Descarga scrcpy (trae adb), descomprímelo en Descargas y vuelve a probar.',
+  nodevice: 'No veo ningún teléfono por USB. Conecta el cable y activa la «Depuración USB» en Opciones de desarrollador.',
+  unauthorized: 'El teléfono pide permiso: acepta «¿Permitir depuración USB?» en la pantalla del teléfono y vuelve a pulsar.',
+  reverse: 'adb no pudo crear la conexión.',
+  server: 'No responde el servidor de la app. Arráncala con «Iniciar Brawl Draft Pro».'
+};
+function UsbLink() {
+  const [state, setState] = useState<{ busy: boolean; ok?: boolean; reason?: string; detail?: string }>({ busy: false });
+  const [qr, setQr] = useState('');
+  const url = 'http://localhost:5173/?live';
+  useEffect(() => { if (state.ok) QRCode.toDataURL(url, { margin: 1, width: 140 }).then(setQr).catch(() => setQr('')); }, [state.ok]);
+  async function connect() {
+    setState({ busy: true });
+    try {
+      const r = await fetch('/api/live/usb', { method: 'POST' }).then((x) => x.json()) as { ok: boolean; reason?: string; detail?: string };
+      setState({ busy: false, ...r });
+    } catch { setState({ busy: false, ok: false, reason: 'server' }); }
+  }
+  return (
+    <div className="dd-usb">
+      <h4>¿No conecta por WiFi? Usa el cable USB</h4>
+      <p className="dd-muted small">Algunos routers aíslan los dispositivos de la WiFi entre sí (o el teléfono usa VPN / DNS privado). Por cable no hace falta la WiFi: es la misma conexión que usa scrcpy.</p>
+      <ol className="dd-steps">
+        <li>En el teléfono: Ajustes → Acerca del teléfono → toca 7 veces «Número de compilación». Luego en Opciones de desarrollador activa <b>Depuración USB</b>.</li>
+        <li>Conecta el cable al PC y acepta «¿Permitir depuración USB?» en el teléfono.</li>
+        <li>Pulsa el botón y abre en el teléfono <span className="dd-phone-url">{url}</span></li>
+      </ol>
+      <button className="dd-btn small blue" disabled={state.busy} onClick={connect}>{state.busy ? 'Conectando…' : '🔌 Conectar por cable USB'}</button>
+      {state.ok && (
+        <div className="dd-phone-link">
+          {qr && <img src={qr} alt={`Código QR de ${url}`} width={140} height={140} />}
+          <p className="dd-c-green">✅ Listo. En el teléfono abre <b>{url}</b> (escanea este QR o escríbelo). Si desconectas el cable, vuelve a pulsar el botón.</p>
+        </div>
+      )}
+      {state.ok === false && <p className="dd-c-red">{USB_ERRORS[state.reason ?? 'reverse']}{state.detail ? ` (${state.detail})` : ''}</p>}
+    </div>
   );
 }
 

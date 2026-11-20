@@ -645,3 +645,6 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .dd-det-item { display: flex; justify-content: space-between; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--dd-soft-border); }
 .dd-det-fix { display: grid; gap: 8px; margin-top: 10px; padding: 10px; border-radius: 12px; background: var(--dd-soft); }
 .dd-det-fix-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 6px; }
+.dd-usb { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--dd-soft-border); }
+.dd-usb h4 { margin: 0 0 4px; font-weight: 800; }
+.dd-usb .dd-phone-link { margin-top: 10px; align-items: center; }

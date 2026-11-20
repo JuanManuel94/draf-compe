@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import { networkInterfaces } from 'node:os';
+import { networkInterfaces, homedir } from 'node:os';
+import { execFile, execFileSync } from 'node:child_process';
+import { existsSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 const app = express();
 app.use(cors());
@@ -50,6 +53,43 @@ app.get('/api/live/address', (_req, res) => {
   const rank = (x) => (VIRTUAL.test(x.name) || x.ip.startsWith('192.168.56.') ? 2 : /wi-?fi|wlan|inal/i.test(x.name) ? 0 : 1);
   const ips = list.sort((a, b) => rank(a) - rank(b)).map((x) => x.ip);
   res.json({ ips, viewers: viewers.size, hasLive: !!live });
+});
+
+// --- Conexión por cable USB (no depende de la WiFi) ---
+// `adb reverse` hace que en el teléfono http://localhost:5173 sea este PC. Necesita la depuración USB
+// activada (la misma que usa scrcpy). Se busca adb en el PATH, en ADB y en carpetas habituales.
+function findAdb() {
+  const home = homedir();
+  const candidates = [
+    process.env.ADB,
+    'adb',
+    'C:\\Program Files\\ASUS\\GlideX\\adb.exe',
+    join(process.env.LOCALAPPDATA ?? '', 'Android', 'Sdk', 'platform-tools', 'adb.exe')
+  ];
+  // Carpetas de scrcpy descomprimidas en Descargas, Escritorio o la carpeta personal
+  for (const dir of [join(home, 'Downloads'), join(home, 'Desktop'), home]) {
+    try {
+      for (const d of readdirSync(dir)) if (/scrcpy/i.test(d)) candidates.push(join(dir, d, 'adb.exe'), join(dir, d, 'adb'));
+    } catch { /* carpeta inexistente */ }
+  }
+  return candidates.filter(Boolean).find((p) => p === 'adb' ? hasCommand('adb') : existsSync(p)) ?? null;
+}
+function hasCommand(cmd) {
+  try { execFileSync(cmd, ['version'], { stdio: 'ignore', timeout: 5000 }); return true; } catch { return false; }
+}
+function adb(bin, args) {
+  return new Promise((resolve) => execFile(bin, args, { timeout: 15000 }, (err, stdout, stderr) => resolve({ ok: !err, out: `${stdout}${stderr}`.trim() })));
+}
+app.post('/api/live/usb', async (_req, res) => {
+  const bin = findAdb();
+  if (!bin) return res.json({ ok: false, reason: 'noadb' });
+  const devices = await adb(bin, ['devices']);
+  const lines = devices.out.split(/\r?\n/).slice(1).filter((l) => l.trim());
+  if (lines.length === 0) return res.json({ ok: false, reason: 'nodevice' });
+  if (lines.every((l) => /unauthorized/.test(l))) return res.json({ ok: false, reason: 'unauthorized' });
+  const r1 = await adb(bin, ['reverse', 'tcp:5173', 'tcp:5173']);
+  const r2 = await adb(bin, ['reverse', 'tcp:3001', 'tcp:3001']);
+  res.json({ ok: r1.ok && r2.ok, reason: r1.ok ? undefined : 'reverse', detail: r1.ok ? undefined : r1.out, url: 'http://localhost:5173/?live' });
 });
 
 const PORT = 3001;
