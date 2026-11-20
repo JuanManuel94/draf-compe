@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { LiveBrawler, LiveSnapshot } from '../app/live';
+import { modeInfo } from '../data/modes';
+import { ModeIcon } from './ui';
 
 // Vista para el teléfono (/?live): sigue el draft del PC en directo, sin tocar nada.
 // Pensada para abrirse en ventana flotante o pantalla dividida mientras juegas.
@@ -51,7 +53,7 @@ export function LiveView() {
   return (
     <div className={`lv-app ${s.myTurn ? 'lv-hot' : ''}`}>
       <header className="lv-head">
-        <div><b>{s.mapName}</b> <span className="lv-muted">{s.mode}</span></div>
+        <div className="lv-map"><ModeIcon mode={s.mode} size={24} /><b>{s.mapName}</b> <span style={{ color: modeInfo(s.mode).color }}>{s.mode}</span></div>
         <span className={`lv-dot ${online ? 'on' : ''}`} title={online ? 'En directo' : 'Sin conexión'} />
       </header>
       <div className="lv-step">

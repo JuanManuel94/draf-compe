@@ -720,3 +720,13 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .dd-flow-first .dd-side span { font-size: 1.1rem; }
 .dd-flow-first .dd-side:not(.active) { opacity: .75; filter: saturate(.5); }
 .dd-flow-first .dd-side:not(.active):hover { opacity: 1; filter: none; }
+
+/* --- Iconos oficiales de modo --- */
+.dd-mode-icon { display: inline-grid; place-items: center; flex: none; object-fit: contain; vertical-align: middle; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .45)); }
+.dd-mode-chip .dd-mode-icon { margin: -4px 0 -4px -4px; }
+.dd-mapstep-mode { display: flex; align-items: center; gap: 8px; }
+.dd-map-thumb { position: relative; display: inline-block; flex: none; line-height: 0; }
+.dd-map-thumb-mode { position: absolute; right: -6px; bottom: -6px; }
+.dd-flow-map { border-color: color-mix(in srgb, var(--mode, #fff) 55%, transparent); }
+.dd-map-caption { display: flex; align-items: center; justify-content: center; gap: 6px; }
+.lv-map { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }

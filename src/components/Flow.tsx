@@ -4,7 +4,8 @@ import { MAPS } from '../data/maps';
 import { FORMATS } from '../data/meta';
 import { REAL_META } from '../engine/realMeta';
 import { Timer, useTurnTexts } from './PhasePanel';
-import { MapImg, norm } from './ui';
+import { modeInfo } from '../data/modes';
+import { MapImg, ModeIcon, norm } from './ui';
 
 // Flujo guiado del draft: 1 Mapa → 2 Bans → 3 Picks → 4 Resultado.
 // Solo se muestra lo que hace falta en cada paso; la detección automática lo avanza sola.
@@ -33,9 +34,12 @@ export function FlowBar() {
       </ol>
       {a.flowStep !== 'map' && (
         <div className="dd-flow-row">
-          <button className="dd-flow-map" onClick={a.editMap} disabled={a.draft.history.length > 0} title={a.draft.history.length > 0 ? 'El draft ya empezó: usa «Nuevo draft» para cambiar de mapa' : 'Cambiar el mapa'}>
-            {a.map.photo && <MapImg src={a.map.photo} name={a.map.name} cls="dd-flow-map-img" />}
-            <span><b>{a.map.name}</b><small>{a.map.mode}</small></span>
+          <button className="dd-flow-map" style={modeVar(a.map.mode)} onClick={a.editMap} disabled={a.draft.history.length > 0} title={a.draft.history.length > 0 ? 'El draft ya empezó: usa «Nuevo draft» para cambiar de mapa' : 'Cambiar el mapa'}>
+            <span className="dd-map-thumb">
+              {a.map.photo && <MapImg src={a.map.photo} name={a.map.name} cls="dd-flow-map-img" />}
+              <ModeIcon mode={a.map.mode} size={22} cls="dd-map-thumb-mode" />
+            </span>
+            <span><b>{a.map.name}</b><small style={{ color: modeInfo(a.map.mode).color }}>{a.map.mode}</small></span>
           </button>
           <div className={`dd-turn ${turnCls}`} role="status"><span className="dd-live-dot" />{turnText}</div>
           <Timer />
@@ -60,16 +64,7 @@ export function FlowBar() {
 
 // Paso 1: elegir el mapa. Solo los mapas de la rotación Ranked actual; cada modo es una columna
 // (3 por fila en PC, 1 en móvil) y los chips de arriba filtran por modo.
-const MODE_STYLE: Record<string, { icon: string; color: string }> = {
-  'Atrapagemas': { icon: '💎', color: '#b05cff' },
-  'Balón Brawl': { icon: '⚽', color: '#3fa7ff' },
-  'Caza Estelar': { icon: '⭐', color: '#f1c40f' },
-  'Noqueo': { icon: '💀', color: '#ff7a3d' },
-  'Atraco': { icon: '💰', color: '#e84393' },
-  'Zona Restringida': { icon: '🎯', color: '#2ecc71' }
-};
-const modeStyle = (m: string) => MODE_STYLE[m] ?? { icon: '🗺️', color: '#9aa0c8' };
-const modeVar = (m: string) => ({ '--mode': modeStyle(m).color }) as React.CSSProperties;
+const modeVar = (m: string) => ({ '--mode': modeInfo(m).color }) as React.CSSProperties;
 
 export function MapStep() {
   const a = useApp();
@@ -97,7 +92,10 @@ export function MapStep() {
         </div>
         <div className="dd-mapstep-tools">
           <button className="dd-mapstep-last" onClick={() => a.confirmMap()} title="Usar el mismo mapa de antes">
-            {a.map.photo && <MapImg src={a.map.photo} name={a.map.name} cls="dd-mapstep-last-img" />}
+            <span className="dd-map-thumb">
+              {a.map.photo && <MapImg src={a.map.photo} name={a.map.name} cls="dd-mapstep-last-img" />}
+              <ModeIcon mode={a.map.mode} size={20} cls="dd-map-thumb-mode" />
+            </span>
             <span><small>Repetir mapa</small><b>▶ {a.map.name}</b></span>
           </button>
           <input className="dd-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa…" aria-label="Buscar mapa" />
@@ -111,14 +109,14 @@ export function MapStep() {
         {modes.map((m) => (
           <button key={m} className={`dd-mode-chip ${modeFilter === m ? 'active' : ''}`} aria-pressed={modeFilter === m} style={modeVar(m)}
             onClick={() => setModeFilter(modeFilter === m ? null : m)}>
-            {modeStyle(m).icon} {m} <small>{all.filter((x) => x.mode === m).length}</small>
+            <ModeIcon mode={m} size={20} /> {m} <small>{all.filter((x) => x.mode === m).length}</small>
           </button>
         ))}
       </div>
       <div className={`dd-mapstep-groups ${groups.length === 1 ? 'single' : ''}`}>
         {groups.map(([mode, maps]) => (
           <div key={mode} className="dd-mapstep-group" style={modeVar(mode)}>
-            <h3 className="dd-mapstep-mode">{modeStyle(mode).icon} {mode}</h3>
+            <h3 className="dd-mapstep-mode"><ModeIcon mode={mode} size={30} /> {mode}</h3>
             <div className="dd-mapgrid">
               {maps.map((m) => (
                 <button key={m.id} className={`dd-mapcard ${m.id === a.mapId ? 'selected' : ''}`} onClick={() => a.confirmMap(m.id)} title={`Jugar en ${m.name}`}>

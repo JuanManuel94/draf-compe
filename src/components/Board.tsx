@@ -3,7 +3,8 @@ import { pickOrderIssues, SLOT_LABELS } from '../engine/draftMachine';
 import { brawlerById } from '../engine/scoring';
 import type { Team } from '../types';
 import { useTurnTexts } from './PhasePanel';
-import { BrawlerImg, MapImg } from './ui';
+import { modeInfo } from '../data/modes';
+import { BrawlerImg, MapImg, ModeIcon } from './ui';
 
 function TeamPanel({ team }: { team: Team }) {
   const a = useApp();
@@ -105,7 +106,7 @@ export function Board() {
         <div className="dd-map-image">
           {a.map.photo ? <MapImg src={a.map.photo} name={a.map.name} cls="dd-map-img" /> : <span className="dd-map-emoji">{a.map.image}</span>}
         </div>
-        <div className="dd-map-caption">{a.map.mode} · Alcance {a.map.rangeBias}</div>
+        <div className="dd-map-caption"><ModeIcon mode={a.map.mode} size={22} /> <span style={{ color: modeInfo(a.map.mode).color }}>{a.map.mode}</span> · Alcance {a.map.rangeBias}</div>
         {issues.length > 0 && (
           <div className="dd-warn">
             ⚠️ Orden de picks alterado (sorteo: {a.draft.coinWinner === 'red' ? 'empiezan ELLOS' : 'empezamos NOSOTROS'}): {issues.join(' ')} Toca el hueco correcto o usa deshacer.
