@@ -176,12 +176,12 @@ export function useDraftApp() {
   }, [done]);
 
   // --- Temporizador de turno: 22,5 s para toda la fase de bans de Ranked (simultáneos) y 22 s por pick ---
-  const stepKey = exp.kind === 'ban' && format.freeOrder ? 'ban-phase' : `${exp.kind}-${'team' in exp ? exp.team : ''}-${draft.history.length}`;
+  const stepKey = !mapConfirmed ? 'map' : exp.kind === 'ban' && format.freeOrder ? `ban-phase-${draft.id}` : `${exp.kind}-${'team' in exp ? exp.team : ''}-${draft.history.length}`;
   const stepSeconds = exp.kind === 'pick' ? PICK_SECONDS : BAN_SECONDS;
   const [stepStart, setStepStart] = useState(() => Date.now());
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => { setStepStart(Date.now()); }, [stepKey]);
-  const timerActive = timerOn && (exp.kind === 'pick' || exp.kind === 'ban' || exp.kind === 'globalban');
+  const timerActive = timerOn && mapConfirmed && (exp.kind === 'pick' || exp.kind === 'ban' || exp.kind === 'globalban');
   useEffect(() => {
     if (!timerActive) return;
     const iv = setInterval(() => setNow(Date.now()), 250);

@@ -667,17 +667,47 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 .dd-flow-auto { padding: 4px 10px; border-radius: 12px; background: rgba(46, 204, 113, .25); font-size: .85rem; font-weight: 700; }
 .dd-flow-series { margin-left: auto; font-size: 1.1rem; }
 .dd-flow-first { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 10px 18px; margin-top: 12px; padding: 10px; border-radius: 12px; background: rgba(241, 196, 15, .12); font-weight: 700; }
-.dd-mapstep { margin-bottom: 20px; }
-.dd-mapstep-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.dd-mapstep { margin-bottom: 20px; padding: 20px 24px; }
+.dd-mapstep-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
 .dd-mapstep-head .dd-h2 { margin: 0; text-align: left; }
-.dd-mapstep-tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.dd-mapstep-tools .dd-input { width: auto; min-width: 180px; }
-.dd-mapstep-group .dd-h3 { margin: 14px 0 8px; font-size: 1.1rem; text-align: left; }
-.dd-mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-.dd-mapcard { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 6px; border: 2px solid transparent; border-radius: 12px; background: rgba(0, 0, 0, .25); font-weight: 700; font-size: .85rem; text-align: center; transition: transform .12s, border-color .12s; }
-.dd-mapcard:hover { transform: translateY(-2px); border-color: var(--dd-yellow); }
-.dd-mapcard.selected { border-color: var(--dd-green); }
-.dd-mapcard-img { display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; object-fit: cover; background: var(--dd-slot); font-size: 2rem; }
+.dd-mapstep-head .dd-muted.small { margin-top: 4px; }
+.dd-mapstep-tools { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.dd-mapstep-tools .dd-input { width: auto; min-width: 200px; }
+.dd-mapstep-tools .dd-select-xs { min-width: 0; }
+.dd-mapstep-last { display: flex; align-items: center; gap: 10px; padding: 4px 14px 4px 4px; border: 2px solid var(--dd-green); border-radius: 12px; background: rgba(46, 204, 113, .15); text-align: left; }
+.dd-mapstep-last:hover { background: rgba(46, 204, 113, .28); }
+.dd-mapstep-last span { display: flex; flex-direction: column; line-height: 1.15; }
+.dd-mapstep-last small { color: var(--dd-muted); font-size: .72rem; }
+.dd-mapstep-last-img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+.dd-mode-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.dd-mode-chip { --mode: var(--dd-yellow); display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--dd-soft-border); border-radius: 999px; background: rgba(0, 0, 0, .25); font-size: .88rem; font-weight: 700; }
+.dd-mode-chip small { padding: 0 6px; border-radius: 8px; background: rgba(255, 255, 255, .12); font-size: .72rem; }
+.dd-mode-chip:hover { border-color: var(--mode); }
+.dd-mode-chip.active { border-color: var(--mode); background: color-mix(in srgb, var(--mode) 30%, transparent); }
+.dd-mapstep-groups { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.dd-mapstep-groups.single { grid-template-columns: minmax(0, 1fr); }
+.dd-mapstep-group { --mode: var(--dd-yellow); padding: 12px; border: 1px solid var(--dd-soft-border); border-top: 3px solid var(--mode); border-radius: 14px; background: rgba(0, 0, 0, .18); }
+.dd-mapstep-mode { margin: 0 0 10px; color: var(--mode); font-size: 1.05rem; text-align: left; }
+.dd-mapgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.dd-mapstep-groups.single .dd-mapgrid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+.dd-mapcard { display: flex; flex-direction: column; align-items: stretch; gap: 5px; padding: 5px; border: 2px solid transparent; border-radius: 10px; background: rgba(0, 0, 0, .25); font-weight: 700; font-size: .78rem; line-height: 1.15; text-align: center; transition: transform .12s, border-color .12s; }
+.dd-mapcard:hover { transform: translateY(-2px); border-color: var(--mode, var(--dd-yellow)); }
+.dd-mapcard.selected { border-color: var(--dd-green); box-shadow: 0 0 0 2px rgba(46, 204, 113, .35); }
+.dd-mapcard-img { display: grid; place-items: center; width: 100%; aspect-ratio: 1; border-radius: 7px; object-fit: cover; background: var(--dd-slot); font-size: 2rem; }
+@media (max-width: 1200px) { .dd-mapstep-groups { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 700px) {
+  .dd-mapstep { padding: 14px; }
+  .dd-mapstep-groups { grid-template-columns: minmax(0, 1fr); }
+  .dd-mapstep-tools { width: 100%; }
+  .dd-mapstep-tools .dd-input { min-width: 0; flex: 1; }
+  .dd-mapstep-last { width: 100%; }
+  .dd-mode-chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: -14px; padding-right: 14px; }
+  .dd-mode-chips::-webkit-scrollbar { display: none; }
+  .dd-mapgrid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .dd-mapcard { font-size: .7rem; padding: 4px; }
+  .dd-mapstep-group { padding: 10px; }
+  .dd-mode-chip { flex: none; }
+}
 .dd-tools { margin-bottom: 20px; padding: 14px 18px; }
 .dd-tools > summary { cursor: pointer; font-weight: 700; }
 .dd-tools[open] > summary { margin-bottom: 14px; }
@@ -685,8 +715,8 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 @media (max-width: 640px) {
   .dd-flow-steps li { font-size: .78rem; padding: 6px 2px; gap: 4px; }
   .dd-flow-series { margin-left: 0; }
-  .dd-mapgrid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-  .dd-mapstep-tools .dd-input { min-width: 0; flex: 1; }
 }
 .dd-flow-first .dd-side { aspect-ratio: auto; flex-direction: row; gap: 6px; width: auto; height: auto; min-height: 0; padding: 6px 18px; font-size: .95rem; }
 .dd-flow-first .dd-side span { font-size: 1.1rem; }
+.dd-flow-first .dd-side:not(.active) { opacity: .75; filter: saturate(.5); }
+.dd-flow-first .dd-side:not(.active):hover { opacity: 1; filter: none; }

@@ -17,7 +17,8 @@ const STEPS = [
 
 export function FlowBar() {
   const a = useApp();
-  const { turnText } = useTurnTexts();
+  const { turnText: rawTurn } = useTurnTexts();
+  const turnText = rawTurn.replace(/[12]º /g, '').replace(' — simultáneos, en cualquier orden · luego picks', ' · simultáneos');
   const cur = STEPS.findIndex((s) => s.key === a.flowStep);
   const turnCls = a.exp.kind === 'done' ? 'done' : a.exp.kind === 'coin' ? 'coin' : a.exp.team === 'blue' ? 'blue' : 'red';
   const choosingFirst = a.exp.kind === 'coin' || (a.flowStep === 'picks' && a.picked.length === 0 && a.format.freeOrder);
@@ -57,17 +58,33 @@ export function FlowBar() {
   );
 }
 
-// Paso 1: elegir el mapa. Solo los mapas de la rotación Ranked actual, agrupados por modo.
+// Paso 1: elegir el mapa. Solo los mapas de la rotación Ranked actual; cada modo es una columna
+// (3 por fila en PC, 1 en móvil) y los chips de arriba filtran por modo.
+const MODE_STYLE: Record<string, { icon: string; color: string }> = {
+  'Atrapagemas': { icon: '💎', color: '#b05cff' },
+  'Balón Brawl': { icon: '⚽', color: '#3fa7ff' },
+  'Recompensa': { icon: '⭐', color: '#f1c40f' },
+  'Noqueo': { icon: '💀', color: '#ff7a3d' },
+  'Atraco': { icon: '💰', color: '#e84393' },
+  'Zona Restringida': { icon: '🎯', color: '#2ecc71' }
+};
+const modeStyle = (m: string) => MODE_STYLE[m] ?? { icon: '🗺️', color: '#9aa0c8' };
+const modeVar = (m: string) => ({ '--mode': modeStyle(m).color }) as React.CSSProperties;
+
 export function MapStep() {
   const a = useApp();
   const [q, setQ] = useState('');
-  const groups = useMemo(() => {
+  const [modeFilter, setModeFilter] = useState<string | null>(null);
+  const all = useMemo(() => {
     const inRotation = MAPS.filter((m) => REAL_META.maps[m.id]);
-    const list = (inRotation.length ? inRotation : MAPS).filter((m) => !q || norm(m.name).includes(norm(q)) || norm(m.mode).includes(norm(q)));
-    const by = new Map<string, typeof list>();
-    for (const m of list) by.set(m.mode, [...(by.get(m.mode) ?? []), m]);
-    return [...by.entries()];
-  }, [q]);
+    return inRotation.length ? inRotation : MAPS;
+  }, []);
+  // Los modos con más mapas van al final: así las columnas cortas quedan alineadas arriba
+  const modes = useMemo(() => [...new Set(all.map((m) => m.mode))].sort((x, y) => all.filter((m) => m.mode === x).length - all.filter((m) => m.mode === y).length), [all]);
+  const groups = useMemo(() => {
+    const list = all.filter((m) => (!modeFilter || m.mode === modeFilter) && (!q || norm(m.name).includes(norm(q)) || norm(m.mode).includes(norm(q))));
+    return modes.map((mode) => [mode, list.filter((m) => m.mode === mode)] as const).filter(([, ms]) => ms.length > 0);
+  }, [all, modes, q, modeFilter]);
   return (
     <section className="dd-panel dd-mapstep" aria-label="Elige el mapa">
       <div className="dd-mapstep-head">
@@ -75,30 +92,44 @@ export function MapStep() {
           <h2 className="dd-h2">1 · ¿En qué mapa juegas?</h2>
           <p className="dd-muted small">
             {a.autoDetect ? '🤖 La detección automática lo reconocerá en cuanto aparezca en pantalla. ' : ''}
-            Toca el mapa y pasas directo a los bans.
+            Toca el mapa y pasas directo a los bans · {all.length} mapas en la rotación Ranked.
           </p>
         </div>
         <div className="dd-mapstep-tools">
-          <button className="dd-btn small green" onClick={() => a.confirmMap()}>▶ Seguir en {a.map.name}</button>
-          <input className="dd-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar mapa o modo…" aria-label="Buscar mapa" />
+          <button className="dd-mapstep-last" onClick={() => a.confirmMap()} title="Usar el mismo mapa de antes">
+            {a.map.photo && <MapImg src={a.map.photo} name={a.map.name} cls="dd-mapstep-last-img" />}
+            <span><small>Repetir mapa</small><b>▶ {a.map.name}</b></span>
+          </button>
+          <input className="dd-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa…" aria-label="Buscar mapa" />
           <select className="dd-input dd-select-xs" value={a.formatId} onChange={(e) => a.changeFormat(e.target.value)} aria-label="Formato">
             {FORMATS.map((f) => <option key={f.id} value={f.id}>{f.id === 'live' ? 'Ranked' : f.name}</option>)}
           </select>
         </div>
       </div>
-      {groups.map(([mode, maps]) => (
-        <div key={mode} className="dd-mapstep-group">
-          <h3 className="dd-h3">{mode}</h3>
-          <div className="dd-mapgrid">
-            {maps.map((m) => (
-              <button key={m.id} className={`dd-mapcard ${m.id === a.mapId ? 'selected' : ''}`} onClick={() => a.confirmMap(m.id)}>
-                {m.photo ? <MapImg src={m.photo} name={m.name} cls="dd-mapcard-img" /> : <span className="dd-mapcard-img">{m.image}</span>}
-                <span>{m.name}</span>
-              </button>
-            ))}
+      <div className="dd-mode-chips" role="group" aria-label="Filtrar por modo">
+        <button className={`dd-mode-chip ${!modeFilter ? 'active' : ''}`} aria-pressed={!modeFilter} onClick={() => setModeFilter(null)}>Todos <small>{all.length}</small></button>
+        {modes.map((m) => (
+          <button key={m} className={`dd-mode-chip ${modeFilter === m ? 'active' : ''}`} aria-pressed={modeFilter === m} style={modeVar(m)}
+            onClick={() => setModeFilter(modeFilter === m ? null : m)}>
+            {modeStyle(m).icon} {m} <small>{all.filter((x) => x.mode === m).length}</small>
+          </button>
+        ))}
+      </div>
+      <div className={`dd-mapstep-groups ${groups.length === 1 ? 'single' : ''}`}>
+        {groups.map(([mode, maps]) => (
+          <div key={mode} className="dd-mapstep-group" style={modeVar(mode)}>
+            <h3 className="dd-mapstep-mode">{modeStyle(mode).icon} {mode}</h3>
+            <div className="dd-mapgrid">
+              {maps.map((m) => (
+                <button key={m.id} className={`dd-mapcard ${m.id === a.mapId ? 'selected' : ''}`} onClick={() => a.confirmMap(m.id)} title={`Jugar en ${m.name}`}>
+                  {m.photo ? <MapImg src={m.photo} name={m.name} cls="dd-mapcard-img" /> : <span className="dd-mapcard-img">{m.image}</span>}
+                  <span>{m.name}</span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
       {groups.length === 0 && <p className="dd-muted">Sin resultados.</p>}
     </section>
   );

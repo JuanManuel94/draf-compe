@@ -3,7 +3,7 @@ import { type Action, useApp } from '../app/useDraftApp';
 import { flipCoin, ourPickJob } from '../engine/draftMachine';
 import { brawlerById } from '../engine/scoring';
 import type { Team } from '../types';
-import { Timer, useTurnTexts } from './PhasePanel';
+import { useTurnTexts } from './PhasePanel';
 import { BrawlerImg, norm } from './ui';
 import { VoiceButton, type VoiceHandle } from './VoiceButton';
 
@@ -80,7 +80,6 @@ export const TurnPanel = forwardRef<HTMLInputElement, { voiceRef?: React.Ref<Voi
     <div className="dd-panel dd-current">
       <div className="dd-prompt-line">
         <h2>{centerBadge}</h2>
-        <Timer compact />
         <div className="dd-toolbar">
           <button className="dd-btn-icon gray" title="Reiniciar" aria-label="Reiniciar draft" onClick={() => a.reset()}>⟲</button>
           <button className="dd-btn-icon teal" title="Compartir enlace" aria-label="Compartir enlace del draft" onClick={a.shareDraft}>🔗</button>
