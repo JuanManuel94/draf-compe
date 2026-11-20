@@ -4,7 +4,7 @@ export type Rarity = 'Inicial' | 'Especial' | 'Superespecial' | 'Épica' | 'Mít
 // Mi colección: ok = maxeado/listo, low = lo tengo a bajo nivel, no = no lo tengo
 export type Ownership = 'ok' | 'low' | 'no';
 export type Role = 'Control' | 'Daño' | 'Apoyo' | 'Tanque' | 'Asesino' | 'Francotirador' | 'Artillería';
-export type GameMode = 'Atrapagemas' | 'Balón Brawl' | 'Recompensa' | 'Noqueo' | 'Atraco' | 'Zona Restringida';
+export type GameMode = 'Atrapagemas' | 'Balón Brawl' | 'Caza Estelar' | 'Noqueo' | 'Atraco' | 'Zona Restringida';
 
 export interface Brawler {
   id: string;
@@ -33,7 +33,8 @@ export interface Brawler {
 
 export interface GameMap {
   id: string;
-  name: string;
+  name: string; // nombre en el juego en español
+  en?: string; // nombre en inglés
   mode: GameMode;
   description: string;
   walls: number; // 1-5

@@ -31,7 +31,7 @@ const CLASS_MODES: Record<Role, GameMode[]> = {
   Control: ['Zona Restringida', 'Atrapagemas'],
   Daño: ['Atrapagemas', 'Atraco'],
   Artillería: ['Atraco', 'Zona Restringida'],
-  Francotirador: ['Noqueo', 'Recompensa']
+  Francotirador: ['Noqueo', 'Caza Estelar']
 };
 const RARITY_COLOR: Record<string, string> = {
   Inicial: '#9ca3af', Especial: '#4ade80', Superespecial: '#38bdf8', Épica: '#c084fc', Mítica: '#f87171', Legendaria: '#fbbf24', Ultralegendaria: '#e879f9'

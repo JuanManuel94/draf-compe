@@ -63,7 +63,7 @@ export function FlowBar() {
 const MODE_STYLE: Record<string, { icon: string; color: string }> = {
   'Atrapagemas': { icon: '💎', color: '#b05cff' },
   'Balón Brawl': { icon: '⚽', color: '#3fa7ff' },
-  'Recompensa': { icon: '⭐', color: '#f1c40f' },
+  'Caza Estelar': { icon: '⭐', color: '#f1c40f' },
   'Noqueo': { icon: '💀', color: '#ff7a3d' },
   'Atraco': { icon: '💰', color: '#e84393' },
   'Zona Restringida': { icon: '🎯', color: '#2ecc71' }
@@ -82,7 +82,7 @@ export function MapStep() {
   // Los modos con más mapas van al final: así las columnas cortas quedan alineadas arriba
   const modes = useMemo(() => [...new Set(all.map((m) => m.mode))].sort((x, y) => all.filter((m) => m.mode === x).length - all.filter((m) => m.mode === y).length), [all]);
   const groups = useMemo(() => {
-    const list = all.filter((m) => (!modeFilter || m.mode === modeFilter) && (!q || norm(m.name).includes(norm(q)) || norm(m.mode).includes(norm(q))));
+    const list = all.filter((m) => (!modeFilter || m.mode === modeFilter) && (!q || [m.name, m.en ?? '', m.mode].some((t) => norm(t).includes(norm(q)))));
     return modes.map((mode) => [mode, list.filter((m) => m.mode === mode)] as const).filter(([, ms]) => ms.length > 0);
   }, [all, modes, q, modeFilter]);
   return (

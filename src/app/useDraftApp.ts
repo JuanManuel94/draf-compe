@@ -10,7 +10,7 @@ import { parseVoice } from '../engine/voice';
 import { speak } from './useSpeech';
 import type { DraftAction, DraftState, GameMode, GameResult, HistoryEntry, Ownership, Role, Team, Weights } from '../types';
 
-export const MODES: GameMode[] = ['Atrapagemas', 'Balón Brawl', 'Recompensa', 'Noqueo', 'Atraco', 'Zona Restringida'];
+export const MODES: GameMode[] = ['Atrapagemas', 'Balón Brawl', 'Caza Estelar', 'Noqueo', 'Atraco', 'Zona Restringida'];
 export const ROLES: Role[] = ['Control', 'Daño', 'Apoyo', 'Tanque', 'Asesino', 'Francotirador', 'Artillería'];
 export const RARITIES = ['Todas', 'Inicial', 'Especial', 'Superespecial', 'Épica', 'Mítica', 'Legendaria', 'Ultralegendaria'];
 export const WEIGHT_LABELS: Record<keyof Weights, string> = {
@@ -26,6 +26,8 @@ export type Action = 'pickBlue' | 'pickRed' | 'banBlue' | 'banRed' | 'globalBlue
 
 const validFormat = (id: string) => (FORMATS.some((f) => f.id === id) ? id : 'live');
 const validMap = (id: string) => (MAPS.some((m) => m.id === id) ? id : DEFAULT_MAP);
+// El modo sale siempre del mapa guardado (así un modo renombrado, como Recompensa → Caza Estelar, no rompe nada)
+const savedMode = (): GameMode => MAPS.find((m) => m.id === validMap(store.load('mapId', DEFAULT_MAP)))?.mode ?? DEFAULT_MODE;
 
 // Recupera el draft en curso tras recargar (útil en móvil); se descarta si no encaja con el formato/mapa guardados.
 function loadDraft(mode: GameMode, mapId: string, formatId: string): DraftState {
@@ -65,10 +67,10 @@ const sigOf = (e: { formatId: string; mapId: string; coinWinner: Team | null; hi
 export function useDraftApp() {
   const ALL = useMemo(() => getAllBrawlers(), []);
   const shared = useMemo(sharedFromUrl, []);
-  const [mode, setMode] = useState<GameMode>(() => shared?.mode ?? store.load('mode', DEFAULT_MODE));
+  const [mode, setMode] = useState<GameMode>(() => shared?.mode ?? savedMode());
   const [mapId, setMapId] = useState(() => shared?.mapId ?? validMap(store.load('mapId', DEFAULT_MAP)));
   const [formatId, setFormatId] = useState(() => shared?.formatId ?? validFormat(store.load('formatId', 'live')));
-  const [draft, setDraft] = useState<DraftState>(() => shared ?? loadDraft(store.load('mode', DEFAULT_MODE), validMap(store.load('mapId', DEFAULT_MAP)), validFormat(store.load('formatId', 'live'))));
+  const [draft, setDraft] = useState<DraftState>(() => shared ?? loadDraft(savedMode(), validMap(store.load('mapId', DEFAULT_MAP)), validFormat(store.load('formatId', 'live'))));
   const [weights, setWeights] = useState<Weights>(() => store.load('weights', DEFAULT_WEIGHTS));
   const [compare, setCompare] = useState<string[]>([]);
   const [favorites, setFavorites] = useState<string[][]>(() => store.load('favorites', []));

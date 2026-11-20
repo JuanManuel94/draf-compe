@@ -47,7 +47,7 @@ async function main() {
 
   for (const map of MAPS) {
     const api = await fetch(`https://api.brawlapi.com/v1/maps/${map.cdnId}`).then((r) => r.json()) as { name: string };
-    const slug = slugs.find((s) => norm(s) === norm(api.name)) ?? slugs.find((s) => norm(s) === norm(map.name));
+    const slug = slugs.find((s) => norm(s) === norm(api.name)) ?? slugs.find((s) => norm(s) === norm(map.en ?? map.name));
     if (!slug) { console.warn(`⚠ ${map.name}: sin página en brawlbetter`); continue; }
     const html = await get(`${BASE}/maps/${slug}`);
     const head = html.match(/insights:\$R\[\d+\]=\{windowDays:(\d+),battles:(\d+),lastPlayed:"([^"]*)",firstPlayed:"[^"]*",inRotation:(!0|!1)/);
