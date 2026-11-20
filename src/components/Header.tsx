@@ -11,7 +11,7 @@ export function Header({ menuOpen, setMenuOpen, openCollection, openPhone }: { m
       <header className="dd-nav">
         <button className={`dd-burger ${menuOpen ? 'active' : ''}`} aria-label={menuOpen ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}><span /><span /><span /></button>
         <div className="dd-nav-title">
-          <h1>Brawl Draft Pro: Draft Assistant</h1>
+          <h1>Brawl Draft Pro<span className="dd-h1-extra">: Draft Assistant</span></h1>
           <span className="dd-credit">asistente de draft competitivo</span>
         </div>
         <div className="dd-nav-right">

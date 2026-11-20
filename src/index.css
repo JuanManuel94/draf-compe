@@ -746,3 +746,80 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
 @media (max-width: 640px) {
   .dd-map-panel { display: none; }
 }
+
+/* --- Teléfono compacto: más brawlers por pantalla y menos desplazamiento durante el draft --- */
+@media (max-width: 640px) {
+  body { padding-bottom: env(safe-area-inset-bottom); }
+  .dd-container { padding-left: 10px; padding-right: 10px; }
+  .dd-main, .dd-draft-col, .dd-suggest-col { gap: 12px; }
+  .dd-panel, .dd-setup { padding: 14px 12px; border-radius: 18px; }
+  .dd-h3 { font-size: 1.2rem; }
+
+  /* Encabezado de una línea */
+  .dd-nav { min-height: 52px; margin: 6px 0 12px; padding: 8px 12px; }
+  .dd-nav-title h1 { font-size: 1.05rem; line-height: 1.15; }
+  .dd-h1-extra, .dd-credit { display: none; }
+  .dd-nav-right { gap: 8px; }
+  .dd-nav-right .dd-round { width: 38px; height: 38px; }
+
+  /* Barra de pasos: pasos y estado en poco espacio */
+  .dd-flow { margin-bottom: 12px; padding: 10px; }
+  .dd-flow-steps { gap: 4px; }
+  .dd-flow-steps li { padding: 5px 2px; font-size: .74rem; }
+  .dd-flow-n { width: 18px; height: 18px; font-size: .7rem; }
+  .dd-flow-row { gap: 8px; margin-top: 10px; }
+  .dd-flow-map { padding: 3px 10px 3px 3px; }
+  .dd-flow-map-img { width: 36px; height: 36px; }
+  .dd-flow-row .dd-turn { padding: 5px 12px; font-size: .9rem; }
+  .dd-timer:not(.compact) { min-width: 70px; padding: 4px 10px; }
+  /* fila 1: mapa · marcador · nuevo draft — fila 2: turno · tiempo */
+  .dd-flow-row > .dd-flow-map { order: 0; flex: 1 1 auto; min-width: 0; }
+  .dd-flow-row > .dd-flow-series { order: 1; }
+  .dd-flow-row > .dd-btn { order: 2; }
+  .dd-flow-row > .dd-turn { order: 3; flex: 1 1 60%; min-width: 0; justify-content: center; font-size: .82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dd-flow-row > .dd-timer { order: 4; }
+  .dd-flow-row > :not(.dd-flow-map):not(.dd-flow-series):not(.dd-btn):not(.dd-turn):not(.dd-timer) { order: 5; }
+
+  /* Baneos sugeridos: rejilla de 2, un toque = banear */
+  .dd-bansug > .dd-muted { margin: 0 0 8px; font-size: .72rem; }
+  .dd-ban-sugs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+  .dd-ban-sug { gap: 8px; padding: 6px; font-size: .8rem; line-height: 1.2; }
+  .dd-ban-sug-img { width: 36px; height: 36px; }
+  .dd-ban-sug-reason { display: none; }
+  .dd-ban-sug .dd-tag-inline { display: block; width: fit-content; margin: 2px 0 0; font-size: .62rem; }
+
+  /* Tablero: los 3 picks en fila en vez de en columna */
+  .dd-team { padding: 10px 6px; border-radius: 16px; }
+  .dd-team-header { font-size: .95rem; letter-spacing: 1px; }
+  .dd-team-sub, .dd-team-foot { display: none; }
+  .dd-team .dd-section-title { margin: 6px 0 4px; font-size: .72rem; }
+  .dd-slot-ban { width: 30px; border-radius: 9px; }
+  .dd-ban-row { gap: 4px; }
+  .dd-picks { flex-direction: row; justify-content: center; align-items: flex-start; gap: 4px; }
+  .dd-pick-wrapper, .dd-team.red .dd-pick-wrapper { width: auto; flex: 1 1 0; min-width: 0; flex-direction: column-reverse; gap: 3px; }
+  .dd-slot-pick { width: 100%; max-width: 46px; }
+  .dd-pick-info, .dd-team.blue .dd-pick-info, .dd-team.red .dd-pick-info { width: 100%; align-items: center; text-align: center; gap: 1px; }
+  .dd-pick-label { padding: 1px 3px; font-size: .55rem; }
+  .dd-pick-captain, .dd-pick-me { display: none; }
+  .dd-pick-name { font-size: .62rem; }
+
+  /* Brawlers: 4 por fila */
+  .dd-pool > .dd-subtitle { display: none; }
+  .dd-filters { gap: 6px; margin-bottom: 10px; }
+  .dd-filters .dd-input-wrap.grow { flex: 1 1 100%; }
+  .dd-filters .dd-select-sm { flex: 1; min-width: 0; }
+  .dd-brawler-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; max-height: 62vh; padding: 2px; }
+  .dd-brawler { gap: 1px; padding: 4px 2px; border-radius: 10px; }
+  .dd-brawler-img { width: 100%; max-width: 56px; height: auto; aspect-ratio: 1; border-radius: 9px; }
+  .dd-brawler-name { font-size: .66rem; }
+  .dd-brawler-meta { display: none; }
+  .dd-tags { min-height: 0; }
+  .dd-tags:empty { display: none; }
+  .dd-tier, .dd-out-label { font-size: .56rem; }
+
+  /* Mejor pick */
+  .dd-engine { padding: 14px 12px; }
+  .dd-best { gap: 10px; padding: 10px; }
+  .dd-best-img { width: 58px; height: 58px; }
+  .dd-best-name { font-size: 1.2rem; }
+}
