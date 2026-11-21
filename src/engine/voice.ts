@@ -245,3 +245,46 @@ export function parseVoiceList(transcript: string, roster: VoiceBrawler[]): Voic
   }
   return out.length ? out : [single];
 }
+
+// Palabras que no son nombres: se ignoran al buscar lo que quedó sin entender
+const FILLER = new Set(['el', 'la', 'los', 'las', 'y', 'e', 'o', 'luego', 'despues', 'tambien', 'con', 'que', 'de', 'del', 'a', 'al', 'un', 'una', 'ok', 'vale', 'eh', 'este', 'esta', 'pues', 'bueno', 'mas', 'and', 'the', 'por', 'favor', 'ahora', 'equipo', 'para', 'se', 'lo', 'le', 'mi', 'su']);
+const MARKER_WORDS = new Set([...ACTIONS.flatMap((a) => a.words), ...TEAMS.flatMap((t) => t.words)].flatMap((w) => w.split(' ')));
+
+// Lo que se dijo y no se reconoció como brawler («colt BLABLA bull» → «blabla»)
+export function voiceLeftover(transcript: string, cmds: VoiceCommand[]): string[] {
+  const heard = cmds.flatMap((c) => (c.type === 'apply' ? c.heard.split(' ') : []));
+  const left: string[] = [];
+  let run: string[] = [];
+  for (const w of strip(transcript).replace(/[^a-z0-9 ]/g, ' ').split(' ').filter(Boolean)) {
+    const p = phonetic(w);
+    const i = heard.indexOf(p);
+    if (i >= 0) { heard.splice(i, 1); if (run.length) left.push(run.join(' ')); run = []; continue; }
+    if (FILLER.has(w) || MARKER_WORDS.has(w)) { if (run.length) left.push(run.join(' ')); run = []; continue; }
+    run.push(w);
+  }
+  if (run.length) left.push(run.join(' '));
+  return left;
+}
+
+// Los brawlers que más se parecen a un trozo no entendido (para «¿Quisiste decir…?»)
+export function closestBrawlers(text: string, roster: VoiceBrawler[], n = 3): string[] {
+  const key = phonetic(text);
+  if (key.length < 2) return [];
+  return roster
+    .map((b) => ({ id: b.id, s: Math.max(...[phonetic(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)].map((k) => similarity(key, k))) }))
+    .filter((x) => x.s >= 0.4)
+    .sort((a, b) => b.s - a.s)
+    .slice(0, n)
+    .map((x) => x.id);
+}
+
+// De varias lecturas del reconocedor, la que reconoce más brawlers (a igualdad, la principal)
+export function bestReading(readings: string[], roster: VoiceBrawler[]): { text: string; cmds: VoiceCommand[] } {
+  let best = { text: readings[0] ?? '', cmds: parseVoiceList(readings[0] ?? '', roster) };
+  const count = (cs: VoiceCommand[]) => cs.filter((c) => c.type === 'apply').length;
+  for (const r of readings.slice(1)) {
+    const cmds = parseVoiceList(r, roster);
+    if (count(cmds) > count(best.cmds)) best = { text: r, cmds };
+  }
+  return best;
+}

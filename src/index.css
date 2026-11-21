@@ -912,3 +912,32 @@ kbd { display: inline-block; min-width: 1.5em; padding: 1px 6px; border: 1px sol
   .qv-mini.ban { flex-basis: 18px; }
   .qv-search { padding: 5px 10px; }
 }
+
+/* «¿Quisiste decir?»: lo que la voz no entendió → los más parecidos, de un toque */
+.qv-guess { display: flex; flex: none; align-items: center; gap: 5px; overflow-x: auto; scrollbar-width: none; padding: 4px 6px; border: 1px dashed rgba(241, 196, 15, .6); border-radius: 10px; background: rgba(241, 196, 15, .1); font-size: 11px; }
+.qv-guess::-webkit-scrollbar { display: none; }
+.qv-guess > span { flex: none; color: var(--dd-yellow); font-weight: 700; }
+.qv-guess-b { display: flex; flex: none; align-items: center; gap: 4px; padding: 2px 8px 2px 2px; border: 1px solid var(--dd-soft-border); border-radius: 99px; background: rgba(0, 0, 0, .3); font-weight: 700; font-size: 11px; }
+.qv-guess-b .qv-b-img { width: 24px; border-radius: 50%; }
+.qv-guess-x { flex: none; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 50%; background: rgba(0, 0, 0, .3); }
+
+/* Modo mini: ventana flotante muy pequeña para tapar poco el juego.
+   Solo estado, sugerencias de un toque, micrófono y buscador; la lista sale al escribir. */
+@media (max-height: 300px), (max-width: 260px) {
+  .qv { flex-direction: column; gap: 4px; padding: 4px; }
+  .qv-info { width: 100%; max-width: none; overflow: visible; gap: 4px; }
+  .qv-board, .qv-strip-label, .qv-hint { display: none; }
+  .qv-pool.idle { display: none; }
+  .qv-top .qv-icon[aria-label="Nuevo draft"] { display: none; }
+  .qv-status { font-size: 12px; }
+  .qv-pill { padding: 4px 6px; font-size: 11px; }
+  .qv-strip { padding: 3px; gap: 3px; }
+  .qv-sug { width: 44px; padding: 2px; }
+  .qv-sug .qv-b-name { font-size: 8.5px; }
+  .qv-search { padding: 5px 8px; font-size: 13px; }
+  .qv-mic { width: 52px; height: 34px; }
+  .qv-pool { grid-template-columns: repeat(auto-fill, minmax(44px, 1fr)); }
+}
+@media (max-height: 300px), (max-width: 260px) {
+  .qv.searching .qv-strip, .qv.searching .qv-guess, .qv.searching .qv-info .qv-row, .qv.searching .qv-voice { display: none; }
+}

@@ -125,3 +125,22 @@ describe('nombres dichos seguidos, sin comas (así los escribe el reconocedor de
     expect(ids('Colt luego Piper y después Bull')).toEqual(['colt', 'piper', 'bull']);
   });
 });
+
+describe('ayudas de voz', () => {
+  it('une los trozos que Android repite acumulados', async () => {
+    const { joinFinals } = await import('../app/useSpeech');
+    expect(joinFinals(['colt', 'colt piper', 'colt piper bull'])).toBe('colt piper bull');
+    expect(joinFinals(['colt', 'piper', 'bull'])).toBe('colt piper bull');
+  });
+  it('elige la lectura que reconoce más brawlers', async () => {
+    const { bestReading } = await import('./voice');
+    expect(bestReading(['cold paper bowl', 'colt piper bull'], roster).text).toBe('colt piper bull');
+  });
+  it('detecta lo no entendido y propone parecidos', async () => {
+    const { voiceLeftover, closestBrawlers } = await import('./voice');
+    const cmds = parseVoiceList('colt zorblax bull', roster);
+    expect(voiceLeftover('colt zorblax bull', cmds)).toEqual(['zorblax']);
+    expect(closestBrawlers('mortiz', roster, 3)[0]).toBe('mortis');
+    expect(closestBrawlers('paipel', roster, 3)).toContain('piper');
+  });
+});

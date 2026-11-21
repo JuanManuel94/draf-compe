@@ -1,6 +1,7 @@
 import { useApp } from '../app/useDraftApp';
 import { POOL_INFO } from '../data/maps';
 import { DATA_SOURCE } from '../engine/scoring';
+import { voiceLogText } from './QuickView';
 
 export function Header({ menuOpen, setMenuOpen, openCollection, openPhone, openQuick }: { openQuick: () => void; menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void; openPhone?: () => void }) {
   const a = useApp();
@@ -34,6 +35,7 @@ export function Header({ menuOpen, setMenuOpen, openCollection, openPhone, openQ
           {openPhone && <button onClick={() => { openPhone(); close(); }}>📱 Teléfono y detección automática</button>}
           <button onClick={() => { a.shareDraft(); close(); }}>🔗 Compartir enlace del draft</button>
           <button onClick={() => { a.exportSummary(); close(); }}>📋 Copiar resumen en texto</button>
+          <button onClick={() => { const t = voiceLogText(); navigator.clipboard?.writeText(t || 'Sin registros de voz todavía.').then(() => a.setMsg(t ? '🎙️ Registro de voz copiado: pégalo en el chat para mejorar el reconocimiento.' : 'Aún no hay registros de voz.'), () => a.setMsg('No se pudo copiar el registro de voz.')); close(); }}>🎙️ Copiar registro de voz</button>
           <button onClick={a.doUndo}>↩ Deshacer <kbd>Ctrl+Z</kbd></button>
           <button onClick={a.doRedo}>↪ Rehacer <kbd>Ctrl+Y</kbd></button>
           <button onClick={() => { a.reset(); close(); }}>⟲ Reiniciar draft</button>
