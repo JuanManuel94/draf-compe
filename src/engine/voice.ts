@@ -54,7 +54,7 @@ const ALIASES: Record<string, string[]> = {
   wendy: ['wendi', 'uendi', 'guendi'],
   'larry-lawrie': ['lari', 'larry y lawrie', 'lari y lori'],
   // Nombres cortos o en inglés que el reconocedor en español escribe "como suenan"
-  colt: ['col', 'kolt', 'colt'],
+  colt: ['col', 'kolt', 'colt', 'call', 'cal', 'coll'],
   bull: ['bul', 'bol', 'bull'],
   bo: ['bou', 'bow'],
   lou: ['lu', 'lou', 'low'],
@@ -179,21 +179,69 @@ export function parseVoice(transcript: string, roster: VoiceBrawler[]): VoiceCom
   return { type: 'none', reason: `No reconozco ningún brawler en «${transcript}».` };
 }
 
-// Varias órdenes en una frase: «Colt, Piper y Bull» o «rival Mortis y Tara» → una orden por brawler.
-// El equipo o la acción dichos al principio se aplican a todos los nombres de la frase.
-export function parseVoiceList(transcript: string, roster: VoiceBrawler[]): VoiceCommand[] {
-  const plain = strip(transcript);
-  // "Larry y Lawrie" es un solo brawler: no se parte por esa "y"
-  const protectedText = plain.replace(/lar+[iy]e?\s+y\s+law?r(i|ie|y)/g, 'larry_lawrie');
-  const parts = protectedText.split(/\s*,\s*|\s+(?:y|e|luego|despues|tambien)\s+/).map((p) => p.replace('larry_lawrie', 'larry y lawrie').trim()).filter(Boolean);
-  if (parts.length <= 1) return [parseVoice(transcript, roster)];
-  const first = parseVoice(parts[0], roster);
-  const out: VoiceCommand[] = [first];
-  const kind = first.type === 'apply' ? first.kind : null;
-  const team = first.type === 'apply' ? first.team : null;
-  for (const p of parts.slice(1)) {
-    const c = parseVoice(p, roster);
-    out.push(c.type === 'apply' ? { ...c, kind: c.kind ?? kind, team: c.team ?? team } : c);
+// Mejor brawler para un trozo exacto de 1-3 palabras (mismas exigencias que matchBrawler)
+function bestFor(chunk: string, candidates: { id: string; keys: string[] }[]): { id: string; score: number } | null {
+  if (chunk.length < 2) return null;
+  let best: { id: string; score: number } | null = null;
+  for (const c of candidates) for (const k of c.keys) {
+    const s = similarity(chunk, k);
+    if (!best || s > best.score) best = { id: c.id, score: s };
   }
-  return out.filter((c, i, arr) => c.type !== 'none' || arr.length === 1);
+  if (!best) return null;
+  const min = chunk.length <= 3 ? 0.99 : chunk.length <= 5 ? 0.79 : 0.74;
+  return best.score >= min ? best : null;
+}
+
+// Todos los brawlers dichos seguidos, en orden, aunque no haya comas: «colt piper bull», «star nova el primo».
+// Parte la frase en trozos de 1 a 3 palabras eligiendo la combinación que mejor encaja (programación dinámica):
+// así «el primo» gana a «primo» suelto y las palabras de relleno («y», «luego»…) se saltan.
+export function matchAllBrawlers(text: string, roster: VoiceBrawler[]): { id: string; heard: string }[] {
+  const words = phonetic(text).split(' ').filter(Boolean);
+  const candidates = roster.map((b) => ({ id: b.id, keys: [phonetic(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)] }));
+  const n = words.length;
+  const best: { score: number; picks: { id: string; heard: string }[] }[] = Array(n + 1);
+  best[n] = { score: 0, picks: [] };
+  for (let i = n - 1; i >= 0; i--) {
+    best[i] = best[i + 1]; // saltar esta palabra
+    for (let len = 1; len <= 3 && i + len <= n; len++) {
+      const chunk = words.slice(i, i + len).join(' ');
+      const m = bestFor(chunk, candidates);
+      if (!m) continue;
+      const score = m.score * chunk.length + best[i + len].score;
+      if (score > best[i].score) best[i] = { score, picks: [{ id: m.id, heard: chunk }, ...best[i + len].picks] };
+    }
+  }
+  return best[0].picks;
+}
+
+// Varias órdenes en una frase: «Colt Piper Bull», «Colt, Piper y Bull», «rival Mortis Emz Tara»,
+// «Star Nova el primo» o «rival Star Nova nosotros El Primo» → una orden por brawler, en el orden dicho.
+// Un equipo o una acción dichos en la frase valen para los nombres que vienen detrás, hasta que se diga otro.
+export function parseVoiceList(transcript: string, roster: VoiceBrawler[]): VoiceCommand[] {
+  const single = parseVoice(transcript, roster);
+  if (single.type === 'undo' || single.type === 'redo') return [single];
+  const plain = ` ${strip(transcript).replace(/[^a-z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim()} `
+    // "Larry y Lawrie" es un solo brawler: que la "y" no lo parta
+    .replace(/ lar+[iy]e? (?:y|and|e) law?r(?:ie|i|y) /g, ' larry_lawrie ');
+  // Marcadores de equipo y de acción (multipalabra primero) → tokens especiales
+  const markers: [string, string][] = [
+    ...TEAMS.flatMap((t) => t.words.map((w) => [w, `@team:${t.team}`] as [string, string])),
+    ...ACTIONS.flatMap((a) => a.words.map((w) => [w, `@kind:${a.kind}`] as [string, string]))
+  ].sort((x, y) => y[0].length - x[0].length);
+  let marked = plain;
+  for (const [w, tok] of markers) marked = marked.replace(new RegExp(` ${w}(?= )`, 'g'), ` ${tok}`);
+  const out: VoiceCommand[] = [];
+  let team: Team | null = null;
+  let kind: 'pick' | 'ban' | null = null;
+  // Cada tramo empieza en un marcador: los nombres que siguen usan ese equipo/acción
+  for (const seg of marked.split(/(?= @)/)) {
+    const toks = seg.trim().split(' ').filter(Boolean);
+    while (toks[0]?.startsWith('@')) {
+      const [k, v] = toks.shift()!.slice(1).split(':');
+      if (k === 'team') team = v as Team; else kind = v as 'pick' | 'ban';
+    }
+    const text = toks.join(' ').replace('larry_lawrie', 'larry y lawrie');
+    for (const m of matchAllBrawlers(text, roster)) out.push({ type: 'apply', brawlerId: m.id, kind, team, heard: m.heard });
+  }
+  return out.length ? out : [single];
 }

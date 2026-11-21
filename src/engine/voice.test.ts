@@ -100,3 +100,28 @@ describe('parseVoiceList', () => {
     expect(ids('yuyu')).toEqual(['juju']);
   });
 });
+
+describe('nombres dichos seguidos, sin comas (así los escribe el reconocedor del teléfono)', () => {
+  const ids = (t: string) => parseVoiceList(t, roster).map((c) => (c.type === 'apply' ? `${c.team ?? ''}${c.team ? ':' : ''}${c.brawlerId}` : c.type));
+  it('tres bans seguidos', () => {
+    expect(ids('Colt Piper Bull')).toEqual(['colt', 'piper', 'bull']);
+    expect(ids('call piper bull')).toEqual(['colt', 'piper', 'bull']);
+    expect(ids('Mortis ens Tara')).toEqual(['mortis', 'emz', 'tara']);
+  });
+  it('los seis bans de una vez', () => {
+    expect(ids('Colt Piper Bull Mortis Emz Tara')).toEqual(['colt', 'piper', 'bull', 'mortis', 'emz', 'tara']);
+  });
+  it('picks con nombres de dos palabras', () => {
+    expect(ids('Star Nova el primo')).toEqual(['starr-nova', 'el-primo']);
+    expect(ids('el primo Star Nova')).toEqual(['el-primo', 'starr-nova']);
+    expect(ids('Larry y Lawrie Mortis')).toEqual(['larry-lawrie', 'mortis']);
+    expect(ids('mister p ocho bit')).toEqual(['mr-p', '8-bit']);
+  });
+  it('el equipo dicho a mitad de frase vale para lo que sigue', () => {
+    expect(ids('rival Star Nova nosotros el primo')).toEqual(['red:starr-nova', 'blue:el-primo']);
+    expect(ids('nosotros Colt Piper Bull rival Mortis Emz Tara')).toEqual(['blue:colt', 'blue:piper', 'blue:bull', 'red:mortis', 'red:emz', 'red:tara']);
+  });
+  it('se salta el relleno', () => {
+    expect(ids('Colt luego Piper y después Bull')).toEqual(['colt', 'piper', 'bull']);
+  });
+});

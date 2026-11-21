@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { ROSTER } from '../data/roster';
-import { parseVoice } from './voice';
+import { parseVoice, parseVoiceList } from './voice';
 
 // Cada brawler con las formas en que el reconocedor de voz en español suele escribirlo al dictarlo.
 // Si se añade un brawler nuevo al roster, la última prueba obliga a añadirlo aquí.
@@ -129,5 +129,23 @@ describe('todos los brawlers se entienden por voz', () => {
   });
   it('no falta ningún brawler del roster', () => {
     expect(roster.filter((b) => !HEARD[b.id]).map((b) => b.id)).toEqual([]);
+  });
+});
+
+describe('todos los brawlers dichos seguidos, sin comas', () => {
+  const ids = Object.keys(HEARD);
+  const chain = (t: string) => parseVoiceList(t, roster).map((c) => (c.type === 'apply' ? c.brawlerId : `(${c.type})`));
+  it('cada brawler en un trío con los dos siguientes, con su nombre y con cada forma dictada', () => {
+    const wrong: string[] = [];
+    ids.forEach((id, i) => {
+      const b = ids[(i + 1) % ids.length];
+      const c = ids[(i + 2) % ids.length];
+      for (const f of HEARD[id]) {
+        const t = `${f} ${HEARD[b][0]} ${HEARD[c][0]}`;
+        const got = chain(t);
+        if (got.join() !== [id, b, c].join()) wrong.push(`${t} → ${got.join(', ')}`);
+      }
+    });
+    expect(wrong).toEqual([]);
   });
 });
