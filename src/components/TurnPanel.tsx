@@ -5,7 +5,8 @@ import { brawlerById } from '../engine/scoring';
 import type { Team } from '../types';
 import { useTurnTexts } from './PhasePanel';
 import { BrawlerImg, norm } from './ui';
-import { VoiceButton, type VoiceHandle } from './VoiceButton';
+import { VoiceDraftBar, VoiceFill, type VoiceHandle } from './VoiceMic';
+import { resolveBrawlerName } from '../app/voiceResolve';
 
 // Buscador con autocompletado: escribe, elige con ↑/↓ y Enter aplica la acción actual
 export const QuickSearch = forwardRef<HTMLInputElement>(function QuickSearch(_, ref) {
@@ -17,7 +18,7 @@ export const QuickSearch = forwardRef<HTMLInputElement>(function QuickSearch(_, 
     [q, a.ALL, a.draft, a.action]);
   const apply = (id: string) => { if (a.applyAction(id)) { setQ(''); setSel(0); } };
   return (
-    <div className="dd-input-wrap dd-quick">
+    <div className="dd-input-wrap dd-quick dd-voice-input">
       <input ref={ref} value={q} placeholder="Nombre del brawler... (/)" className="dd-input" aria-label="Buscar brawler y aplicar la acción actual"
         role="combobox" aria-expanded={matches.length > 0} aria-controls="dd-quick-list" aria-autocomplete="list"
         onChange={(e) => { setQ(e.target.value); setSel(0); }}
@@ -28,6 +29,7 @@ export const QuickSearch = forwardRef<HTMLInputElement>(function QuickSearch(_, 
           else if (e.key === 'Escape') { setQ(''); (e.target as HTMLInputElement).blur(); }
         }} />
       <span className="dd-input-icon" aria-hidden="true">🔍</span>
+      <VoiceFill onText={(t) => { setQ(t); setSel(0); }} resolve={resolveBrawlerName} label="Decir el brawler" />
       {matches.length > 0 && (
         <div className="dd-suggestions" id="dd-quick-list" role="listbox">
           {matches.map((b, i) => (
@@ -136,7 +138,7 @@ export const TurnPanel = forwardRef<HTMLInputElement, { voiceRef?: React.Ref<Voi
         </>
       )}
 
-      <VoiceButton ref={voiceRef} />
+      <VoiceDraftBar ref={voiceRef} />
 
       {format.coinFlip && (exp.kind === 'coin' || draft.coinWinner) && (
         <div className="dd-coin">

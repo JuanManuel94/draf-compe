@@ -1,7 +1,7 @@
 import { useApp } from '../app/useDraftApp';
 import { POOL_INFO } from '../data/maps';
 import { DATA_SOURCE } from '../engine/scoring';
-import { voiceLogText } from './QuickView';
+import { voiceLogText } from '../app/useVoiceDraft';
 
 export function Header({ menuOpen, setMenuOpen, openCollection, openPhone, openQuick }: { openQuick: () => void; menuOpen: boolean; setMenuOpen: (v: boolean) => void; openCollection: () => void; openPhone?: () => void }) {
   const a = useApp();

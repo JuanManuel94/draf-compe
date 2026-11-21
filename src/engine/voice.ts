@@ -23,8 +23,34 @@ export function phonetic(s: string): string {
     .replace(/h/g, '')
     .replace(/([a-zC])\1+/g, '$1')
     .replace(/C/g, 'ch')
+    // El español pone una «e» delante de la «s» líder: «estu» = «stu», «espaik» = «spaik»
+    .replace(/(^| )es(?=[bcdfgklmnpqrstvz])/g, '$1s')
     .replace(/\s+/g, ' ').trim();
 }
+
+// Variantes de pronunciación inglesa generadas del propio nombre (cubren nombres nuevos sin escribir alias):
+// e muda final (Belle→bel), a_e→ei (Shade→sheid, Gale→geil), i_e→ai (Spike→spaik), ou→au (Sprout→spraut),
+// ow→ou (Willow→uilou), u en sílaba cerrada→a (Buzz→bas, Trunk→trank, Ruffs→rafs).
+export function englishVariants(name: string): string[] {
+  const C = 'bcdfgklmnprstvz';
+  const out = new Set<string>();
+  const word = (w: string) => {
+    const v = [w];
+    v.push(w.replace(new RegExp(`([${C}])e$`), '$1'));
+    v.push(w.replace(new RegExp(`a([${C}])e$`), 'ei$1'));
+    v.push(w.replace(new RegExp(`i([${C}])e$`), 'ai$1'));
+    v.push(w.replace(/ou/g, 'au'));
+    v.push(w.replace(/ow/g, 'ou'));
+    v.push(w.replace(new RegExp(`u(?=[${C}]{2}|[${C}]$)`, 'g'), 'a'));
+    return v;
+  };
+  const words = strip(name).replace(/[^a-z0-9 ]/g, ' ').split(' ').filter(Boolean);
+  // Cada variante cambia una palabra cada vez (las demás quedan igual)
+  words.forEach((w, i) => { for (const v of word(w)) out.add([...words.slice(0, i), v, ...words.slice(i + 1)].join(' ')); });
+  return [...out].map(phonetic);
+}
+// Claves con las que se reconoce a un brawler: nombre, variantes inglesas y alias escritos a mano
+const keysOf = (b: VoiceBrawler) => [...new Set([phonetic(b.name), ...englishVariants(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)])];
 
 // Transcripciones típicas del reconocedor en español → nombre del brawler
 const ALIASES: Record<string, string[]> = {
@@ -50,7 +76,7 @@ const ALIASES: Record<string, string[]> = {
   pam: ['pan', 'paam'],
   pearl: ['perl', 'perla', 'peral', 'purl', 'perle'],
   griff: ['grif', 'grief', 'grifo'],
-  shade: ['cheid', 'sheid', 'cheit', 'shayd', 'sheyd', 'chaid', 'shaid', 'chait', 'shed', 'ched', 'shady', 'seid', 'said', 'yeid', 'jade', 'shei', 'chei', 'sheit', 'cheide'],
+  shade: ['sade', 'sheik', 'chef', 'sheyda', 'sheid', 'shaded', 'cheid', 'sheid', 'cheit', 'shayd', 'sheyd', 'chaid', 'shaid', 'chait', 'shed', 'ched', 'shady', 'seid', 'said', 'yeid', 'jade', 'shei', 'chei', 'sheit', 'cheide'],
   wendy: ['wendi', 'uendi', 'guendi'],
   'larry-lawrie': ['lari', 'larry y lawrie', 'lari y lori'],
   // Nombres cortos o en inglés que el reconocedor en español escribe "como suenan"
@@ -58,7 +84,7 @@ const ALIASES: Record<string, string[]> = {
   bull: ['bul', 'bol', 'bull'],
   bo: ['bou', 'bow'],
   lou: ['lu', 'lou', 'low'],
-  stu: ['estu', 'stu', 'estiu', 'stew', 'stiu', 'estew'],
+  stu: ['estu', 'stu', 'estiu', 'stew', 'stiu', 'estew', 'es tu', 'estú', 'sto', 'estou', 'stuu', 'stou'],
   moe: ['mo', 'mou', 'moe'],
   eve: ['iv', 'ib', 'eve', 'ive', 'iva'],
   ash: ['ach', 'ash', 'ashe'],
@@ -90,7 +116,7 @@ const ALIASES: Record<string, string[]> = {
   darryl: ['daril', 'darril', 'dariel'],
   penny: ['peni', 'penny', 'peny'],
   bonnie: ['boni', 'bonnie', 'bony'],
-  ruffs: ['rafs', 'rufs', 'rafts', 'ruffs'],
+  ruffs: ['rafs', 'rufs', 'rafts', 'ruffs', 'raf', 'ruf', 'rough'],
   buster: ['baster', 'buster', 'bastar'],
   gray: ['grei', 'gray', 'grey'],
   doug: ['dag', 'doug', 'dog'],
@@ -134,13 +160,14 @@ function lev(a: string, b: string): number {
   }
   return d[a.length][b.length];
 }
-const similarity = (a: string, b: string) => (a === b ? 1 : 1 - lev(a, b) / Math.max(a.length, b.length, 1));
+const sim1 = (a: string, b: string) => (a === b ? 1 : 1 - lev(a, b) / Math.max(a.length, b.length, 1));
+const similarity = (a: string, b: string) => Math.max(sim1(a, b), a.includes(' ') || b.includes(' ') ? sim1(a.replace(/ /g, ''), b.replace(/ /g, '')) : 0);
 const hasWord = (text: string, w: string) => new RegExp(`(^| )${w}( |$)`).test(text);
 
 // Busca el brawler en ventanas de 1 a 3 palabras del texto (nombres como "el primo" o "larry y lawrie")
 export function matchBrawler(text: string, roster: VoiceBrawler[]): { id: string; score: number; heard: string } | null {
   const words = phonetic(text).split(' ').filter(Boolean);
-  const candidates = roster.map((b) => ({ id: b.id, keys: [phonetic(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)] }));
+  const candidates = roster.map((b) => ({ id: b.id, keys: keysOf(b) }));
   let best: { id: string; score: number; heard: string } | null = null;
   for (let n = 1; n <= 3; n++) {
     for (let i = 0; i + n <= words.length; i++) {
@@ -197,7 +224,7 @@ function bestFor(chunk: string, candidates: { id: string; keys: string[] }[]): {
 // así «el primo» gana a «primo» suelto y las palabras de relleno («y», «luego»…) se saltan.
 export function matchAllBrawlers(text: string, roster: VoiceBrawler[]): { id: string; heard: string }[] {
   const words = phonetic(text).split(' ').filter(Boolean);
-  const candidates = roster.map((b) => ({ id: b.id, keys: [phonetic(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)] }));
+  const candidates = roster.map((b) => ({ id: b.id, keys: keysOf(b) }));
   const n = words.length;
   const best: { score: number; picks: { id: string; heard: string }[] }[] = Array(n + 1);
   best[n] = { score: 0, picks: [] };
@@ -271,7 +298,7 @@ export function closestBrawlers(text: string, roster: VoiceBrawler[], n = 3): st
   const key = phonetic(text);
   if (key.length < 2) return [];
   return roster
-    .map((b) => ({ id: b.id, s: Math.max(...[phonetic(b.name), ...(ALIASES[b.id] ?? []).map(phonetic)].map((k) => similarity(key, k))) }))
+    .map((b) => ({ id: b.id, s: Math.max(...keysOf(b).map((k) => similarity(key, k))) }))
     .filter((x) => x.s >= 0.4)
     .sort((a, b) => b.s - a.s)
     .slice(0, n)
@@ -287,4 +314,22 @@ export function bestReading(readings: string[], roster: VoiceBrawler[]): { text:
     if (count(cmds) > count(best.cmds)) best = { text: r, cmds };
   }
   return best;
+}
+
+// Buscador por voz genérico (mapas, etc.): el elemento cuyo nombre más se parece a lo dicho
+// (compara la frase entera y trozos de 1-4 palabras). Más tolerante que el draft: es solo para buscar.
+export function matchName(text: string, items: { id: string; names: string[] }[], min = 0.62): string | null {
+  const words = phonetic(text).split(' ').filter(Boolean);
+  const chunks = new Set<string>([words.join(' ')]);
+  for (let n = 1; n <= 4; n++) for (let i = 0; i + n <= words.length; i++) chunks.add(words.slice(i, i + n).join(' '));
+  let best: { id: string; s: number } | null = null;
+  for (const it of items) for (const nm of it.names) {
+    const key = phonetic(nm);
+    for (const c of chunks) {
+      if (c.length < 3) continue;
+      const s = similarity(c, key);
+      if (!best || s > best.s) best = { id: it.id, s };
+    }
+  }
+  return best && best.s >= min ? best.id : null;
 }

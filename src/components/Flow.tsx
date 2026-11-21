@@ -6,6 +6,8 @@ import { REAL_META } from '../engine/realMeta';
 import { Timer, useTurnTexts } from './PhasePanel';
 import { modeInfo } from '../data/modes';
 import { MapImg, ModeIcon, norm } from './ui';
+import { VoiceFill } from './VoiceMic';
+import { resolveMapName } from '../app/voiceResolve';
 
 // Flujo guiado del draft: 1 Mapa → 2 Bans → 3 Picks → 4 Resultado.
 // Solo se muestra lo que hace falta en cada paso; la detección automática lo avanza sola.
@@ -98,7 +100,10 @@ export function MapStep() {
             </span>
             <span><small>Repetir mapa</small><b>▶ {a.map.name}</b></span>
           </button>
-          <input className="dd-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa…" aria-label="Buscar mapa" />
+          <span className="dd-input-wrap dd-voice-input noicon">
+            <input className="dd-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa…" aria-label="Buscar mapa" />
+            <VoiceFill onText={setQ} resolve={resolveMapName} label="Decir el mapa" />
+          </span>
           <select className="dd-input dd-select-xs" value={a.formatId} onChange={(e) => a.changeFormat(e.target.value)} aria-label="Formato">
             {FORMATS.map((f) => <option key={f.id} value={f.id}>{f.id === 'live' ? 'Ranked' : f.name}</option>)}
           </select>

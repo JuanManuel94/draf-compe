@@ -12,7 +12,7 @@ import { STANDALONE } from './app/env';
 import { Pool } from './components/Pool';
 import { QuickView, useQuickView } from './components/QuickView';
 import { TurnPanel } from './components/TurnPanel';
-import type { VoiceHandle } from './components/VoiceButton';
+import type { VoiceHandle } from './components/VoiceMic';
 
 export default function App() {
   const app = useDraftApp();

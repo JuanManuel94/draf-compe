@@ -3,12 +3,16 @@ import { RARITIES, ROLES, useApp } from '../app/useDraftApp';
 import { countersVs, matchupScore, metaOf } from '../engine/scoring';
 import type { Role } from '../types';
 import { BrawlerImg, norm, scoreClass } from './ui';
+import { useVoiceDraft } from '../app/useVoiceDraft';
+import { resolveBrawlerName } from '../app/voiceResolve';
+import { VoiceFeedback, VoiceFill, VoiceMic } from './VoiceMic';
 
 export function Pool() {
   const a = useApp();
   const [query, setQuery] = useState('');
   const [roleF, setRoleF] = useState<Role | 'Todos'>('Todos');
   const [rarityF, setRarityF] = useState('Todas');
+  const voice = useVoiceDraft();
   const grid = a.ALL.filter((b) => norm(b.name).includes(norm(query)) && (roleF === 'Todos' || b.roles.includes(roleF)) && (rarityF === 'Todas' || b.rarity === rarityF));
   const actionLabel = a.action === 'pickBlue' ? 'Pick Azul' : a.action === 'pickRed' ? 'Pick Rojo' : a.action === 'banBlue' ? 'Ban Azul' : a.action === 'banRed' ? 'Ban Rojo' : a.action === 'globalBlue' ? '🌍 Global Azul' : '🌍 Global Rojo';
   return (
@@ -16,10 +20,12 @@ export function Pool() {
       <h3 className="dd-h3">Brawlers</h3>
       <p className="dd-subtitle">👆 Un toque: se aplica al instante en <b>{actionLabel}</b> y avanza solo al siguiente paso.</p>
       <div className="dd-filters">
-        <div className="dd-input-wrap grow">
+        <div className="dd-input-wrap grow dd-voice-input">
           <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Filtrar brawlers..." className="dd-input" aria-label="Filtrar brawlers por nombre" />
           <span className="dd-input-icon" aria-hidden="true">🔍</span>
+          <VoiceFill onText={setQuery} resolve={resolveBrawlerName} label="Filtrar por voz: di el brawler" />
         </div>
+        <VoiceMic voice={voice} cls="dd-pool-mic" />
         <select value={roleF} onChange={(e) => setRoleF(e.target.value as Role | 'Todos')} className="dd-input dd-select-sm" aria-label="Filtrar por clase">
           {['Todos', ...ROLES].map((r) => <option key={r}>{r}</option>)}
         </select>
@@ -28,6 +34,7 @@ export function Pool() {
         </select>
         <span className="dd-muted">{grid.length}/{a.ALL.length}</span>
       </div>
+      <VoiceFeedback voice={voice} />
       <div className="dd-brawler-grid scroll-thin">
         {grid.length === 0 && <p className="dd-empty">Ningún brawler coincide con la búsqueda.</p>}
         {grid.map((b) => {

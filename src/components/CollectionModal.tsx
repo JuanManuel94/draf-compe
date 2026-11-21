@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useApp } from '../app/useDraftApp';
 import { BrawlerImg, norm } from './ui';
+import { VoiceFill } from './VoiceMic';
+import { resolveBrawlerName } from '../app/voiceResolve';
 
 export function CollectionModal({ onClose }: { onClose: () => void }) {
   const a = useApp();
@@ -14,6 +16,7 @@ export function CollectionModal({ onClose }: { onClose: () => void }) {
           <h2 id="coll-title">🎒 Mi colección</h2>
           <span className="dd-muted">{a.ALL.length - a.ownCount('no') - a.ownCount('low')} listos · {a.ownCount('low')} nivel bajo · {a.ownCount('no')} sin tener</span>
           <input ref={inputRef} value={q} onChange={(e) => setQ(e.target.value)} placeholder="Buscar..." className="dd-input dd-modal-search" aria-label="Buscar en mi colección" />
+          <VoiceFill onText={setQ} resolve={resolveBrawlerName} label="Buscar por voz" />
           <button className="dd-btn small gray" onClick={a.resetOwnership}>↩ Todos listos</button>
           <button className="dd-btn small gray" onClick={onClose}>✕ Cerrar</button>
         </div>

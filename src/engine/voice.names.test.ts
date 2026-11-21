@@ -149,3 +149,61 @@ describe('todos los brawlers dichos seguidos, sin comas', () => {
     expect(wrong).toEqual([]);
   });
 });
+
+// Formas más difíciles: palabras del español que el teléfono elige, nombres partidos en dos o con «e» delante
+const HARD: Record<string, string[]> = {
+  stu: ['es tu', 'estú', 'Stu', 'stew', 'estiu'],
+  shade: ['sade', 'sheid', 'shayd', 'cheid', 'shade'],
+  squeak: ['es cuic', 'escuik', 'squeak', 'es quik'],
+  spike: ['es paik', 'espaik', 'spaik'],
+  sprout: ['es praut', 'espraut', 'sprout'],
+  surge: ['serch', 'search', 'sarch'],
+  'starr-nova': ['estar nova', 'starnova', 'star noba'],
+  '8-bit': ['ocho bit', '8bit', 'eit bit', 'ocho bits'],
+  'mr-p': ['mister pi', 'misterpi', 'mister p', 'señor p'],
+  'r-t': ['erre te', 'ar ti', 'rt'],
+  meeple: ['mipel', 'mi pel', 'míple'],
+  glowy: ['glowi', 'glou i', 'gloui'],
+  ziggy: ['sigui', 'zigui', 'sigi'],
+  najia: ['naya', 'nayia', 'najia'],
+  kaze: ['keis', 'kase', 'kaze'],
+  finx: ['finks', 'fins', 'finx'],
+  gale: ['geil', 'gueil', 'gale'],
+  buzz: ['bas', 'baz', 'bus'],
+  ruffs: ['rafs', 'raf', 'rufs'],
+  trunk: ['trank', 'tronk'],
+  chuck: ['chak', 'chac'],
+  gus: ['gas', 'gus'],
+  belle: ['bel', 'bell'],
+  willow: ['uilou', 'güilou', 'wilou'],
+  byron: ['bairon', 'vairon', 'bayron'],
+  pierce: ['pirs', 'piers', 'pirce'],
+  sirius: ['sirio', 'serius', 'sirius'],
+  'jae-yong': ['yei yong', 'jeiyong', 'yay young'],
+  gene: ['yin', 'jean', 'gin'],
+  janet: ['yanet', 'llanet'],
+  jacky: ['yaki', 'jaki'],
+  juju: ['yuyu', 'chuchu'],
+  gigi: ['yiyi', 'jiji'],
+  'larry-lawrie': ['lari y lori', 'larry and lawrie'],
+  'el-primo': ['el primo', 'primo'],
+  emz: ['ems', 'emes', 'ens'],
+  eve: ['iv', 'ive'],
+  lou: ['lu', 'low'],
+  moe: ['mou', 'mo'],
+  bo: ['bou', 'bo']
+};
+
+describe('nombres raros: formas difíciles', () => {
+  it('cada forma difícil lleva a su brawler', () => {
+    const wrong = Object.entries(HARD).flatMap(([id, forms]) => forms.filter((f) => heardAs(f) !== id).map((f) => `${f} → ${heardAs(f)} (esperado ${id})`));
+    expect(wrong).toEqual([]);
+  });
+  it('y también dentro de una frase con otros nombres', () => {
+    const wrong = Object.entries(HARD).flatMap(([id, forms]) => forms.map((f) => `colt ${f} bull`).filter((t) => {
+      const got = parseVoiceList(t, roster).map((c) => (c.type === 'apply' ? c.brawlerId : '?'));
+      return got.join() !== ['colt', id, 'bull'].join();
+    }).map((t) => `${t} → ${parseVoiceList(t, roster).map((c) => (c.type === 'apply' ? c.brawlerId : '?')).join(', ')}`));
+    expect(wrong).toEqual([]);
+  });
+});

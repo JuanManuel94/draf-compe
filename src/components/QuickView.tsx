@@ -1,14 +1,15 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useApp } from '../app/useDraftApp';
-import { useDictation } from '../app/useSpeech';
+import { useVoiceDraft, voiceLogText } from '../app/useVoiceDraft';
 import { MAPS } from '../data/maps';
 import { modeInfo } from '../data/modes';
 import { REAL_META } from '../engine/realMeta';
 import { brawlerById, predictRivalPicks } from '../engine/scoring';
 import { store } from '../engine/storage';
-import { bestReading, closestBrawlers, voiceLeftover } from '../engine/voice';
-import type { Brawler, Team } from '../types';
+import type { Brawler } from '../types';
 import { Timer } from './PhasePanel';
+import { VoiceFeedback, VoiceFill, VoiceMic } from './VoiceMic';
+import { resolveMapName } from '../app/voiceResolve';
 import { BrawlerImg, MapImg, ModeIcon, norm, scoreClass } from './ui';
 
 // Vista rápida: pensada para la ventana flotante del teléfono encima de Brawl Stars.
@@ -61,7 +62,7 @@ export function QuickView({ onFull }: { onFull: () => void }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [a.map.id, a.draft]);
   const rivalPickTurn = exp.kind === 'pick' && exp.team === 'red';
-  const voice = useQuickVoice();
+  const voice = useVoiceDraft();
 
   return (
     <div className={`qv ${step === 'map' ? 'is-map' : ''} ${q ? 'searching' : ''}`}>
@@ -129,21 +130,9 @@ export function QuickView({ onFull }: { onFull: () => void }) {
             <div className="qv-list">
               <div className="qv-searchrow">
                 <input className="qv-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`🔍 Buscar · toca = ${a.action === 'pickRed' ? 'pick rival' : a.action === 'pickBlue' ? 'nuestro pick' : banTeam === 'red' ? 'ban rival' : 'nuestro ban'}`} aria-label="Buscar brawler" />
-                {voice.supported && (
-                  <button className={`qv-mic ${voice.listening ? 'on' : ''}`} aria-label={voice.listening ? 'Escuchando: suelta (o toca) para terminar' : 'Mantén pulsado y di los brawlers'}
-                    onPointerDown={voice.down} onPointerUp={voice.up} onPointerCancel={voice.up} onContextMenu={(e) => e.preventDefault()}>{voice.listening ? '⏹' : '🎤'}</button>
-                )}
+                <VoiceMic voice={voice} />
               </div>
-              {voice.line && <div className={`qv-voice ${voice.line.ok === false ? 'err' : voice.line.ok ? 'ok' : ''}`} aria-live="polite">{voice.line.text}</div>}
-              {voice.guesses.length > 0 && (
-                <div className="qv-guess">
-                  <span>¿Quisiste decir?</span>
-                  {voice.guesses.map((id) => { const b = brawlerById(id); return b && (
-                    <button key={id} className="qv-guess-b" onClick={() => voice.pickGuess(id)}><span className="qv-b-img"><BrawlerImg b={b} size="w-full h-full" /></span>{b.name}</button>
-                  ); })}
-                  <button className="qv-guess-x" onClick={voice.clearGuesses} aria-label="Cerrar sugerencias">✕</button>
-                </div>
-              )}
+              <VoiceFeedback voice={voice} />
               <div className={`qv-pool ${q ? '' : 'idle'}`}>
                 {pool.map((b) => <PoolBtn key={b.id} b={b} onTap={tap} />)}
                 {pool.length === 0 && <p className="qv-empty">Ninguno coincide.</p>}
@@ -225,7 +214,10 @@ function QuickMaps() {
   }, [q]);
   return (
     <>
-      <input className="qv-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa o modo" aria-label="Buscar mapa" />
+      <div className="qv-searchrow">
+        <input className="qv-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Buscar mapa o modo" aria-label="Buscar mapa" />
+        <VoiceFill onText={setQ} resolve={resolveMapName} label="Decir el mapa" />
+      </div>
       <div className="qv-maps">
         {maps.map((m) => (
           <button key={m.id} className={`qv-mapcard ${m.id === a.mapId ? 'sel' : ''}`} style={{ '--mode': modeInfo(m.mode).color } as React.CSSProperties} onClick={() => a.confirmMap(m.id)} aria-label={`${m.name}, ${m.mode}`}>
@@ -239,107 +231,3 @@ function QuickMaps() {
   );
 }
 
-// Voz en la vista rápida: mantén pulsado 🎤, di uno o varios brawlers («Colt, Piper y Bull», «rival Mortis») y suelta.
-// Cada nombre se aplica al paso que toca, uno detrás de otro, con vibración de confirmación.
-type VoiceItem = { id: string; team: Team | null };
-type VoiceLogEntry = { at: string; step: string; heard: string[]; got: string[]; left: string[] };
-const VOICE_LOG = 'voiceLog';
-export const readVoiceLog = (): VoiceLogEntry[] => store.load<VoiceLogEntry[]>(VOICE_LOG, []);
-export function voiceLogText(): string {
-  return readVoiceLog().map((e) => `[${e.at} · ${e.step}] oído: ${e.heard.map((h) => `«${h}»`).join(' / ')} → ${e.got.join(', ') || 'nada'}${e.left.length ? ` · sin entender: ${e.left.join(', ')}` : ''}`).join('\n');
-}
-
-function useQuickVoice() {
-  const a = useApp();
-  const [queue, setQueue] = useState<VoiceItem[]>([]);
-  const [line, setLine] = useState<{ text: string; ok: boolean | null } | null>(null);
-  const [guesses, setGuesses] = useState<string[]>([]);
-  const results = useRef<string[]>([]);
-  const failed = useRef(false);
-  const pressAt = useRef(0);
-  const tapMode = useRef(false);
-  const hideT = useRef<number | undefined>(undefined);
-
-  const show = (text: string, ok: boolean | null, hide = true) => {
-    setLine({ text, ok });
-    window.clearTimeout(hideT.current);
-    if (hide) hideT.current = window.setTimeout(() => setLine(null), 5000);
-  };
-  const buzz = (ok: boolean) => { try { navigator.vibrate?.(ok ? 35 : [70, 50, 70]); } catch { /* sin vibración */ } };
-  // Solo se buscan brawlers que aún se pueden elegir: menos candidatos = menos confusiones
-  const roster = () => a.ALL.filter((b) => !a.picked.includes(b.id) && (a.banPhase || !a.banned.includes(b.id))).map((b) => ({ id: b.id, name: b.name }));
-
-  function onDone(readings: string[]) {
-    const r = roster();
-    const { text: heard, cmds } = bestReading(readings, r);
-    const items = cmds.flatMap((c) => (c.type === 'apply' ? [{ id: c.brawlerId, team: c.team }] : []));
-    const left = voiceLeftover(heard, cmds);
-    // Registro para revisar después qué se oyó y qué se entendió (se puede copiar desde el menú)
-    const log = readVoiceLog();
-    log.unshift({ at: new Date().toLocaleTimeString(), step: a.flowStep, heard: readings.slice(0, 3), got: items.map((i) => brawlerById(i.id)?.name ?? i.id), left });
-    store.save(VOICE_LOG, log.slice(0, 60));
-    // Lo que no se entendió → los brawlers más parecidos, para tocarlos
-    setGuesses(left.length ? [...new Set(left.flatMap((w) => closestBrawlers(w, r, 3)))].filter((id) => !items.some((i) => i.id === id)).slice(0, 4) : []);
-    if (cmds.some((c) => c.type === 'undo')) { a.doUndo(); buzz(true); show(`«${heard}» → ↩ deshecho`, true); return; }
-    if (cmds.some((c) => c.type === 'redo')) { a.doRedo(); buzz(true); show(`«${heard}» → ↪ rehecho`, true); return; }
-    if (items.length === 0) {
-      if (cmds.some((c) => c.type === 'suggest')) { a.applySuggestion(); buzz(true); show(`«${heard}» → sugerido`, true); return; }
-      buzz(false); show(`«${heard}»: no reconocí ningún brawler`, false); return;
-    }
-    results.current = []; failed.current = left.length > 0;
-    if (left.length) results.current.push(`❓ «${left.join(' / ')}»`);
-    setQueue(items);
-  }
-  const sp = useDictation(onDone);
-
-  // Se aplica un nombre por render: cada paso parte del draft ya actualizado por el anterior
-  useEffect(() => {
-    if (queue.length === 0) return;
-    const [c, ...rest] = queue;
-    const ok = c.team
-      ? (a.exp.kind === 'globalban' ? a.doGlobalBan(c.team, c.id) : a.exp.kind === 'ban' ? a.doBan(c.team, c.id) : a.doPick(c.team, c.id))
-      : !!a.applyAction(c.id);
-    results.current.splice(results.current.length - (results.current[results.current.length - 1]?.startsWith('❓') ? 1 : 0), 0, `${ok ? '✓' : '✗'} ${brawlerById(c.id)?.name ?? c.id}`);
-    if (!ok) failed.current = true;
-    if (rest.length === 0) { buzz(!failed.current); show(results.current.join(' · '), !failed.current); }
-    setQueue(rest);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queue]);
-
-  useEffect(() => {
-    if (sp.listening) show(sp.interim ? `🎙️ «${sp.interim}»` : tapMode.current ? '🎙️ Escuchando… toca ⏹ al terminar' : '🎙️ Escuchando… di los brawlers y suelta', null, false);
-    else if (sp.error) show(sp.error, false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sp.listening, sp.interim, sp.error]);
-
-  // Modo toque: termina solo cuando llevas 2,5 s sin decir nada nuevo (u 8 s sin decir nada)
-  const endRef = useRef(sp.end);
-  endRef.current = sp.end;
-  useEffect(() => {
-    if (!sp.listening || !tapMode.current) return;
-    const t = window.setTimeout(() => endRef.current(), sp.interim ? 2500 : 8000);
-    return () => window.clearTimeout(t);
-  }, [sp.listening, sp.interim]);
-
-  return {
-    supported: sp.supported,
-    listening: sp.listening,
-    line,
-    guesses,
-    clearGuesses: () => setGuesses([]),
-    pickGuess: (id: string) => { if (a.applyAction(id)) { buzz(true); show(`✓ ${brawlerById(id)?.name}`, true); } setGuesses((g) => g.filter((x) => x !== id)); },
-    // Mantener pulsado: escucha todo lo que digas (aunque hagas pausas) y aplica al soltar.
-    // Toque corto: escucha hasta que tocas ⏹ o te callas 2,5 s.
-    down: (e: React.PointerEvent) => {
-      e.preventDefault();
-      if (sp.listening) { sp.end(); pressAt.current = 0; return; }
-      pressAt.current = Date.now(); tapMode.current = false; setGuesses([]);
-      sp.begin(true);
-    },
-    up: () => {
-      if (!pressAt.current) return;
-      if (Date.now() - pressAt.current > 400) sp.end(); else { tapMode.current = true; show('🎙️ Escuchando… toca ⏹ al terminar', null, false); }
-      pressAt.current = 0;
-    }
-  };
-}
